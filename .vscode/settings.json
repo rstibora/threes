@@ -1,0 +1,19 @@
+{
+    "python.pythonPath": "/home/radek/.virtualenvs/threes-backend-WJjaD5Z0/bin/python",
+    "workbench.colorCustomizations": {
+        "editor.lineHighlightBorder": "#868686",
+        "editor.selectionBackground": "#ffee00bd",
+        "editor.selectionHighlightBackground": "#ffee006b",
+        "activityBar.background": "#51122A",
+        "titleBar.activeBackground": "#71193B",
+        "titleBar.activeForeground": "#FEFCFD"
+    },
+    "files.exclude": {
+        ".pnp.js": true,
+        ".yarnrc.yml": true,
+        "**/.vscode": true,
+        "**/.yarn": true,
+        "dist": true,
+        "yarn.lock": true
+    }
+}
