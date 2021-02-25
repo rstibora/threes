@@ -11,9 +11,10 @@
     "files.exclude": {
         ".pnp.js": true,
         ".yarnrc.yml": true,
-        "**/.vscode": true,
+        "**/.vscode": false,
         "**/.yarn": true,
         "dist": true,
         "yarn.lock": true
-    }
+    },
+    "npm.packageManager": "yarn"
 }

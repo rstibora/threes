@@ -1,5 +1,5 @@
 {
-  "name": "threes-frontend",
+  "name": "threes",
   "devDependencies": {
     "@vue/compiler-sfc": "^3.0.0",
     "vue-loader": "next",

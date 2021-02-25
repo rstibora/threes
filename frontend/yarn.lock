@@ -1504,9 +1504,9 @@ resolve@^1.9.0:
   languageName: node
   linkType: hard
 
-"threes-frontend@workspace:.":
+"threes@workspace:.":
   version: 0.0.0-use.local
-  resolution: "threes-frontend@workspace:."
+  resolution: "threes@workspace:."
   dependencies:
     "@vue/compiler-sfc": ^3.0.0
     vue: ^3.0.0
