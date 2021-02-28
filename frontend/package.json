@@ -2,6 +2,7 @@
   "name": "threes",
   "devDependencies": {
     "@vue/compiler-sfc": "^3.0.0",
+    "ts-loader": "^8.0.17",
     "vue-loader": "next",
     "webpack": "^5.23.0",
     "webpack-clean-plugin": "^0.2.3",
@@ -13,6 +14,7 @@
     "build": "webpack"
   },
   "dependencies": {
+    "typescript": "4.1",
     "vue": "^3.0.0"
   }
 }

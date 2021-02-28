@@ -7,7 +7,7 @@ const { VueLoaderPlugin } = require("vue-loader")
 
 module.exports = {
     entry: {
-        main: "./src/index.js"
+        main: "./src/index.ts"
     },
     output: {
         filename: "[name].[contenthash].js",
@@ -17,6 +17,13 @@ module.exports = {
 
     module: {
         rules: [
+            {
+                test: /\.tsx?$/,
+                loader: "ts-loader",
+                options: {
+                    appendTsSuffixTo: [/\.vue$/],
+                },
+            },
             { 
                 test: /\.vue$/,
                 loader: "vue-loader",
