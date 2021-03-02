@@ -1,20 +1,25 @@
 {
-  "name": "threes",
-  "devDependencies": {
-    "@vue/compiler-sfc": "^3.0.0",
-    "ts-loader": "^8.0.17",
-    "vue-loader": "next",
-    "webpack": "^5.23.0",
-    "webpack-clean-plugin": "^0.2.3",
-    "webpack-cli": "^4.5.0",
-    "webpack-manifest-plugin": "^3.0.0",
-    "webpack-nano": "^1.1.1"
-  },
+  "name": "threes-frontend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/main.ts",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack"
   },
+  "author": "Radek Stibora",
+  "license": "ISC",
   "dependencies": {
-    "typescript": "4.1",
-    "vue": "^3.0.0"
+    "typescript": "^4.2.2",
+    "vue": "^3.0.7"
+  },
+  "devDependencies": {
+    "@vue/compiler-sfc": "^3.0.7",
+    "ts-loader": "^8.0.17",
+    "vue-loader": "^16.1.2",
+    "webpack": "^5.24.2",
+    "webpack-clean-plugin": "^0.2.3",
+    "webpack-cli": "^4.5.0",
+    "webpack-manifest-plugin": "^3.0.0"
   }
 }

@@ -16,5 +16,5 @@
         "frontend/dist": true,
         "yarn.lock": true
     },
-    "npm.packageManager": "yarn"
+    "npm.packageManager": "npm"
 }
