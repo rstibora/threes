@@ -16,5 +16,6 @@
         "frontend/dist": true,
         "yarn.lock": true
     },
-    "npm.packageManager": "npm"
+    "npm.packageManager": "npm",
+    "emmet.includeLanguages": {"django-html": "html"},
 }
