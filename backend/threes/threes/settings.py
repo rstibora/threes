@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'manifest_loader',
 
+    'apps.core',
     'apps.tasks',
     'apps.timeline',
 ]
