@@ -17,5 +17,11 @@
         "yarn.lock": true
     },
     "npm.packageManager": "npm",
-    "emmet.includeLanguages": {"django-html": "html"},
+    "emmet.includeLanguages": {
+        "django-html": "html"
+    },
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/backend/threes/"
+    ],
 }

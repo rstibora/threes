@@ -21,4 +21,3 @@ def signup(request):
 
 class SignInView(LoginView):
     template_name = "core/signin.html"
-    
