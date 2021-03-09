@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import LoginView
 
 from infra.http_method import HttpMethod
 
@@ -16,3 +17,8 @@ def signup(request):
         form = UserCreationForm()
 
     return render(request, "core/signup.html", {"form": form})
+
+
+class SignInView(LoginView):
+    template_name = "core/signin.html"
+    
