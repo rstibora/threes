@@ -42,7 +42,6 @@ INSTALLED_APPS = [
 
     'apps.core',
     'apps.tasks',
-    'apps.timeline',
 ]
 
 MIDDLEWARE = [
@@ -110,6 +109,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LOGIN_REDIRECT_URL = "/index.html"
+
+AUTH_USER_MODEL = "core.EmailUser"
 
 
 # Internationalization
