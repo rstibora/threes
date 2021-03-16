@@ -5,13 +5,12 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Sign Up</h1>
-
+    <h1>Sign In</h1>
     <form method="POST" action=".">
         {% csrf_token %}
-
-        {{ form.as_p }}
-
-        <button type="submit">Sign Up</button>
+        {% include "core/form.html" with form=form %}
+        <div class="control">
+            <button class="button is-link" type="submit">Sign Up</button>
+        </div>
     </form>
 {% endblock %}

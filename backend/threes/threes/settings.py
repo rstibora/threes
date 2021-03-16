@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'manifest_loader',
+    'widget_tweaks',
 
     'apps.core',
     'apps.tasks',
