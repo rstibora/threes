@@ -20,3 +20,5 @@ class EmailUserAdmin(UserAdmin):
     list_filter = ("email", "is_staff", "is_active")
     search_fields = ("email",)
     ordering = ("email",)
+
+admin.site.register(EmailUser, EmailUserAdmin)
