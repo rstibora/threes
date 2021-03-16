@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Sign In</h1>
+    <h1 class="title">Sign In</h1>
     <form method="POST" action=".">
         {% csrf_token %}
         {% include "core/form.html" with form=form %}
