@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'manifest_loader',
     'widget_tweaks',
 
+    'apps.app',
     'apps.core',
     'apps.tasks',
 ]
@@ -109,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_REDIRECT_URL = "/index.html"
+LOGIN_REDIRECT_URL = "/app"
 
 AUTH_USER_MODEL = "core.EmailUser"
 
