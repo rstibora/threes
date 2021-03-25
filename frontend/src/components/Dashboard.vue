@@ -1,7 +1,9 @@
 <template>
 <div class="vertical-split-container">
     <div class="left-split">
-        <task v-for="item in items" :key="item"/>
+        <task v-for="task in tasks" :key="task" :task="task"/>
+        <task v-for="task in tasks" :key="task" :task="task"/>
+        <task v-for="task in tasks" :key="task" :task="task"/>
     </div>
     <div class="right-split">
     </div>
@@ -17,7 +19,10 @@ import Task from "./tasks/Task.vue"
 export default defineComponent({
     data: function() {
         return {
-            items: [1, 2, 3]
+            tasks: [{
+                title: "Task XYZ",
+                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            }]
         }
     },
     components: {
