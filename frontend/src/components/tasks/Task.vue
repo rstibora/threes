@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card m-2">
         <div class="card-header">
             <div class="card-header-title">{{ task.title }}</div>
         </div>

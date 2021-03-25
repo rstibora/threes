@@ -1,8 +1,6 @@
 <template>
 <div class="app-inner">
     <aside class="navbar">
-        <a class="button" @click="setCurrentComponent('Dashboard')">D</a>
-        <a class="button" @click="setCurrentComponent('')">Y</a>
     </aside>
     <div class="content">
         <keep-alive>
@@ -56,12 +54,8 @@ html, body {
 .navbar {
     width: 80px;
     height: 100%;
-
-    background-color: red;
 }
 .content {
     flex-grow: 1;
-
-    background-color: blue;
 }
 </style>
