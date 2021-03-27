@@ -1,8 +1,8 @@
 <template>
 <div class="app-inner">
     <aside class="navbar">
-        <a class="button m-2"><i data-feather="home"/></a>
-        <a class="button m-2"><i data-feather="file-text"/></a>
+        <a @click="setCurrentComponent('Dashboard')" class="button m-2"><i data-feather="home"/></a>
+        <a @click="setCurrentComponent('Tasks')" class="button m-2"><i data-feather="file-text"/></a>
         <a class="button m-2"><i data-feather="award"/></a>
     </aside>
     <div class="content">
@@ -16,12 +16,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import Dashboard from './Dashboard.vue'
+import Dashboard from "./Dashboard.vue"
+import Tasks from "./Tasks.vue"
 
 export default defineComponent({
     data: function() {
         return {
-            currentComponent: "Dashboard"
+            currentComponent: "Tasks"
         }
     },
     methods: {
@@ -31,6 +32,7 @@ export default defineComponent({
     },
     components: {
         Dashboard,
+        Tasks,
     }
 })
 </script>
