@@ -1,6 +1,9 @@
 <template>
 <div class="app-inner">
     <aside class="navbar">
+        <a class="button m-2"><i data-feather="home"/></a>
+        <a class="button m-2"><i data-feather="file-text"/></a>
+        <a class="button m-2"><i data-feather="award"/></a>
     </aside>
     <div class="content">
         <keep-alive>
@@ -52,6 +55,8 @@ html, body {
     width: 100%;
 }
 .navbar {
+    display: flex;
+    flex-direction: column;
     width: 80px;
     height: 100%;
 }

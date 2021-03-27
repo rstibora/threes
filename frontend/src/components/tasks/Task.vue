@@ -19,7 +19,7 @@ export default defineComponent({
 
 <style scoped>
 .card {
-    height: 200px;
+    min-height: 200px;
     width: 500px
 }
 </style>
