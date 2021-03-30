@@ -1,6 +1,9 @@
 from django.views import generic
 
+from rest_framework import permissions, viewsets
+
 from .models import Task
+from .serializers import TaskSerializer
 
 
 class IndexView(generic.ListView):
@@ -9,3 +12,10 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         return Task.objects.all()
+
+
+class TaskViewSet(viewsets.ModelViewSet):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    # TODO: change to authenticated only.
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
