@@ -1,5 +1,3 @@
-from django.views import generic
-
 from rest_framework import permissions, viewsets
 
 from .models import Task
