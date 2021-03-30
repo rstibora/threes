@@ -9,15 +9,40 @@
         </div>
         <button class="button is-success my-2 mr-2">New</button>
     </div>
+    <section class="section">
+        <div class="card" v-for="task in tasks" :key="task">
+            <div class="card-header">{{ task.name }}</div>
+            <div class="card-content">{{ task.description }}</div>
+        </div>
+    </section>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    setup() {
-        
+    data: function() {
+        return {
+            tasks: [] as Array<Object>
+        }
     },
+    methods: {
+        fetchTasks() {
+            fetch("http://127.0.0.1:8000/api/tasks")
+                .then(response => response.json())
+                .then(json => {
+                    for (let task of json) {
+                        this.tasks.push({
+                            "name": task["name"],
+                            "description": task["description"],
+                        })
+                    }
+                })
+        }
+    },
+    created: function() {
+        this.fetchTasks()
+    }
 })
 </script>
 
