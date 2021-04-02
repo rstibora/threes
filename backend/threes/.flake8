@@ -5,4 +5,3 @@ exclude =
     **/migrations
 
 max-line-length = 100
-

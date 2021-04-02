@@ -25,5 +25,6 @@
         "${workspaceFolder}/backend/threes/"
     ],
     "python.linting.flake8Enabled": true,
-    "python.linting.flake8Path": "flake8"
+    "python.linting.flake8Path": "flake8",
+    "python.linting.flake8Args": ["--config=${workspaceFolder}/backend/threes/.flake8"]
 }
