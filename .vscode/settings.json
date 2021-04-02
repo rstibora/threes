@@ -24,4 +24,6 @@
     "python.analysis.extraPaths": [
         "${workspaceFolder}/backend/threes/"
     ],
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Path": "flake8"
 }
