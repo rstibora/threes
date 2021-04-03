@@ -1,6 +1,8 @@
 from django.db import models
+from django.db.models.base import ModelState
 
 from apps.core.models import EmailUser
+from apps.tasks.models import Task
 
 
 class ReviewPeriodDuration(models.Model):
@@ -19,7 +21,6 @@ class ReviewPeriodDuration(models.Model):
 
     # Predefined durations should have no owner.
     owner = models.ForeignKey(EmailUser, on_delete=models.CASCADE, null=True)
-    name = models.CharField(max_length=64)
 
 
 class ReviewPeriodConfiguration(models.Model):
@@ -34,6 +35,8 @@ class ReviewPeriodConfiguration(models.Model):
 class ReviewPeriod(models.Model):
     owner = models.ForeignKey(EmailUser, on_delete=models.CASCADE, related_name="review_periods")
     configuration = models.ForeignKey(ReviewPeriodConfiguration, on_delete=models.PROTECT)
+
+    planned_tasks = models.ManyToManyField(Task, related_name="review_periods")
 
     starts = models.DateTimeField()
     ends = models.DateTimeField()
