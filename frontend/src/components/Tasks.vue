@@ -7,7 +7,35 @@
                 <option>Backlog</option>
             </select>
         </div>
-        <button class="button is-success my-2 mr-2">New</button>
+
+        <button @click="newTaskModalOpen = true" class="button is-success my-2 mr-2">New</button>
+
+        <teleport to="body">
+            <div v-if="newTaskModalOpen" class="modal is-active">
+                <div @click="newTaskModalOpen = false" class="modal-background"></div>
+                <div class="modal-content">
+                    <div class="box">
+                        <div class="field">
+                            <label class="label">Task Name</label>
+                            <div class="control">
+                                <input v-model="newTaskName" class="input" type="text">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Task Description</label>
+                            <div class="control">
+                                <textarea v-model="newTaskDescription" class="textarea"></textarea>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <button @click="createNewTask(newTaskName, newTaskDescription)" class="button">Create Task</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </teleport>
     </div>
     <section class="section">
         <div class="card" v-for="task in tasks" :key="task">
@@ -23,7 +51,10 @@ import { defineComponent } from 'vue'
 export default defineComponent({
     data: function() {
         return {
-            tasks: [] as Array<Object>
+            tasks: [] as Array<Object>,
+            newTaskModalOpen: false,
+            newTaskName: "",
+            newTaskDescription: "",
         }
     },
     methods: {
@@ -38,6 +69,16 @@ export default defineComponent({
                         })
                     }
                 })
+        },
+        createNewTask(name: string, description: string) {
+            fetch("http://127.0.0.1:800/api/tasks", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({name: this.newTaskName,
+                                      description: this.newTaskDescription})
+            })
         }
     },
     created: function() {
