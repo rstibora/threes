@@ -11,6 +11,5 @@ class Effort(models.Model):
     started = models.DateTimeField()
     ended = models.DateTimeField()
 
-
     class Meta:
         indexes = [models.Index(fields=["-ended"])]
