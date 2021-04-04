@@ -44,6 +44,8 @@ INSTALLED_APPS = [
 
     'apps.app',
     'apps.core',
+    'apps.effort',
+    'apps.reviews',
     'apps.tasks',
 ]
 
