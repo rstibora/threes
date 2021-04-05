@@ -8,4 +8,4 @@ class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     # TODO: change to authenticated only.
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = []
