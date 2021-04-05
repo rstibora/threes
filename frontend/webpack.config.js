@@ -1,5 +1,6 @@
 const path = require("path")
 
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin")
 const WebpackCleanPlugin = require("webpack-clean-plugin")
 const { WebpackManifestPlugin } = require("webpack-manifest-plugin")
 
@@ -20,16 +21,20 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 loader: "ts-loader",
+                exclude: /node_modules/,
                 options: {
                     appendTsSuffixTo: [/\.vue$/],
+                    transpileOnly: true,
                 },
             },
             { 
                 test: /\.vue$/,
+                exclude: /node_modules/,
                 loader: "vue-loader",
             },
             {
                 test: /\.css$/,
+                exclude: /node_modules/,
                 use: [
                     "vue-style-loader",
                     "css-loader",
@@ -39,6 +44,7 @@ module.exports = {
     },
 
     plugins: [
+        new ForkTsCheckerWebpackPlugin(),
         new VueLoaderPlugin(),
         new WebpackManifestPlugin(),
         new WebpackCleanPlugin({ root: path.join(__dirname, 'dist') }),
