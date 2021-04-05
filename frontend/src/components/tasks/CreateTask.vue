@@ -17,7 +17,8 @@
                     </div>
                     <div class="field">
                         <div class="control">
-                            <button @click="createNewTask(name, description)" class="button">Create Task</button>
+                            <button @click="postNewTask(name, description)" class="button">Create Task</button>
+                            <span v-if="failed" class="has-text-danger">Something went wrong.</span>
                         </div>
                     </div>
                 </div>
@@ -33,20 +34,32 @@ export default defineComponent({
         return {
             name: "",
             description: "",
+            failed: false,
         }
     },
-    postNewTask(name: string, description: string) {
-        fetch("http://127.0.0.1:800/api/tasks", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ name, description })
-        })
-        .finally(() => {
-            this.name = ""
-            this.description = ""
-        })
+    methods: {
+        postNewTask(name: string, description: string) {
+            fetch("http://127.0.0.1:800/api/tasks", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name, description })
+            })
+            .then(response => {
+                if (response.ok) {
+                    this.name = ""
+                    this.description = ""
+                    this.failed = false
+                    this.$emit("closed")
+                } else {
+                    this.failed = true
+                }
+            })
+            .catch(_ => {
+                this.failed = true
+            })
+        }
     }
 })
 </script>
