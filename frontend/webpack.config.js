@@ -44,12 +44,15 @@ module.exports = {
     },
 
     plugins: [
-        new ForkTsCheckerWebpackPlugin({typescript: {extensions: { vue: true }}}),
         new VueLoaderPlugin(),
         new WebpackManifestPlugin(),
         new WebpackCleanPlugin({ root: path.join(__dirname, 'dist') }),
+        new ForkTsCheckerWebpackPlugin({ typescript: { extensions: { vue: {
+            enabled: true,
+            compiler: "@vue/compiler-sfc",}
+        }}}),
     ],
 
     mode: "development",
-    watch: true,
+    // watch: true,
 };
