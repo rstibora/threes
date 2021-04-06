@@ -9,6 +9,7 @@ psycopg2 = "*"
 django-manifest-loader = "*"
 django-widget-tweaks = "*"
 djangorestframework = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 flake8 = "*"

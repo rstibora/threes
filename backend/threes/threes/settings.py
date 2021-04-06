@@ -145,3 +145,9 @@ STATIC_ROOT = BASE_DIR / "static_root"
 STATICFILES_DIRS = [
     BASE_DIR / "../../frontend/dist",
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
