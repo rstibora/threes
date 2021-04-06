@@ -6,4 +6,4 @@ from .models import EmailUser
 class EmailUserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = EmailUser
-        fields = ["email"]
+        fields = ["id", "email"]
