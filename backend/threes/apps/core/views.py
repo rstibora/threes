@@ -1,6 +1,5 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate
-from django.contrib.auth.views import LoginView
 
 from rest_framework import permissions, viewsets
 from rest_framework_simplejwt.tokens import RefreshToken
