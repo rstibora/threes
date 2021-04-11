@@ -23,7 +23,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent } from "vue"
+import { mapState } from "vuex"
+
 import CreateTask from "./tasks/CreateTask.vue"
 
 export default defineComponent({
@@ -32,26 +34,16 @@ export default defineComponent({
     },
     data: function() {
         return {
-            tasks: [] as Array<Object>,
             newTaskModalOpen: false,
         }
     },
-    methods: {
-        fetchTasks() {
-            fetch("http://127.0.0.1:8000/api/tasks")
-                .then(response => response.json())
-                .then(json => {
-                    for (let task of json) {
-                        this.tasks.push({
-                            "name": task["name"],
-                            "description": task["description"],
-                        })
-                    }
-                })
-        },
+    computed: {
+        ...mapState([
+            "tasks"
+        ])
     },
     created: function() {
-        this.fetchTasks()
+        this.$store.commit("fetchTasks")
     }
 })
 </script>
