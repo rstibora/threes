@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import { mapState } from "vuex"
+import { mapMutations, mapState } from "vuex"
 
 import CreateTask from "./tasks/CreateTask.vue"
 
@@ -37,13 +37,18 @@ export default defineComponent({
             newTaskModalOpen: false,
         }
     },
+    methods: {
+        ...mapMutations([
+            "fetchTasks"
+        ])
+    },
     computed: {
         ...mapState([
             "tasks"
         ])
     },
     created: function() {
-        this.$store.commit("fetchTasks")
+        this.fetchTasks()
     }
 })
 </script>
