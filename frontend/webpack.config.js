@@ -57,5 +57,8 @@ module.exports = {
     ],
 
     mode: "development",
+
+    // Likely has an impact on the build time.
+    devtool: "eval-source-map",
     // watch: true,
 };

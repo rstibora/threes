@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import { mapMutations, mapState } from "vuex"
+import { mapActions, mapState } from "vuex"
 
 import CreateTask from "./tasks/CreateTask.vue"
 
@@ -38,7 +38,7 @@ export default defineComponent({
         }
     },
     methods: {
-        ...mapMutations([
+        ...mapActions([
             "fetchTasks"
         ])
     },
