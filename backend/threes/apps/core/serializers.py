@@ -12,6 +12,7 @@ class EmailUserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["id", "email"]
 
 
+# Copied from https://github.com/jazzband/django-rest-framework-simplejwt/issues/71.
 class CookieTokenRefreshSerializer(TokenRefreshSerializer):
     refresh = None
 

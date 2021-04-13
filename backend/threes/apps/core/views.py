@@ -52,6 +52,7 @@ class EmailUserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
+# Copied from https://github.com/jazzband/django-rest-framework-simplejwt/issues/71.
 class CookieTokenObtainPairView(TokenObtainPairView):
     def finalize_response(self, request, response, *args, **kwargs):
         if response.data.get('refresh'):
@@ -62,6 +63,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         return super().finalize_response(request, response, *args, **kwargs)
 
 
+# Copied from https://github.com/jazzband/django-rest-framework-simplejwt/issues/71.
 class CookieTokenRefreshView(TokenRefreshView):
     def finalize_response(self, request, response, *args, **kwargs):
         if response.data.get('refresh'):
