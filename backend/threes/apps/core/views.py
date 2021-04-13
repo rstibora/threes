@@ -2,13 +2,15 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate
 
 from rest_framework import permissions, viewsets
+
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 
 from infra.http_method import HttpMethod
 
 from .forms import EmailUserCreationForm, EmailUserLoginForm
 from .models import EmailUser
-from .serializers import EmailUserSerializer
+from .serializers import EmailUserSerializer, CookieTokenRefreshSerializer
 
 
 def signup(request):
@@ -48,3 +50,25 @@ class EmailUserViewSet(viewsets.ModelViewSet):
     serializer_class = EmailUserSerializer
     # TODO: change to authenticated only.
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class CookieTokenObtainPairView(TokenObtainPairView):
+    def finalize_response(self, request, response, *args, **kwargs):
+        if response.data.get('refresh'):
+            cookie_max_age = 3600 * 24 * 14  # 14 days
+            response.set_cookie('refresh_token', response.data['refresh'], max_age=cookie_max_age,
+                                httponly=True)
+            del response.data['refresh']
+        return super().finalize_response(request, response, *args, **kwargs)
+
+
+class CookieTokenRefreshView(TokenRefreshView):
+    def finalize_response(self, request, response, *args, **kwargs):
+        if response.data.get('refresh'):
+            cookie_max_age = 3600 * 24 * 14  # 14 days
+            response.set_cookie('refresh_token', response.data['refresh'], max_age=cookie_max_age,
+                                httponly=True)
+            del response.data['refresh']
+        return super().finalize_response(request, response, *args, **kwargs)
+
+    serializer_class = CookieTokenRefreshSerializer
