@@ -16,6 +16,9 @@ module.exports = {
         publicPath: "",
     },
     resolve: {
+        alias: {
+            src: path.resolve(__dirname, "src")
+        },
         extensions: [".ts", ".js"]
     },
 
