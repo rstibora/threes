@@ -8,7 +8,7 @@ declare module '@vue/runtime-core' {
   // declare your own store states
   interface State {
     tasks: Array<Object>
-    session: Session
+    session?: Session
   }
 
   // provide typings for `this.$store`

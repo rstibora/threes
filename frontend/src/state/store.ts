@@ -8,30 +8,34 @@ export default createStore({
   state() {
       return {
           tasks: [] as Array<Object>,
-          session: new Session(),
+          session: undefined,
       }
   },
   mutations: {
     updateTasks(state: State, payload) {
         state.tasks = payload.tasks
     },
-    updateAccessToken(state: State, payload) {
-      state.session.access_jwt = payload.access
+    updateSession(state: State, payload) {
+      state.session = payload.session
     }
   },
   actions: {
       async fetchTasks(context) {
-        let response = await fetch_resource("GET", "/api/tasks/", context.state.session.access_jwt)
-        if (response.status == 401) {
-          const refresh_response = await fetch_resource("POST", "/api/token/refresh/")
-          const refresh_response_json = await refresh_response.json()
-          context.commit("updateAccessToken", {"access": refresh_response_json["access"]})
-          response = await fetch_resource("GET", "/api/tasks/", context.state.session.access_jwt)
+        if (context.state.session == null) {
+          const refreshResponse = await fetch_resource("POST", "/api/token/refresh/")
+          const refreshResponseJson = await refreshResponse.json()
+          context.commit("updateSession", {"session": new Session(refreshResponseJson["access"])})
         }
-        const json = await response.json()
+
+        if (context.state.session == null) {
+          return
+        }
+
+        let response = await fetch_resource("GET", "/api/tasks/", context.state.session.accessJwt)
+        const responseJson = await response.json()
 
         let tasks = []
-        for (let task of json) {
+        for (let task of responseJson) {
             tasks.push({
                 "name": task["name"],
                 "description": task["description"],

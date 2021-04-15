@@ -10,7 +10,8 @@ from infra.http_method import HttpMethod
 
 from .forms import EmailUserCreationForm, EmailUserLoginForm
 from .models import EmailUser
-from .serializers import EmailUserSerializer, CookieTokenRefreshSerializer
+from .serializers import (
+    CookieTokenRefreshSerializer, EmailUserSerializer, EmailUserTokenObtainPairSerializer)
 
 
 def signup(request):
@@ -19,6 +20,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             refresh_token = RefreshToken.for_user(user)
+            refresh_token["email"] = user.email
             response = redirect("app")
             response.set_cookie("refresh_token", str(refresh_token))
             return response
@@ -36,6 +38,7 @@ def signin(request):
                                 password=request.POST["password"])
             if user is not None:
                 refresh_token = RefreshToken.for_user(user)
+                refresh_token["email"] = user.email
                 response = redirect("app")
                 response.set_cookie("refresh_token", str(refresh_token))
                 return response
@@ -61,6 +64,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                                 httponly=True)
             del response.data['refresh']
         return super().finalize_response(request, response, *args, **kwargs)
+
+    serializer_class = EmailUserTokenObtainPairSerializer
 
 
 # Copied from https://github.com/jazzband/django-rest-framework-simplejwt/issues/71.

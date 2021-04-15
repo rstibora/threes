@@ -4,6 +4,7 @@
         <a @click="setCurrentComponent('Dashboard')" class="button m-2"><i data-feather="home"/></a>
         <a @click="setCurrentComponent('Tasks')" class="button m-2"><i data-feather="file-text"/></a>
         <a class="button m-2"><i data-feather="award"/></a>
+        <a class="button m-2">{{ session != null ? session.userEmail : "X" }}</a>
     </aside>
     <div class="content">
         <keep-alive>
@@ -15,6 +16,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { mapState } from "vuex"
 
 import Dashboard from "./Dashboard.vue"
 import Tasks from "./Tasks.vue"
@@ -24,6 +26,9 @@ export default defineComponent({
         return {
             currentComponent: "Tasks"
         }
+    },
+    computed: {
+        ...mapState(["session"])
     },
     methods: {
         setCurrentComponent(componentName: string) {

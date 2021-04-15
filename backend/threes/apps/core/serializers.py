@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from rest_framework_simplejwt.exceptions import InvalidToken
-from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 
 from .models import EmailUser
 
@@ -10,6 +10,14 @@ class EmailUserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = EmailUser
         fields = ["id", "email"]
+
+
+class EmailUserTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user: EmailUser):
+        token = super().get_token(user)
+        token["email"] = user.email
+        return token
 
 
 # Copied from https://github.com/jazzband/django-rest-framework-simplejwt/issues/71.
