@@ -4,7 +4,7 @@
         <a @click="setCurrentComponent('Dashboard')" class="button m-2"><i data-feather="home"/></a>
         <a @click="setCurrentComponent('Tasks')" class="button m-2"><i data-feather="file-text"/></a>
         <a class="button m-2"><i data-feather="award"/></a>
-        <a class="button m-2">{{ session != null ? session.userEmail : "X" }}</a>
+        <a class="button m-2">{{ session != null ? session.userEmail.substr(0, 1) : "X" }}</a>
     </aside>
     <div class="content">
         <keep-alive>
