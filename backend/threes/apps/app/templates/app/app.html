@@ -12,6 +12,7 @@
   </head>
 
   <body>
+    {% csrf_token %}
     <div id="app"></div>
 
     <script src="{% manifest 'main.js' %}"></script>

@@ -1,3 +1,4 @@
+from django.http.response import HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate
 
@@ -46,6 +47,14 @@ def signin(request):
         form = EmailUserLoginForm()
 
     return render(request, "core/signin.html", {"form": form})
+
+
+def logout(request):
+    if request.method == HttpMethod.POST.value:
+        response = redirect("signin")
+        response.delete_cookie("refresh_token")
+        return response
+    return HttpResponseBadRequest()
 
 
 class EmailUserViewSet(viewsets.ModelViewSet):
