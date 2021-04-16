@@ -1,5 +1,5 @@
 <template>
-<div class="app-inner">
+<div v-if="session != null" class="app-inner">
     <aside class="navbar">
         <a @click="setCurrentComponent('Dashboard')" class="button m-2"><i data-feather="home"/></a>
         <a @click="setCurrentComponent('Tasks')" class="button m-2"><i data-feather="file-text"/></a>
@@ -19,6 +19,7 @@ import { defineComponent } from 'vue'
 import { mapState } from "vuex"
 
 import { fetch_resource } from "src/network/fetch_resource"
+import { Session } from "src/state/session"
 
 import Dashboard from "./Dashboard.vue"
 import Tasks from "./Tasks.vue"
@@ -26,7 +27,7 @@ import Tasks from "./Tasks.vue"
 export default defineComponent({
     data: function() {
         return {
-            currentComponent: "Tasks"
+            currentComponent: "Tasks",
         }
     },
     computed: {
@@ -46,6 +47,15 @@ export default defineComponent({
                 this.$store.commit("updateSession", {"session": undefined})
                 window.location.replace("/signin/")
             }
+        }
+    },
+    async created() {
+        const response = await fetch_resource("POST", "/api/token/refresh/")
+        if (response.ok) {
+            const responseJson = await response.json()
+            this.$store.commit("updateSession", {"session": new Session(responseJson["access"])})
+        } else {
+            window.location.replace("/signin/")
         }
     },
     components: {

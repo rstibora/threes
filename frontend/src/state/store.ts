@@ -15,7 +15,7 @@ export default createStore({
     updateTasks(state: State, payload) {
         state.tasks = payload.tasks
     },
-    updateSession(state: State, payload) {
+    updateSession(state: State, payload: {session?: Session}) {
       state.session = payload.session
     }
   },
