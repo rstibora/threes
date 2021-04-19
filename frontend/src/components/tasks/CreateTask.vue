@@ -42,11 +42,14 @@ export default defineComponent({
     },
     methods: {
         async postNewTask(name: string, description: string) {
-            if (this.$store.state.session == null) {
+            const session = this.$store.state.session
+            if (session == null) {
                 throw Error("Can't create a new task without active session.")
             }
+            const response = await fetch_resource(
+                "POST", "/api/tasks/", { name, description, owner: session.userId },
+                session.accessJwt)
 
-            const response = await fetch_resource("POST", "/api/tasks/", { name, description, owner: 1 }, this.$store.state.session.accessJwt)
             if (response.ok) {
                 this.name = ""
                 this.description = ""
