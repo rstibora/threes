@@ -46,14 +46,17 @@ export default defineComponent({
             if (session == null) {
                 throw Error("Can't create a new task without active session.")
             }
+
             const response = await fetchResource(
                 "POST", "/api/tasks/", { name, description, owner: session.userId },
                 session.accessJwt)
 
             if (response.ok) {
+                const responseJson = await response.json()
                 this.name = ""
                 this.description = ""
                 this.failed = false
+                this.$store.commit("addTask", { task: responseJson })
                 this.$emit("closed")
             } else {
                 this.failed = true
