@@ -31,7 +31,7 @@ export default createStore({
         return
       }
 
-      let response = await fetch_resource("GET", "/api/tasks/", context.state.session.accessJwt)
+      let response = await fetch_resource("GET", "/api/tasks/", undefined, context.state.session.accessJwt)
       const responseJson = await response.json()
 
       let tasks = []

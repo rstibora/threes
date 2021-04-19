@@ -5,17 +5,18 @@ from django.urls import path
 from rest_framework import routers
 
 from apps.core.views import EmailUserViewSet, CookieTokenObtainPairView, CookieTokenRefreshView
-from apps.tasks.views import TaskViewSet
+from apps.tasks.views import TaskList
 
 
-router = routers.DefaultRouter()
-router.register(r"tasks", TaskViewSet)
-router.register(r"users", EmailUserViewSet)
+# router = routers.DefaultRouter()
+# router.register(r"tasks", task_list)
+# router.register(r"users", EmailUserViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path("api/", include(router.urls)),
+    # path("api/", include(router.urls)),
+    path("api/tasks/", TaskList.as_view()),
 
     path("api/token/", CookieTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", CookieTokenRefreshView.as_view(), name="token_refresh"),

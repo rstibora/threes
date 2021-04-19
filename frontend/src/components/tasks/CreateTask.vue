@@ -28,6 +28,9 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
+
+import { fetch_resource } from "src/network/fetch_resource"
+
 export default defineComponent({
     emits: ["closed"],
     data: function() {
@@ -38,27 +41,19 @@ export default defineComponent({
         }
     },
     methods: {
-        postNewTask(name: string, description: string) {
-            fetch("http://127.0.0.1:800/api/tasks", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ name, description })
-            })
-            .then(response => {
-                if (response.ok) {
-                    this.name = ""
-                    this.description = ""
-                    this.failed = false
-                    this.$emit("closed")
-                } else {
-                    this.failed = true
-                }
-            })
-            .catch(_ => {
+        async postNewTask(name: string, description: string) {
+            if (this.$store.state.session == null) {
+                throw Error("Can't create a new task without active session.")
+            }
+
+            const response = await fetch_resource("POST", "/api/tasks/", { name, description, owner: 1 }, this.$store.state.session.accessJwt)
+            if (response.ok) {
+                this.name = ""
+                this.description = ""
+                this.failed = false
+            } else {
                 this.failed = true
-            })
+            }
         }
     }
 })

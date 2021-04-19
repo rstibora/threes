@@ -42,7 +42,7 @@ export default defineComponent({
                 return
             }
 
-            const response = await fetch_resource("POST", "/logout/", this.$store.state.session?.accessJwt)
+            const response = await fetch_resource("POST", "/logout/", undefined, this.$store.state.session?.accessJwt)
             if (response.ok) {
                 this.$store.commit("updateSession", {"session": undefined})
                 window.location.replace("/signin/")
