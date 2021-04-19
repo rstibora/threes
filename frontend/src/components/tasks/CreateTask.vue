@@ -29,7 +29,7 @@
 <script lang="ts">
 import { defineComponent } from "vue"
 
-import { fetch_resource } from "src/network/fetch_resource"
+import { fetchResource } from "src/network/fetchResource"
 
 export default defineComponent({
     emits: ["closed"],
@@ -46,7 +46,7 @@ export default defineComponent({
             if (session == null) {
                 throw Error("Can't create a new task without active session.")
             }
-            const response = await fetch_resource(
+            const response = await fetchResource(
                 "POST", "/api/tasks/", { name, description, owner: session.userId },
                 session.accessJwt)
 

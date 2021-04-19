@@ -18,7 +18,7 @@
 import { defineComponent } from 'vue'
 import { mapState } from "vuex"
 
-import { fetch_resource } from "src/network/fetch_resource"
+import { fetchResource } from "src/network/fetchResource"
 import { Session } from "src/state/session"
 
 import Dashboard from "./Dashboard.vue"
@@ -42,7 +42,7 @@ export default defineComponent({
                 return
             }
 
-            const response = await fetch_resource("POST", "/logout/", undefined, this.$store.state.session?.accessJwt)
+            const response = await fetchResource("POST", "/logout/", undefined, this.$store.state.session?.accessJwt)
             if (response.ok) {
                 this.$store.commit("updateSession", {"session": undefined})
                 window.location.replace("/signin/")
@@ -50,7 +50,7 @@ export default defineComponent({
         }
     },
     async created() {
-        const response = await fetch_resource("POST", "/api/token/refresh/")
+        const response = await fetchResource("POST", "/api/token/refresh/")
         if (response.ok) {
             const responseJson = await response.json()
             this.$store.commit("updateSession", {"session": new Session(responseJson["access"])})

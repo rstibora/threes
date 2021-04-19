@@ -2,7 +2,7 @@ import { State } from "@vue/runtime-core"
 import { createStore } from "vuex"
 
 import { Session } from "src/state/session"
-import { fetch_resource } from "src/network/fetch_resource"
+import { fetchResource } from "src/network/fetchResource"
 
 export default createStore({
   state() {
@@ -22,7 +22,7 @@ export default createStore({
   actions: {
     async fetchTasks(context) {
       if (context.state.session == null) {
-        const refreshResponse = await fetch_resource("POST", "/api/token/refresh/")
+        const refreshResponse = await fetchResource("POST", "/api/token/refresh/")
         const refreshResponseJson = await refreshResponse.json()
         context.commit("updateSession", {"session": new Session(refreshResponseJson["access"])})
       }
@@ -31,7 +31,7 @@ export default createStore({
         return
       }
 
-      let response = await fetch_resource("GET", "/api/tasks/", undefined, context.state.session.accessJwt)
+      let response = await fetchResource("GET", "/api/tasks/", undefined, context.state.session.accessJwt)
       const responseJson = await response.json()
 
       let tasks = []
