@@ -51,6 +51,7 @@ export default defineComponent({
                 this.name = ""
                 this.description = ""
                 this.failed = false
+                this.$emit("closed")
             } else {
                 this.failed = true
             }
