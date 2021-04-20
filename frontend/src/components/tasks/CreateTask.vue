@@ -48,7 +48,7 @@ export default defineComponent({
             }
 
             const response = await fetchResource(
-                "POST", "/api/tasks/", { name, description, owner: session.userId },
+                "POST", "/api/tasks/", { name, description },
                 session.accessJwt)
 
             if (response.ok) {

@@ -16,6 +16,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # path("api/", include(router.urls)),
+    # path("api-auth/", include("rest_framework.urls")),
+
     path("api/tasks/", TaskList.as_view()),
     path("api/tasks/<int:pk>", TaskDetail.as_view()),
 
