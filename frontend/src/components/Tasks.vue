@@ -59,7 +59,7 @@ export default defineComponent({
     flex-direction: row;
 }
 .input {
-    width: 400px;
+    max-width: 400px;
 }
 .button:last-of-type {
     margin-left: auto;

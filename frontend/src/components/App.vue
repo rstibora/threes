@@ -1,5 +1,5 @@
 <template>
-<aside class="navbar">
+<aside class="side-navbar">
     <a @click="setCurrentComponent('Dashboard')" class="button m-2"><i data-feather="home"/></a>
     <a @click="setCurrentComponent('Tasks')" class="button m-2"><i data-feather="file-text"/></a>
     <a class="button m-2"><i data-feather="award"/></a>
@@ -9,6 +9,11 @@
     <keep-alive>
         <component :is="currentComponent"></component>
     </keep-alive>
+    <nav class="bottom-navbar">
+        <a @click="setCurrentComponent('Dashboard')" class="button m-2"><i data-feather="home"/></a>
+        <a @click="setCurrentComponent('Tasks')" class="button m-2"><i data-feather="file-text"/></a>
+        <a class="button m-2"><i data-feather="award"/></a>
+    </nav>
 </div>
 </template>
 
@@ -78,11 +83,24 @@ html, body {
     max-height: 100%;
     width: 100%;
 }
-.navbar {
-    display: flex;
+.side-navbar {
     flex-direction: column;
     width: 80px;
     height: 100%;
+}
+.bottom-navbar {
+    display: none;
+    justify-content: space-between;
+    flex-direction: row;
+    height: 56px;
+}
+@media (max-width: 400px) {
+    .side-navbar {
+        display: none;
+    }
+    .bottom-navbar {
+        display: flex;
+    }
 }
 .content {
     flex-grow: 1;
