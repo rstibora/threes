@@ -9,7 +9,7 @@
     <keep-alive>
         <component :is="currentComponent"></component>
     </keep-alive>
-    <nav class="bottom-navbar">
+    <nav class="bottom-navbar box">
         <a @click="setCurrentComponent('Dashboard')" class="button m-2"><i data-feather="home"/></a>
         <a @click="setCurrentComponent('Tasks')" class="button m-2"><i data-feather="file-text"/></a>
         <a class="button m-2"><i data-feather="award"/></a>
@@ -92,7 +92,9 @@ html, body {
     display: none;
     justify-content: space-between;
     flex-direction: row;
-    height: 56px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
 }
 @media (max-width: 400px) {
     .side-navbar {
