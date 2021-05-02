@@ -4,8 +4,12 @@
         <task v-for="task in tasks" :key="task" :task="task"/>
         <task v-for="task in tasks" :key="task" :task="task"/>
         <task v-for="task in tasks" :key="task" :task="task"/>
+        <task v-for="task in tasks" :key="task" :task="task"/>
+        <task v-for="task in tasks" :key="task" :task="task"/>
     </div>
     <div class="right-split">
+        <review/>
+        <review/>
     </div>
 
 </div>
@@ -14,7 +18,8 @@
 <script lang="ts">
 import { defineComponent } from "vue"
 
-import Task from "./tasks/Task.vue"
+import Review from "src/components/reviews/Review.vue"
+import Task from "src/components/tasks/Task.vue"
 
 export default defineComponent({
     data: function() {
@@ -26,6 +31,7 @@ export default defineComponent({
         }
     },
     components: {
+        Review,
         Task,
     }
 })
@@ -39,8 +45,9 @@ export default defineComponent({
     min-height: 100%;
 }
 .left-split, .right-split {
+    flex-basis: 50%;
+    flex-shrink: 1;
     display: flex;
     flex-direction: column;
-    flex: 0 0 auto;
 }
 </style>

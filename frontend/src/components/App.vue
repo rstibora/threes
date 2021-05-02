@@ -31,7 +31,7 @@ import Tasks from "./Tasks.vue"
 export default defineComponent({
     data: function() {
         return {
-            currentComponent: "Tasks",
+            currentComponent: "Dashboard",
         }
     },
     computed: {
@@ -96,7 +96,7 @@ html, body {
     position: fixed;
     bottom: 0;
 }
-@media (max-width: 400px) {
+@media (max-width: 480px) {
     .side-navbar {
         display: none;
     }
