@@ -141,7 +141,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "static_root"
 
 STATICFILES_DIRS = [
-    BASE_DIR / "../../frontend/dist",
+    BASE_DIR / "/media/ramdisk/dist",
 ]
 
 SESSION_COOKIE_HTTPONLY = True
