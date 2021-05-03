@@ -66,7 +66,7 @@ export default defineComponent({
 
 <style>
 html, body {
-    height: 100%;
+    height: fit-content;
     min-height: 100%;
 }
 #app {
@@ -87,6 +87,8 @@ html, body {
     flex-direction: column;
     width: 80px;
     height: 100%;
+    position: sticky;
+    top: 0;
 }
 .bottom-navbar {
     display: none;
@@ -106,5 +108,6 @@ html, body {
 }
 .content {
     flex-grow: 1;
+    height: fit-content;
 }
 </style>
