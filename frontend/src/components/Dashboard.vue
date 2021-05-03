@@ -14,7 +14,6 @@
             <review class="review"/>
             <review class="review"/>
             <review class="review"/>
-            <review class="review"/>
         </div>
     </div>
 </div>

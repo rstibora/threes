@@ -5,12 +5,15 @@ from django.urls import path
 from rest_framework import routers
 
 from apps.core.views import CookieTokenObtainPairView, CookieTokenRefreshView, EmailUserViewSet
+from apps.reviews.views import ReviewPeriodConfigurationViewSet
 from apps.tasks.views import TaskViewSet
 
 
 router = routers.DefaultRouter()
 router.register(r"tasks", TaskViewSet, basename="task")
 router.register(r"users", EmailUserViewSet, basename="user")
+router.register(r"review_period_configurations", ReviewPeriodConfigurationViewSet,
+                basename="review_period_configuration")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
