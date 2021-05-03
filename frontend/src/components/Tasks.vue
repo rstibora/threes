@@ -28,6 +28,9 @@ import { mapActions, mapState } from "vuex"
 
 import CreateTask from "./tasks/CreateTask.vue"
 
+import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
+import { Task } from "src/network/models/task"
+
 export default defineComponent({
     components: {
         CreateTask
@@ -39,7 +42,7 @@ export default defineComponent({
     },
     methods: {
         ...mapActions([
-            "fetchTasks"
+            "fetchAll"
         ])
     },
     computed: {
@@ -48,7 +51,9 @@ export default defineComponent({
         ])
     },
     created: function() {
-        this.fetchTasks()
+        this.fetchAll({ apiPath: "/api/tasks", model: Task, mutation: "updateTasks"})
+        this.fetchAll({ apiPath: "/api/review_period_configurations", model: ReviewPeriodConfiguration,
+                        mutation: "updateReviewPeriodConfigurations" })
     }
 })
 </script>

@@ -5,19 +5,23 @@ import { Session } from "src/state/session"
 import { fetchResource } from "src/network/fetchResource"
 
 import { Task } from "src/network/models/task"
+import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
 
 export default createStore({
   state() {
       return {
           tasks: [] as Array<Task>,
-          reviewConfigurations: [] as Array<Object>,
+          reviewPeriodConfigurations: [] as Array<ReviewPeriodConfiguration>,
           reviews: [] as Array<Object>,
           session: undefined,
       }
   },
   mutations: {
     updateTasks(state: State, payload) {
-        state.tasks = payload.tasks
+        state.tasks = payload
+    },
+    updateReviewPeriodConfigurations(state: State, payload) {
+      state.reviewPeriodConfigurations = payload
     },
     addTask(state: State, payload) {
       state.tasks.push(payload.task)
@@ -27,7 +31,7 @@ export default createStore({
     }
   },
   actions: {
-    async fetchTasks(context) {
+    async fetchAll(context, payload) {
       if (context.state.session == null) {
         const refreshResponse = await fetchResource("POST", "/api/token/refresh/")
         const refreshResponseJson = await refreshResponse.json()
@@ -38,14 +42,14 @@ export default createStore({
         return
       }
 
-      let response = await fetchResource("GET", "/api/tasks/", undefined, context.state.session.accessJwt)
+      let response = await fetchResource("GET", payload.apiPath, undefined, context.state.session.accessJwt)
       const responseJson = await response.json()
 
-      let tasks = []
-      for (let task of responseJson) {
-          tasks.push(new Task(task["name"], task["description"], task["created"]))
+      let items = []
+      for (let item of responseJson) {
+          items.push(new payload.model(item))
       }
-      context.commit("updateTasks", {"tasks": tasks})
-    }
+      context.commit(payload.mutation, items)
+    },
   }
 })

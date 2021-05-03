@@ -5,9 +5,7 @@
     </div>
     <div class="sticky-wrapper">
         <div class="right-split">
-            <review class="review"/>
-            <review class="review"/>
-            <review class="review"/>
+            <review class="review" v-for="reviewPeriodConfiguration in reviewPeriodConfigurations" :key="reviewPeriodConfiguration" :name="reviewPeriodConfiguration.name"/>
         </div>
     </div>
 </div>
@@ -23,7 +21,7 @@ import Task from "src/components/tasks/Task.vue"
 export default defineComponent({
     computed: {
         ...mapState([
-            "tasks"
+            "tasks", "reviewPeriodConfigurations"
         ])
     },
     components: {

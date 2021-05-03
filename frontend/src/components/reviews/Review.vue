@@ -2,7 +2,7 @@
     <div class="box">
         <nav class="navbar">
             <button>Previous</button>
-            <p><strong>Week 35</strong></p>
+            <p><strong>{{ name }} 35</strong></p>
             <button>Next</button>
         </nav>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,</p>
@@ -14,7 +14,9 @@
 import { defineComponent } from "vue"
 
 export default defineComponent({
-
+    props: {
+        name: String,
+    }
 })
 </script>
 

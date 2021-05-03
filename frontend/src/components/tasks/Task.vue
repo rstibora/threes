@@ -3,7 +3,7 @@
         <div class="card-header">
             <div class="card-header-title">{{ task.name }}</div>
         </div>
-        <div class="card-content">{{ task.description }} | {{ task.created }}</div>
+        <div class="card-content">{{ task.description }} | {{ task.created.toLocaleString("cs-CZ") }}</div>
     </div>
 </template>
 
