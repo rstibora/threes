@@ -149,6 +149,7 @@ SESSION_COOKIE_HTTPONLY = True
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",  # Present due to API web view.
     ),
     "DEFAULT_PAGINATION_CLASS": None,
 }
