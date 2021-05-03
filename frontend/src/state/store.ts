@@ -4,10 +4,14 @@ import { createStore } from "vuex"
 import { Session } from "src/state/session"
 import { fetchResource } from "src/network/fetchResource"
 
+import { Task } from "src/network/models/task"
+
 export default createStore({
   state() {
       return {
-          tasks: [] as Array<Object>,
+          tasks: [] as Array<Task>,
+          reviewConfigurations: [] as Array<Object>,
+          reviews: [] as Array<Object>,
           session: undefined,
       }
   },
@@ -39,10 +43,7 @@ export default createStore({
 
       let tasks = []
       for (let task of responseJson) {
-          tasks.push({
-              "name": task["name"],
-              "description": task["description"],
-          })
+          tasks.push(new Task(task["name"], task["description"], task["created"]))
       }
       context.commit("updateTasks", {"tasks": tasks})
     }

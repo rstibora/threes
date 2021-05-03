@@ -2,12 +2,6 @@
 <div class="vertical-split-container">
     <div class="left-split">
         <task v-for="task in tasks" :key="task" :task="task"/>
-        <task v-for="task in tasks" :key="task" :task="task"/>
-        <task v-for="task in tasks" :key="task" :task="task"/>
-        <task v-for="task in tasks" :key="task" :task="task"/>
-        <task v-for="task in tasks" :key="task" :task="task"/>
-        <task v-for="task in tasks" :key="task" :task="task"/>
-        <task v-for="task in tasks" :key="task" :task="task"/>
     </div>
     <div class="sticky-wrapper">
         <div class="right-split">
@@ -21,23 +15,22 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
+import { mapState } from "vuex"
 
 import Review from "src/components/reviews/Review.vue"
 import Task from "src/components/tasks/Task.vue"
 
 export default defineComponent({
-    data: function() {
-        return {
-            tasks: [{
-                title: "Task XYZ",
-                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            }]
-        }
+    computed: {
+        ...mapState([
+            "tasks"
+        ])
     },
     components: {
         Review,
         Task,
-    }
+    },
+
 })
 </script>
 
