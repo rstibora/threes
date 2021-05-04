@@ -18,6 +18,7 @@ import { mapActions, mapState } from "vuex"
 import Review from "src/components/reviews/Review.vue"
 import TaskCard from "src/components/tasks/TaskCard.vue"
 
+import { ReviewPeriod } from "src/network/models/reviewPeriod"
 import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
 import { Task } from "src/network/models/task"
 
@@ -34,10 +35,15 @@ export default defineComponent({
         Review,
         TaskCard,
     },
-    created: function() {
+    created: async function() {
         this.fetchAll({ apiPath: "/api/tasks", model: Task, mutation: "updateTasks"})
-        this.fetchAll({ apiPath: "/api/review_period_configurations", model: ReviewPeriodConfiguration,
-                        mutation: "updateReviewPeriodConfigurations" })
+        await this.fetchAll({ apiPath: "/api/review_period_configurations", model: ReviewPeriodConfiguration,
+                              mutation: "updateReviewPeriodConfigurations" })
+        for (let configuration of this.$store.state.reviewPeriodConfigurations) {
+            this.fetchAll({ apiPath: `/api/review_periods?configuration_id=${configuration.id}`,
+                            model: ReviewPeriod,
+                            mutation: "updateReviewPeriods" })
+        }
     }
 })
 </script>

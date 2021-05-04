@@ -4,24 +4,28 @@ import { createStore } from "vuex"
 import { Session } from "src/state/session"
 import { fetchResource } from "src/network/fetchResource"
 
-import { Task } from "src/network/models/task"
+import { ReviewPeriod } from "src/network/models/reviewPeriod"
 import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
+import { Task } from "src/network/models/task"
 
 export default createStore({
   state() {
       return {
           tasks: [] as Array<Task>,
           reviewPeriodConfigurations: [] as Array<ReviewPeriodConfiguration>,
-          reviews: [] as Array<Object>,
+          reviewPeriods: [] as Array<ReviewPeriod>,
           session: undefined,
       }
   },
   mutations: {
-    updateTasks(state: State, payload) {
-        state.tasks = payload
+    updateReviewPeriods(state: State, payload) {
+      state.reviewPeriods = payload
     },
     updateReviewPeriodConfigurations(state: State, payload) {
       state.reviewPeriodConfigurations = payload
+    },
+    updateTasks(state: State, payload) {
+      state.tasks = payload
     },
     addTask(state: State, payload) {
       state.tasks.push(payload.task)
