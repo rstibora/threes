@@ -10,14 +10,23 @@ export interface ReviewPeriodConfigurationSerialized {
 
 export class ReviewPeriodConfiguration {
     id: number
-    name: string
+    starts: Date
+    indexType: string
 
     constructor(serialized: ReviewPeriodConfigurationSerialized) {
         this.id = serialized.id
-        this.name = serialized.name
+        this.starts = new Date(serialized.starts)
+        this.indexType = serialized.index_type
     }
 
     constructName(index: number, review_period_index: number): string {
-        return `Karel ${index} Varel ${review_period_index}`
+        let baseName = "Week"
+        if (this.indexType == "FN") {
+            baseName = "Fornight"
+        } else if (baseName == "MN") {
+            baseName = ""
+        }
+        const year = this.starts.getFullYear() + review_period_index
+        return `${baseName} ${index} ${year}`
     }
 }
