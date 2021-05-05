@@ -16,4 +16,8 @@ export class ReviewPeriodConfiguration {
         this.id = serialized.id
         this.name = serialized.name
     }
+
+    constructName(index: number, review_period_index: number): string {
+        return `Karel ${index} Varel ${review_period_index}`
+    }
 }

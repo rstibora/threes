@@ -4,7 +4,7 @@
             <button :disabled="previousButtonDisabled"  @click="changeSelectedReviewIndexBy(-1)">
                 Previous
             </button>
-            <p><strong>{{ configuration.name }} 35</strong></p>
+            <p><strong>{{ reviewPeriods[selectedReviewIndex].name() }}</strong></p>
             <button :disabled="nextButtonDisabled" @click="changeSelectedReviewIndexBy(1)">
                 Next
             </button>
