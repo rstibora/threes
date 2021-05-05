@@ -13,18 +13,14 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import { mapActions, mapState } from "vuex"
+import { mapActions, mapGetters } from "vuex"
 
 import ReviewWidgetWrapper from "src/components/reviews/ReviewWidgetWrapper.vue"
 import TaskCard from "src/components/tasks/TaskCard.vue"
 
-import { ReviewPeriod } from "src/network/models/reviewPeriod"
-import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
-import { Task } from "src/network/models/task"
-
 export default defineComponent({
     computed: {
-        ...mapState([
+        ...mapGetters([
             "tasks", "reviewPeriodConfigurations"
         ])
     },
@@ -36,12 +32,11 @@ export default defineComponent({
         TaskCard,
     },
     created: async function() {
-        this.fetchAll({ apiPath: "/api/tasks", model: Task, mutation: "updateTasks"})
-        await this.fetchAll({ apiPath: "/api/review_period_configurations", model: ReviewPeriodConfiguration,
+        this.fetchAll({ apiPath: "/api/tasks", mutation: "updateTasks"})
+        await this.fetchAll({ apiPath: "/api/review_period_configurations",
                               mutation: "updateReviewPeriodConfigurations" })
-        for (let configuration of this.$store.state.reviewPeriodConfigurations) {
+        for (let configuration of this.$store.state.reviewPeriodConfigurationsSerialized) {
             this.fetchAll({ apiPath: `/api/review_periods?configuration_id=${configuration.id}`,
-                            model: ReviewPeriod,
                             mutation: "updateReviewPeriods" })
         }
     }

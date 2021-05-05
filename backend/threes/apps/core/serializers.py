@@ -6,7 +6,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, Toke
 from .models import EmailUser
 
 
-class EmailUserSerializer(serializers.HyperlinkedModelSerializer):
+class EmailUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmailUser
         fields = ["id", "email"]

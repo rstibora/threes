@@ -1,4 +1,4 @@
-interface ReviewPeriodConfigurationSerialized {
+export interface ReviewPeriodConfigurationSerialized {
     id: number
     name: string
     base_duration: string

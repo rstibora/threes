@@ -1,4 +1,4 @@
-interface TaskSerialized {
+export interface TaskSerialized {
     name: string
     description: string
     created: string

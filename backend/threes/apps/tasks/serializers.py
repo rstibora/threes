@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Task
 
 
-class TaskSerializer(serializers.HyperlinkedModelSerializer):
+class TaskSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source="owner.id")
 
     class Meta:

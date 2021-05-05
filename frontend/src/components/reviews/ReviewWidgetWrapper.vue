@@ -9,14 +9,12 @@
                 Next
             </button>
         </nav>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,</p>
-        <p>sed do eiusmod tempor incididunt ut labore et dolore magna aliqua,</p>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import { mapState } from "vuex"
+import { mapGetters } from "vuex"
 
 import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
 
@@ -30,7 +28,7 @@ export default defineComponent({
         }
     },
     computed: {
-        ...mapState(["reviewPeriods"]),
+        ...mapGetters(["reviewPeriods"]),
         previousButtonDisabled(): boolean { 
             return this.selectedReviewIndex == 0 },
         nextButtonDisabled(): boolean { 

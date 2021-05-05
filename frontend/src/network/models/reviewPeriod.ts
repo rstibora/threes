@@ -1,4 +1,6 @@
-interface ReviewPeriodSerialized {
+import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
+
+export interface ReviewPeriodSerialized {
     id: number
     configuration: number
     planned_tasks: Array<number>
@@ -8,12 +10,12 @@ interface ReviewPeriodSerialized {
 
 export class ReviewPeriod {
     id: number
-    configuration_id: number
+    configuration: ReviewPeriodConfiguration
     planned_tasks_ids: Array<number>
 
-    constructor(serialized: ReviewPeriodSerialized) {
+    constructor(serialized: ReviewPeriodSerialized, configuration: ReviewPeriodConfiguration) {
         this.id = serialized.id
-        this.configuration_id = serialized.configuration
+        this.configuration = configuration
         this.planned_tasks_ids = serialized.planned_tasks
     }
 }
