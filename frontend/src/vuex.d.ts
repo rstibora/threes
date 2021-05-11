@@ -4,16 +4,16 @@ import { Store } from 'vuex'
 
 import type { Session } from "src/state/session"
 
-import { ReviewPeriodSerialized } from './network/models/reviewPeriod'
-import { ReviewPeriodConfigurationSerialized } from "src/network/models/reviewPeriodConfiguration"
-import { TaskSerialized } from "src/network/models/task"
+import { ReviewPeriod } from './network/models/reviewPeriod'
+import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
+import { Task } from "src/network/models/task"
 
 declare module '@vue/runtime-core' {
   // declare your own store states
   interface State {
-    reviewPeriodsSerialized: Array<ReviewPeriodSerialized>
-    reviewPeriodConfigurationsSerialized: Array<ReviewPeriodConfigurationSerialized>
-    tasksSerialized: Array<TaskSerialized>
+    reviewPeriods: Map<number, ReviewPeriod>
+    reviewPeriodConfigurations: Map<number, ReviewPeriodConfiguration>
+    tasks: Map<number, Task>
 
     session?: Session
   }

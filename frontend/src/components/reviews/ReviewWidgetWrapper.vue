@@ -4,7 +4,7 @@
             <button :disabled="previousButtonDisabled"  @click="changeSelectedReviewIndexBy(-1)">
                 Previous
             </button>
-            <p><strong>{{ reviewPeriods[selectedReviewIndex].name() }}</strong></p>
+            <p><strong>{{ selectedReviewPeriod != null ? selectedReviewPeriod.name() : "Create your first Review Period" }}</strong></p>
             <button :disabled="nextButtonDisabled" @click="changeSelectedReviewIndexBy(1)">
                 Next
             </button>
@@ -13,14 +13,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
-import { mapGetters } from "vuex"
+import { defineComponent, PropType } from "vue"
+import { mapState } from "vuex"
 
+import { ReviewPeriod } from "src/network/models/reviewPeriod"
 import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
 
 export default defineComponent({
     props: {
-        configuration: ReviewPeriodConfiguration,
+        configuration: {
+            type: Object as PropType<ReviewPeriodConfiguration>,
+            required: true,
+        }
     },
     data: function() {
         return {
@@ -28,16 +32,26 @@ export default defineComponent({
         }
     },
     computed: {
-        ...mapGetters(["reviewPeriods"]),
+        ...mapState(["reviewPeriods"]),
+        reviewPeriodsForConfiguration(): Array<ReviewPeriod> {
+            return [...this.reviewPeriods.values()].filter(
+                (reviewPeriod: ReviewPeriod) => reviewPeriod.configuration.id == this.configuration.id)
+        },
         previousButtonDisabled(): boolean { 
             return this.selectedReviewIndex == 0 },
         nextButtonDisabled(): boolean { 
-            return this.selectedReviewIndex == this.reviewPeriods.length - 1},
+            return this.selectedReviewIndex == Math.max(0, this.reviewPeriodsForConfiguration.length - 1)},
+        selectedReviewPeriod(): ReviewPeriod | null {
+            if (this.reviewPeriodsForConfiguration.length > 0) {
+                return this.reviewPeriodsForConfiguration[this.selectedReviewIndex]
+            }
+            return null
+        }
     },
     methods: {
         changeSelectedReviewIndexBy(step: number) {
             this.selectedReviewIndex = Math.max(Math.min(this.selectedReviewIndex + step,
-                                                         this.reviewPeriods.length - 1), 0)
+                                                         this.reviewPeriodsForConfiguration.length - 1), 0)
         }
     }
 })

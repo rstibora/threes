@@ -15,7 +15,7 @@
 
     </div>
     <section class="section">
-        <div class="card" v-for="task in tasks" :key="task">
+        <div class="card" v-for="[id, task] in tasks" :key="id">
             <div class="card-header">{{ task.name }}</div>
             <div class="card-content">{{ task.description }}</div>
         </div>
@@ -24,11 +24,9 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import { mapActions, mapGetters } from "vuex"
+import { mapActions, mapState } from "vuex"
 
 import CreateTask from "./tasks/CreateTask.vue"
-
-import { Task } from "src/network/models/task"
 
 export default defineComponent({
     components: {
@@ -41,16 +39,16 @@ export default defineComponent({
     },
     methods: {
         ...mapActions([
-            "fetchAll"
+            "fetchTasks"
         ])
     },
     computed: {
-        ...mapGetters([
+        ...mapState([
             "tasks"
         ])
     },
     created: function() {
-        this.fetchAll({ apiPath: "/api/tasks", model: Task, mutation: "updateTasks"})
+        this.fetchTasks()
     }
 })
 </script>

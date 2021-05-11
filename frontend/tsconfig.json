@@ -13,6 +13,8 @@
       "allowSyntheticDefaultImports": true,
       "sourceMap": true,
       "importsNotUsedAsValues": "preserve",
+      "downlevelIteration": true,
+      "importHelpers": true,
     },
     "include": ["src/**/*.ts",
                 "src/**/*.vue"],

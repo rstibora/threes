@@ -1,11 +1,11 @@
 <template>
 <div class="vertical-split-container">
     <div class="left-split">
-        <task-card v-for="task in tasks" :key="task" :task="task"/>
+        <task-card v-for="[id, task] in tasks" :key="id" :task="task"/>
     </div>
     <div class="sticky-wrapper">
         <div class="right-split">
-            <review-widget-wrapper class="review" v-for="configuration in reviewPeriodConfigurations" :key="configuration" :configuration="configuration"/>
+            <review-widget-wrapper class="review" v-for="[id, configuration] in reviewPeriodConfigurations" :key="id" :configuration="configuration"/>
         </div>
     </div>
 </div>
@@ -13,32 +13,27 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import { mapActions, mapGetters } from "vuex"
+import { mapActions, mapState } from "vuex"
 
 import ReviewWidgetWrapper from "src/components/reviews/ReviewWidgetWrapper.vue"
 import TaskCard from "src/components/tasks/TaskCard.vue"
 
 export default defineComponent({
     computed: {
-        ...mapGetters([
+        ...mapState([
             "tasks", "reviewPeriodConfigurations"
         ])
     },
     methods: {
-        ...mapActions(["fetchAll"])
+        ...mapActions(["fetchTasks", "fetchReviewPeriods"])
     },
     components: {
         ReviewWidgetWrapper,
         TaskCard,
     },
     created: async function() {
-        this.fetchAll({ apiPath: "/api/tasks", mutation: "updateTasks"})
-        await this.fetchAll({ apiPath: "/api/review_period_configurations",
-                              mutation: "updateReviewPeriodConfigurations" })
-        for (let configuration of this.$store.state.reviewPeriodConfigurationsSerialized) {
-            this.fetchAll({ apiPath: `/api/review_periods?configuration_id=${configuration.id}`,
-                            mutation: "updateReviewPeriods" })
-        }
+        this.fetchTasks()
+        this.fetchReviewPeriods()
     }
 })
 </script>
