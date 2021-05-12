@@ -1,3 +1,5 @@
+import { DateTime, Duration } from "luxon"
+
 import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
 
 export interface ReviewPeriodSerialized {
@@ -26,5 +28,13 @@ export class ReviewPeriod {
 
     name(): string {
         return this.configuration.constructName(this.index, this.reviewPeriodIndex)
+    }
+    starts(): DateTime {
+        return this.configuration.getDatesForIndices(this.index, this.reviewPeriodIndex)[0]
+    }
+    ends(): DateTime {
+        const endDateTime = this.configuration.getDatesForIndices(this.index, this.reviewPeriodIndex)[1]
+        // Hackity hack.
+        return endDateTime.minus(Duration.fromObject({ hours: 12 }))
     }
 }
