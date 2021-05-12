@@ -19,12 +19,14 @@ class ReviewPeriodConfiguration(models.Model):
     FORTNIGHT_NUM = "FN"
     MONTH_NAME = "MN"
     QUARTER_NUM = "QN"
+    YEAR_NUM = "YN"
     INT = "IN"
     INDEX_CHOICES = [
         (WEEK_NUM, "Week Number"),
         (FORTNIGHT_NUM, "Fortnight Number"),
         (MONTH_NAME, "Month Name"),
         (QUARTER_NUM, "Quarter Number"),
+        (YEAR_NUM, "Year Number"),
         (INT, "Integer Index")]
 
     END_OF_YEAR = "Y"

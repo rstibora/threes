@@ -19,7 +19,14 @@ enum IndexType {
     FORTNIGHT_NUMBER = "FN",
     MONTH_NAME = "MN",
     QUARTER_NUMBER = "QN",
+    YEAR_NUMBER = "YN",
     INTEGER = "IN"
+}
+
+
+enum IndexReset {
+    END_OF_YEAR = "Y",
+    NEVER = "N"
 }
 
 
@@ -28,11 +35,13 @@ export class ReviewPeriodConfiguration {
     starts: DateTime
     indexType: IndexType
     duration: Duration
+    indexReset: IndexReset
 
     constructor(serialized: ReviewPeriodConfigurationSerialized) {
         this.id = serialized.id
         this.starts = DateTime.fromISO(serialized.starts)
         this.indexType = IndexType[getStringEnumKeyByValue(IndexType, serialized.index_type)]
+        this.indexReset = IndexReset[getStringEnumKeyByValue(IndexReset, serialized.index_reset_duration)]
 
         let durationObject: any = {}
         if (serialized.base_duration == "D") {
@@ -50,23 +59,28 @@ export class ReviewPeriodConfiguration {
     }
 
     constructName(index: number, review_period_index: number): string {
-        let baseName = "Week"
-        if (this.indexType == IndexType.FORTNIGHT_NUMBER) {
-            baseName = "Fornight"
-        } else if (this.indexType == IndexType.MONTH_NAME) {
-            baseName = ""
-        } else if (this.indexType == IndexType.QUARTER_NUMBER) {
-            baseName = ""
+        let prefix = ""
+        switch (this.indexType) {
+            case IndexType.WEEK_NUMBER: { prefix = "Week"; break }
+            case IndexType.FORTNIGHT_NUMBER: { prefix = "Fortnight"; break }
+            case IndexType.YEAR_NUMBER: { prefix = "Year"; break }
+            case IndexType.INTEGER : 
+            case IndexType.MONTH_NAME:
+            case IndexType.QUARTER_NUMBER: { break }
+            default: { throw Error(`Unknown index type ${this.indexType}`)}
         }
+
         let stringIndex = index.toString()
         if (this.indexType == IndexType.MONTH_NAME) {
             stringIndex = new Date(1991, index).toLocaleString("default", { month: "long"})
         } else if (this.indexType == IndexType.QUARTER_NUMBER) {
-            return ["Q1", "Q2", "Q3", "Q4"][index]
+            stringIndex = ["Q1", "Q2", "Q3", "Q4"][index]
+        } else if (this.indexType == IndexType.YEAR_NUMBER) {
+            stringIndex = (this.starts.year + index).toString()
         }
-        const year = this.starts.year + review_period_index
+        const suffix = this.indexReset == IndexReset.END_OF_YEAR ? this.starts.year + review_period_index : ""
 
-        return `${baseName}${baseName.length == 0 ? "" : " "}${stringIndex} ${year}`
+        return [prefix, stringIndex, suffix].join(" ")
     }
 
     getDatesForIndices(index: number, review_period_index: number): [DateTime, DateTime] {
