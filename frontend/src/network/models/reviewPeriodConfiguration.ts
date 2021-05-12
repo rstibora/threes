@@ -70,7 +70,9 @@ export class ReviewPeriodConfiguration {
             default: { throw Error(`Unknown index type ${this.indexType}`)}
         }
 
-        let stringIndex = index.toString()
+        // Humans are used to indexing starting from one.
+        let stringIndex = (index + 1).toString()
+
         if (this.indexType == IndexType.MONTH_NAME) {
             stringIndex = new Date(1991, index).toLocaleString("default", { month: "long"})
         } else if (this.indexType == IndexType.QUARTER_NUMBER) {

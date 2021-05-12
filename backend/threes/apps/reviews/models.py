@@ -47,6 +47,9 @@ class ReviewPeriodConfiguration(models.Model):
     index_type = models.CharField(max_length=2, choices=INDEX_CHOICES)
     index_reset_duration = models.CharField(max_length=1, choices=INDEX_RESET_CHOICES)
 
+    def __str__(self):
+        return f"{self.name} {self.id}"
+
 
 class ReviewPeriod(models.Model):
     owner = models.ForeignKey(EmailUser, on_delete=models.CASCADE, related_name="review_periods")
@@ -56,3 +59,6 @@ class ReviewPeriod(models.Model):
 
     index = models.IntegerField()
     review_period_index = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.id} of {self.configuration} ({self.index=}, {self.review_period_index=})"
