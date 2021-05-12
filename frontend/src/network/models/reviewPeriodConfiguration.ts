@@ -86,7 +86,7 @@ export class ReviewPeriodConfiguration {
     }
 
     getDatesForIndices(index: number, review_period_index: number): [DateTime, DateTime] {
-        let starts = this.starts
+        let starts = this.starts.plus(Duration.fromObject({ years: this.indexReset == IndexReset.END_OF_YEAR ? review_period_index : 0 }))
         for (let i = 0; i < index; i++) {
             starts = starts.plus(this.duration)
         }
