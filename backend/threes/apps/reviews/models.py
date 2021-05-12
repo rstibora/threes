@@ -27,6 +27,12 @@ class ReviewPeriodConfiguration(models.Model):
         (QUARTER_NUM, "Quarter Number"),
         (INT, "Integer Index")]
 
+    END_OF_YEAR = "Y"
+    NEVER = "N"
+    INDEX_RESET_CHOICES = [
+        (END_OF_YEAR, "End of Year"),
+        (NEVER, "Never")]
+
     owner = models.ForeignKey(EmailUser, on_delete=models.CASCADE,
                               related_name="review_period_configurations")
 
@@ -37,7 +43,7 @@ class ReviewPeriodConfiguration(models.Model):
 
     starts = models.DateTimeField()
     index_type = models.CharField(max_length=2, choices=INDEX_CHOICES)
-    index_reset_duration = models.CharField(max_length=1, choices=BASE_DURATION_CHOICES)
+    index_reset_duration = models.CharField(max_length=1, choices=INDEX_RESET_CHOICES)
 
 
 class ReviewPeriod(models.Model):
