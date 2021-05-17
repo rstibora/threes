@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from apps.core.models import EmailUser
@@ -59,6 +60,10 @@ class ReviewPeriod(models.Model):
 
     index = models.IntegerField()
     review_period_index = models.IntegerField()
+
+    def clean(self) -> None:
+        if len(self.planned_tasks.all().filter(owner=models.F("owner"))):
+            raise ValidationError("Planned task not owned by review period owner", code="invalid")
 
     def __str__(self):
         return f"{self.id} of {self.configuration} ({self.index=}, {self.review_period_index=})"
