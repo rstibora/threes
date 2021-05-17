@@ -15,7 +15,7 @@ export class ReviewPeriod {
     index: number
     reviewPeriodIndex: number
     configuration: ReviewPeriodConfiguration
-    planned_tasks_ids: Array<number>
+    plannedTasksIds: Array<number>
 
     constructor(serialized: ReviewPeriodSerialized, configuration: ReviewPeriodConfiguration) {
         this.id = serialized.id
@@ -23,7 +23,7 @@ export class ReviewPeriod {
         this.reviewPeriodIndex = serialized.review_period_index
         this.configuration = configuration
         // TODO: pass in them tasks?
-        this.planned_tasks_ids = serialized.planned_tasks
+        this.plannedTasksIds = serialized.planned_tasks
     }
 
     name(): string {
