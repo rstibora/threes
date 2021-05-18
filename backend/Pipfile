@@ -10,6 +10,7 @@ django-manifest-loader = "*"
 django-widget-tweaks = "*"
 djangorestframework = "*"
 djangorestframework-simplejwt = "*"
+python-dateutil = "*"
 
 [dev-packages]
 flake8 = "*"

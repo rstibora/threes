@@ -6,7 +6,7 @@
             </button>
             <div v-if="selectedReviewPeriod != null">
                 <strong>{{ selectedReviewPeriod != null ? selectedReviewPeriod.name() : "Create your first Review Period" }}</strong>
-                <br>{{ selectedReviewPeriod.starts().toLocaleString() }} - {{ selectedReviewPeriod.ends().toLocaleString() }}
+                <br>{{ selectedReviewPeriod.starts.toLocaleString() }} - {{ selectedReviewPeriod.ends.toLocaleString() }}
             </div>
             <p v-else>Create your first Review Period</p>
             <button :disabled="nextButtonDisabled" @click="changeSelectedReviewIndexBy(1)">

@@ -1,6 +1,9 @@
+from datetime import date, datetime
+from dateutil.relativedelta import relativedelta
+from typing import Tuple
+
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import constraints
 
 from apps.core.models import EmailUser
 from apps.tasks.models import Task
@@ -49,6 +52,30 @@ class ReviewPeriodConfiguration(models.Model):
     index_type = models.CharField(max_length=2, choices=INDEX_CHOICES)
     index_reset_duration = models.CharField(max_length=1, choices=INDEX_RESET_CHOICES)
 
+    def get_dates_for_indices(self, index: int,
+                              review_period_index: int) -> Tuple[datetime, datetime]:
+        index_delta = index * self.multiplier
+        index_delta_plus_one = (index + 1) * self.multiplier
+        if self.base_duration == self.DAY:
+            starts = self.starts + relativedelta(days=index_delta)
+            ends = self.starts + relativedelta(days=index_delta_plus_one)
+        elif self.base_duration == self.WEEK:
+            starts = self.starts + relativedelta(weeks=index_delta)
+            ends = self.starts + relativedelta(weeks=index_delta_plus_one)
+        elif self.base_duration == self.MONTH:
+            starts = self.starts + relativedelta(months=index_delta)
+            ends = self.starts + relativedelta(months=index_delta_plus_one)
+        elif self.base_duration == self.YEAR:
+            starts = self.starts + relativedelta(years=index_delta)
+            ends = self.starts + relativedelta(years=index_delta_plus_one)
+        else:
+            raise Exception(f"Invalid base duration '{self.base_duration}'")
+
+        if self.index_reset_duration == self.END_OF_YEAR:
+            starts = starts + relativedelta(years=review_period_index)
+            ends = ends + relativedelta(years=review_period_index)
+        return starts, ends
+
     def __str__(self):
         return f"{self.name} {self.id}"
 
@@ -61,6 +88,16 @@ class ReviewPeriod(models.Model):
 
     index = models.IntegerField()
     review_period_index = models.IntegerField()
+
+    @property
+    def starts(self) -> str:
+        return self.configuration.get_dates_for_indices(
+            self.index, self.review_period_index)[0].isoformat()
+
+    @property
+    def ends(self) -> str:
+        return self.configuration.get_dates_for_indices(
+            self.index, self.review_period_index)[1].isoformat()
 
     def clean(self) -> None:
         if self.planned_tasks.all().filter(owner=models.F("owner")).exists():

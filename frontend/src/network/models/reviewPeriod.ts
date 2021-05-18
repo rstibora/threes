@@ -8,6 +8,8 @@ export interface ReviewPeriodSerialized {
     planned_tasks: Array<number>
     index: number
     review_period_index: number
+    starts: string
+    ends: string
 }
 
 export class ReviewPeriod {
@@ -16,6 +18,8 @@ export class ReviewPeriod {
     reviewPeriodIndex: number
     configuration: ReviewPeriodConfiguration
     plannedTasksIds: Array<number>
+    starts: DateTime
+    ends: DateTime
 
     constructor(serialized: ReviewPeriodSerialized, configuration: ReviewPeriodConfiguration) {
         this.id = serialized.id
@@ -24,17 +28,11 @@ export class ReviewPeriod {
         this.configuration = configuration
         // TODO: pass in them tasks?
         this.plannedTasksIds = serialized.planned_tasks
+        this.starts = DateTime.fromISO(serialized.starts)
+        this.ends = DateTime.fromISO(serialized.ends)
     }
 
     name(): string {
         return this.configuration.constructName(this.index, this.reviewPeriodIndex)
-    }
-    starts(): DateTime {
-        return this.configuration.getDatesForIndices(this.index, this.reviewPeriodIndex)[0]
-    }
-    ends(): DateTime {
-        const endDateTime = this.configuration.getDatesForIndices(this.index, this.reviewPeriodIndex)[1]
-        // Hackity hack.
-        return endDateTime.minus(Duration.fromObject({ hours: 12 }))
     }
 }

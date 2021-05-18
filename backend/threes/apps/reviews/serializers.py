@@ -13,4 +13,5 @@ class ReviewPeriodConfigurationSerializer(serializers.ModelSerializer):
 class ReviewPeriodSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewPeriod
-        fields = ["id", "configuration", "planned_tasks", "index", "review_period_index"]
+        fields = ["id", "configuration", "planned_tasks", "index", "review_period_index",
+                  "starts", "ends"]
