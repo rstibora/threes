@@ -16,9 +16,7 @@
 
         <div class="box">
             {{ plannedTasks.length != 0 ? `${plannedTasks.length} Planned tasks:` : "No planned tasks" }}
-            <ul>
-                <li v-for="task in plannedTasks" :key="task.id">{{ task.name }}</li>
-            </ul>
+            <task-pill v-for="task in plannedTasks" :key="task.id" :task="task"/>
         </div>
     </div>
 </template>
@@ -26,6 +24,8 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue"
 import { mapState } from "vuex"
+
+import TaskPill from "src/components/tasks/TaskPill.vue"
 
 import { ReviewPeriod } from "src/network/models/reviewPeriod"
 import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
@@ -75,6 +75,8 @@ export default defineComponent({
             this.selectedReviewIndex = Math.max(Math.min(this.selectedReviewIndex + step,
                                                          this.reviewPeriodsForConfiguration.length - 1), 0)
         }
+    }, components: {
+        TaskPill,
     }
 })
 </script>
