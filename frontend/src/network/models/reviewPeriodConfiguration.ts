@@ -5,6 +5,7 @@ import { getStringEnumKeyByValue } from "src/utils/enum"
 
 export interface ReviewPeriodConfigurationSerialized {
     id: number
+    active: boolean
     name: string
     base_duration: string
     multiplier: number
@@ -32,6 +33,7 @@ enum IndexReset {
 
 export class ReviewPeriodConfiguration {
     id: number
+    active: boolean
     starts: DateTime
     indexType: IndexType
     duration: Duration
@@ -39,6 +41,7 @@ export class ReviewPeriodConfiguration {
 
     constructor(serialized: ReviewPeriodConfigurationSerialized) {
         this.id = serialized.id
+        this.active = serialized.active
         this.starts = DateTime.fromISO(serialized.starts)
         this.indexType = IndexType[getStringEnumKeyByValue(IndexType, serialized.index_type)]
         this.indexReset = IndexReset[getStringEnumKeyByValue(IndexReset, serialized.index_reset_duration)]

@@ -42,6 +42,7 @@ class ReviewPeriodConfiguration(models.Model):
 
     owner = models.ForeignKey(EmailUser, on_delete=models.CASCADE,
                               related_name="review_period_configurations")
+    active = models.BooleanField()
 
     name = models.CharField(max_length=64)
 

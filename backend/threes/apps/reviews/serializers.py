@@ -6,7 +6,7 @@ from .models import ReviewPeriod, ReviewPeriodConfiguration
 class ReviewPeriodConfigurationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewPeriodConfiguration
-        fields = ["id", "name", "base_duration", "multiplier", "starts", "index_type",
+        fields = ["id", "active", "name", "base_duration", "multiplier", "starts", "index_type",
                   "index_reset_duration"]
 
 

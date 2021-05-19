@@ -5,7 +5,7 @@
     </div>
     <div class="sticky-wrapper">
         <div class="right-split">
-            <review-widget-wrapper class="review" v-for="[id, configuration] in reviewPeriodConfigurations" :key="id" :configuration="configuration"/>
+            <review-widget-wrapper class="review" v-for="[id, configuration] in activeReviewPeriodConfigurations" :key="id" :configuration="configuration"/>
         </div>
     </div>
 </div>
@@ -18,11 +18,22 @@ import { mapActions, mapState } from "vuex"
 import ReviewWidgetWrapper from "src/components/reviews/ReviewWidgetWrapper.vue"
 import TaskCard from "src/components/tasks/TaskCard.vue"
 
+import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
+
 export default defineComponent({
     computed: {
         ...mapState([
             "tasks", "reviewPeriodConfigurations"
-        ])
+        ]),
+        activeReviewPeriodConfigurations() {
+            const filtered = new Map<number, ReviewPeriodConfiguration>()
+            for (const [id, configuration] of this.reviewPeriodConfigurations) {
+                if (configuration.active) {
+                    filtered.set(id, configuration)
+                }
+            }
+            return filtered
+        },
     },
     methods: {
         ...mapActions(["fetchTasks", "fetchReviewPeriods"])
