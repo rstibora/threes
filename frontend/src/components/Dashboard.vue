@@ -1,13 +1,6 @@
 <template>
-<div class="vertical-split-container">
-    <div class="left-split">
-        <task-card v-for="[id, task] in tasks" :key="id" :task="task"/>
-    </div>
-    <div class="sticky-wrapper">
-        <div class="right-split">
-            <review-widget-wrapper class="review" v-for="[id, configuration] in activeReviewPeriodConfigurations" :key="id" :configuration="configuration"/>
-        </div>
-    </div>
+<div class="review-widgets-container">
+    <review-widget-wrapper class="review" v-for="[id, configuration] in activeReviewPeriodConfigurations" :key="id" :configuration="configuration"/>
 </div>
 </template>
 
@@ -50,22 +43,15 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.vertical-split-container {
+.review-widgets-container {
     display: flex;
+    flex-direction: column;
+    align-items: center;
 
     height: 100%;
     min-height: 100%;
 }
-.left-split, .sticky-wrapper
-{
-    flex-basis: 50%;
-    flex-shrink: 1;
-    display: flex;
-    flex-direction: column;
-}
-.right-split {
-    position: sticky;
-    top: 0;
-    bottom: 0;
+.review {
+    width: 600px;
 }
 </style>
