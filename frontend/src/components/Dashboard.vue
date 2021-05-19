@@ -1,6 +1,6 @@
 <template>
 <div class="review-widgets-container">
-    <review-widget-wrapper class="review" v-for="[id, configuration] in activeReviewPeriodConfigurations" :key="id" :configuration="configuration"/>
+    <review-widget class="review" v-for="[id, configuration] in activeReviewPeriodConfigurations" :key="id" :configuration="configuration"/>
 </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { defineComponent } from "vue"
 import { mapActions, mapState } from "vuex"
 
-import ReviewWidgetWrapper from "src/components/reviews/ReviewWidgetWrapper.vue"
+import ReviewWidget from "src/components/reviews/ReviewWidget.vue"
 import TaskCard from "src/components/tasks/TaskCard.vue"
 
 import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
@@ -32,7 +32,7 @@ export default defineComponent({
         ...mapActions(["fetchTasks", "fetchReviewPeriods"])
     },
     components: {
-        ReviewWidgetWrapper,
+        ReviewWidget,
         TaskCard,
     },
     created: async function() {
