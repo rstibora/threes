@@ -1,4 +1,4 @@
-import { DateTime, Duration } from "luxon"
+import { DateTime } from "luxon"
 
 import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
 

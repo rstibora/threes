@@ -5,11 +5,13 @@ from django.urls import path
 from rest_framework import routers
 
 from apps.core.views import CookieTokenObtainPairView, CookieTokenRefreshView, EmailUserViewSet
+from apps.effort.views import EffortViewSet
 from apps.reviews.views import ReviewPeriodConfigurationViewSet, ReviewPeriodViewSet
 from apps.tasks.views import TaskViewSet
 
 
 router = routers.DefaultRouter()
+router.register(r"efforts", EffortViewSet, basename=r"effort")
 router.register(r"tasks", TaskViewSet, basename=r"task")
 router.register(r"users", EmailUserViewSet, basename=r"user")
 router.register(r"review_period_configurations", ReviewPeriodConfigurationViewSet,

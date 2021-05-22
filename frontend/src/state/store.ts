@@ -4,6 +4,7 @@ import { createStore } from "vuex"
 import { Session } from "src/state/session"
 import { fetchResource } from "src/network/fetchResource"
 
+import { Effort, EffortSerialized } from "src/network/models/effort"
 import { ReviewPeriod, ReviewPeriodSerialized } from "src/network/models/reviewPeriod"
 import { ReviewPeriodConfiguration, ReviewPeriodConfigurationSerialized } from "src/network/models/reviewPeriodConfiguration"
 import { Task, TaskSerialized } from "src/network/models/task"
@@ -12,13 +13,17 @@ import { Task, TaskSerialized } from "src/network/models/task"
 export default createStore({
   state() {
       return {
-          tasks: new Map() as Map<number, Task>,
-          reviewPeriodConfigurations: new Map() as Map<number, ReviewPeriodConfiguration>,
-          reviewPeriods: new Map() as Map<number, ReviewPeriod>,
-          session: undefined as Session | undefined,
+        efforts: new Map<number, Effort>(),
+        tasks: new Map<number, Task>(),
+        reviewPeriodConfigurations: new Map<number, ReviewPeriodConfiguration>(),
+        reviewPeriods: new Map<number, ReviewPeriod>(),
+        session: undefined as Session | undefined,
       }
   },
   mutations: {
+    updateEfforts(state: State, payload: Map<number, Effort>) {
+      state.efforts = payload
+    },
     updateReviewPeriods(state: State, payload: Map<number, ReviewPeriod>) {
       state.reviewPeriods = payload
     },
@@ -53,6 +58,20 @@ export default createStore({
         return await fetchResource(payload.method, payload.apiPath, payload.data, state.session?.accessJwt)
       }
       return Promise.reject("Could not refresh token")
+    },
+
+    // Model fetch actions.
+    async fetchEfforts({ dispatch, commit }) {
+      const response: Response = await dispatch("fetchResourceWithToken", { method: "GET", apiPath: "/api/efforts" })
+      if (!response.ok) {
+        return
+      }
+      const json: Array<EffortSerialized> = await response.json()
+      let effort = new Map<number, Effort>()
+      for (const effortSerialized of json) {
+        effort.set(effortSerialized.id, new Effort(effortSerialized))
+      }
+      commit("updateEfforts", effort)
     },
     async fetchTasks({ dispatch, commit }) {
       const response: Response = await dispatch("fetchResourceWithToken", { method: "GET", apiPath: "/api/tasks" })
