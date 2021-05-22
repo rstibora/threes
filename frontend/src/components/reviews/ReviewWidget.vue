@@ -48,6 +48,13 @@ export default defineComponent({
         ...mapState(["efforts", "reviewPeriods", "tasks"]),
         effortPerTaskForSelectedReview(): Map<number, Array<Effort>> {
             let effortPerTask = new Map<number, Array<Effort>>()
+            // Ensure there is at least an empty array for each task id.
+            for (const task of this.plannedTasks) {
+                if (!effortPerTask.has(task.id)) {
+                    effortPerTask.set(task.id, new Array<Effort>())
+                }
+            }
+
             for (const effort of this.efforts.values() as Array<Effort>) {
                 // TODO: dumb for now.
                 if (this.selectedReviewPeriod == null
@@ -61,11 +68,6 @@ export default defineComponent({
                 }
                 let efforts = effortPerTask.get(effort.taskId) as Array<Effort>
                 efforts.push(effort)
-            }
-            for (const task of this.plannedTasks) {
-                if (!effortPerTask.has(task.id)) {
-                    effortPerTask.set(task.id, new Array<Effort>())
-                }
             }
             return effortPerTask
         },

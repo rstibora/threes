@@ -101,7 +101,8 @@ class ReviewPeriod(models.Model):
             self.index, self.review_period_index)[1].isoformat()
 
     def clean(self) -> None:
-        if self.planned_tasks.all().filter(owner=models.F("owner")).exists():
+        # TODO: fix.
+        if self.planned_tasks.all().exclude(owner=models.F("owner")).exists():
             raise ValidationError("Planned task not owned by review period owner", code="invalid")
 
     def __str__(self):
