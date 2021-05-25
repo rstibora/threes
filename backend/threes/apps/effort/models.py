@@ -19,3 +19,7 @@ class Effort(models.Model):
     def clean(self) -> None:
         if self.task.owner != self.owner:
             raise ValidationError("Task has to be owned by the owner of the effort", code="invalid")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)

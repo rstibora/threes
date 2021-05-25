@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from typing import Tuple
 
@@ -7,6 +7,10 @@ from django.db import models
 
 from apps.core.models import EmailUser
 from apps.tasks.models import Task
+
+from infra.model_serialization import model_to_dict
+
+from .validators import OwnedBySameUserValidator
 
 
 class ReviewPeriodConfiguration(models.Model):
@@ -101,9 +105,10 @@ class ReviewPeriod(models.Model):
             self.index, self.review_period_index)[1].isoformat()
 
     def clean(self) -> None:
-        # TODO: fix.
-        if self.planned_tasks.all().exclude(owner=models.F("owner")).exists():
-            raise ValidationError("Planned task not owned by review period owner", code="invalid")
+        super().clean()
+        validator = OwnedBySameUserValidator(
+            Task.objects.all(), "planned_tasks", rest_framework_mode=False)
+        validator(model_to_dict(self))
 
     def __str__(self):
         return f"{self.id} of {self.configuration} ({self.index=}, {self.review_period_index=})"
