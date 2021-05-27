@@ -19,4 +19,6 @@ class ReviewPeriodSerializer(serializers.ModelSerializer):
         fields = ["id", "configuration", "planned_tasks", "index", "review_period_index",
                   "starts", "ends"]
         validators = [
-            OwnedBySameUserValidator(ReviewPeriod, Task.objects.all(), "planned_tasks")]
+            OwnedBySameUserValidator(ReviewPeriod, Task.objects.all(), "planned_tasks"),
+            OwnedBySameUserValidator(ReviewPeriod, ReviewPeriodConfiguration.objects.all(),
+                                     "configuration")]
