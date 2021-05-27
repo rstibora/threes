@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Tuple
-
+from itertools import chain
+from typing import Any, Iterable, Optional, Tuple
 
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -19,7 +19,8 @@ class BaseDuplicateValidator(ABC):
                 if isinstance(field, models.ForeignKey):
                     data[field.name] = cleaned_data[field.name].id
                 elif isinstance(field, models.ManyToManyField):
-                    data[field.name] = cleaned_data[field.name].values("id")
+                    data[field.name] = list(chain(*(map(lambda d: d.values(),
+                                                        cleaned_data[field.name].values("id")))))
                 else:
                     data[field.name] = cleaned_data[field.name]
         if (message_and_code := self._validate(data)):
@@ -49,5 +50,8 @@ class OwnedBySameUserValidator(BaseDuplicateValidator):
 
     def _validate(self, attrs: dict[str, Any]) -> Optional[Tuple[str, str]]:
         owner = attrs["owner"]
-        if self._queryset.filter(id__in=attrs[self._ids_field_name]).exclude(owner=owner).exists():
+        filtered = (self._queryset.filter(id__in=attrs[self._ids_field_name])
+                    if isinstance(attrs[self._ids_field_name], Iterable)
+                    else self._queryset.filter(id=attrs[self._ids_field_name]))
+        if filtered.exclude(owner=owner).exists():
             return "All objects should be owned by the same user", "invalid"

@@ -2,7 +2,7 @@ from django import forms
 
 from apps.tasks.models import Task
 
-from .models import ReviewPeriod
+from .models import ReviewPeriod, ReviewPeriodConfiguration
 from .validators import OwnedBySameUserValidator
 
 
@@ -12,5 +12,9 @@ class ReviewPeriodForm(forms.ModelForm):
 
     def clean(self) -> None:
         super().clean()
-        validator = OwnedBySameUserValidator(ReviewPeriod, Task.objects.all(), "planned_tasks")
-        validator.validate_cleaned_data(self.cleaned_data)
+        validators = (
+            OwnedBySameUserValidator(ReviewPeriod, Task.objects.all(), "planned_tasks"),
+            OwnedBySameUserValidator(ReviewPeriod, ReviewPeriodConfiguration.objects.all(),
+                                     "configuration"))
+        for validator in validators:
+            validator.validate_cleaned_data(self.cleaned_data)
