@@ -1,13 +1,13 @@
 <template>
 <aside class="side-navbar">
-    <a @click="setCurrentComponent('Dashboard')" class="button m-2"><i data-feather="home"/></a>
-    <a @click="setCurrentComponent('Tasks')" class="button m-2"><i data-feather="file-text"/></a>
+    <router-link to="/dashboard" class="button m-2"><i data-feather="home"/></router-link>
+    <router-link to="/tasks" class="button m-2"><i data-feather="file-text"/></router-link>
     <a class="button m-2"><i data-feather="award"/></a>
     <a @click="logout()" class="button m-2">{{ session != null ? session.userEmail.substr(0, 1) : "X" }}</a>
 </aside>
 <div class="content">
     <keep-alive>
-        <component :is="currentComponent"></component>
+        <router-view/>
     </keep-alive>
     <nav class="bottom-navbar box">
         <a @click="setCurrentComponent('Dashboard')" class="button m-2"><i data-feather="home"/></a>
@@ -54,6 +54,7 @@ export default defineComponent({
         }
     },
     mounted() {
+        this.$router.push("/dashboard")
         // Bring in the feather-icons.
         feather.replace()
     },
