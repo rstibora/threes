@@ -1,5 +1,7 @@
 <template>
-    <div>{{ task.name }}: {{ taskEffort }}</div>
+    <div @click="this.$router.push({ name: 'task', params: { taskId: this.task.id }})">
+        {{ task.name }}: {{ taskEffort }}
+    </div>
 </template>
 
 <script lang="ts">

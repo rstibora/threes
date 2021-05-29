@@ -16,7 +16,7 @@ import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfig
 export default defineComponent({
     computed: {
         ...mapState([
-            "tasks", "reviewPeriodConfigurations"
+            "reviewPeriodConfigurations"
         ]),
         activeReviewPeriodConfigurations() {
             const filtered = new Map<number, ReviewPeriodConfiguration>()
