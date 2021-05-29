@@ -5,7 +5,7 @@ import Tasks from "src/components/Tasks.vue"
 
 
 const routes = [
-    { path: "/dashboard", component: Dashboard, name: "dashboard" },
+    { path: "/dashboard", component: Dashboard, name: "dashboard", alias: "/" },
     { path: "/tasks", component: Tasks, name: "tasks" },
 ]
 

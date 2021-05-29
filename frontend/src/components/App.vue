@@ -5,9 +5,11 @@
     <a @click="logout()" class="button m-2">{{ session != null ? session.userEmail.substr(0, 1) : "X" }}</a>
 </aside>
 <div class="content">
-    <keep-alive>
-        <router-view/>
-    </keep-alive>
+    <router-view v-slot="{ Component }">
+        <keep-alive>
+            <component :is="Component"/>
+        </keep-alive>
+    </router-view>
     <nav class="bottom-navbar box">
         <router-link :to="{ name: 'dashboard' }" class="button m-2"><i data-feather="home"/></router-link>
         <router-link :to="{ name: 'tasks' }" class="button m-2"><i data-feather="file-text"/></router-link>
@@ -46,7 +48,6 @@ export default defineComponent({
         }
     },
     mounted() {
-        this.$router.push({ name: "dashboard" })
         // Bring in the feather-icons.
         feather.replace()
     },
