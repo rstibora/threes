@@ -1,8 +1,7 @@
 <template>
 <aside class="side-navbar">
-    <router-link to="/dashboard" class="button m-2"><i data-feather="home"/></router-link>
-    <router-link to="/tasks" class="button m-2"><i data-feather="file-text"/></router-link>
-    <a class="button m-2"><i data-feather="award"/></a>
+    <router-link :to="{ name: 'dashboard' }" class="button m-2"><i data-feather="home"/></router-link>
+    <router-link :to="{ name: 'tasks' }" class="button m-2"><i data-feather="file-text"/></router-link>
     <a @click="logout()" class="button m-2">{{ session != null ? session.userEmail.substr(0, 1) : "X" }}</a>
 </aside>
 <div class="content">
@@ -10,8 +9,8 @@
         <router-view/>
     </keep-alive>
     <nav class="bottom-navbar box">
-        <a @click="setCurrentComponent('Dashboard')" class="button m-2"><i data-feather="home"/></a>
-        <a @click="setCurrentComponent('Tasks')" class="button m-2"><i data-feather="file-text"/></a>
+        <router-link :to="{ name: 'dashboard' }" class="button m-2"><i data-feather="home"/></router-link>
+        <router-link :to="{ name: 'tasks' }" class="button m-2"><i data-feather="file-text"/></router-link>
         <a class="button m-2"><i data-feather="award"/></a>
     </nav>
 </div>
@@ -29,18 +28,10 @@ import Dashboard from "./Dashboard.vue"
 import Tasks from "./Tasks.vue"
 
 export default defineComponent({
-    data: function() {
-        return {
-            currentComponent: "Dashboard",
-        }
-    },
     computed: {
         ...mapState(["session"])
     },
     methods: {
-        setCurrentComponent(componentName: string) {
-            this.currentComponent = componentName
-        },
         async logout() {
             if (this.$store.state.session == null) {
                 return
@@ -49,12 +40,13 @@ export default defineComponent({
             const response = await fetchResource("POST", "/logout/", undefined, this.$store.state.session?.accessJwt)
             if (response.ok) {
                 this.$store.commit("updateSession", {"session": undefined})
+                // TODO: fix.
                 window.location.replace("/signin/")
             }
         }
     },
     mounted() {
-        this.$router.push("/dashboard")
+        this.$router.push({ name: "dashboard" })
         // Bring in the feather-icons.
         feather.replace()
     },

@@ -5,8 +5,8 @@ import Tasks from "src/components/Tasks.vue"
 
 
 const routes = [
-    { path: "/dashboard", component: Dashboard },
-    { path: "/tasks", component: Tasks },
+    { path: "/dashboard", component: Dashboard, name: "dashboard" },
+    { path: "/tasks", component: Tasks, name: "tasks" },
 ]
 
 export default createRouter({
