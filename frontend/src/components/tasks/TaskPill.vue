@@ -1,6 +1,8 @@
 <template>
-    <div @click="this.$router.push({ name: 'task', params: { taskId: this.task.id }})">
-        {{ task.name }}: {{ taskEffort }}
+    <div>
+        <router-link :to="({ name: 'task', params: { taskId: this.task.id }})">
+            {{ task.name }}: {{ taskEffort }}
+        </router-link>
     </div>
 </template>
 
