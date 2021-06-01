@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-clicked-outside="clickedOutsideCallback">
         <div v-if="beingEdited">
             <input v-model="changedText"/>
             <button @click="makeNonEditable(save=true)" class="button is-success">Save</button>
@@ -25,12 +25,19 @@ export default defineComponent({
         return {
             changedText: new String(),
             beingEdited: false,
+
+            // It seems element that is v-ifed ouf ot existence does not register for .contains
+            // event test.
+            ignoreClickedOutsideCallback: false,
         }
     },
     methods: {
         makeEditable() {
             this.changedText = this.modelValue
             this.beingEdited = true
+
+            this.ignoreClickedOutsideCallback = true
+            setTimeout(() => this.ignoreClickedOutsideCallback = false, 10)
         },
         makeNonEditable(save: boolean) {
             this.beingEdited = false
@@ -38,7 +45,18 @@ export default defineComponent({
                 this.$emit("update:modelValue", this.changedText)
             }
             this.changedText = this.modelValue
+
+            this.ignoreClickedOutsideCallback = false
         },
+        clickedOutsideCallback() {
+            if (this.ignoreClickedOutsideCallback) {
+                return
+            }
+
+            if (this.beingEdited) {
+                this.makeNonEditable(false)
+            }
+        }
     }
 })
 </script>
