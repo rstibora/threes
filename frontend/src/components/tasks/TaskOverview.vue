@@ -1,13 +1,13 @@
 <template>
     <div class="box">
-        <!-- <h1><editable-text v-model="taskName"/></h1> -->
-        <p><editable-text v-model="taskDescription"/></p>
+        <h1><editable-text v-model="editedTask.name" @update:modelValue="updateTask({task: editedTask})"/></h1>
+        <p><editable-text v-model="editedTask.description" @update:modelValue="updateTask({task: editedTask})"/></p>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import { mapState } from "vuex"
+import { mapActions, mapState } from "vuex"
 
 import { Task } from "src/network/models/task"
 
@@ -23,8 +23,7 @@ export default defineComponent({
     },
     data: function() {
         return {
-            taskName: "Eat your veggies!",
-            taskDescription: "And some fruits as well."
+            editedTask: undefined as Task | undefined
         }
     },
     computed: {
@@ -33,12 +32,14 @@ export default defineComponent({
             return this.tasks.get(this.taskId)
         }
     },
+    methods: {
+        ...mapActions(["updateTask"])
+    },
     components: {
         EditableText,
     },
     created: function() {
-        this.taskName = this.task.name
-        this.taskDescription = this.task.description
+        this.editedTask = this.task
     }
 })
 </script>

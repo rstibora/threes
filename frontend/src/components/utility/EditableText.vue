@@ -26,8 +26,9 @@ export default defineComponent({
             changedText: new String(),
             beingEdited: false,
 
-            // It seems element that is v-ifed ouf ot existence does not register for .contains
-            // event test.
+            // It seems an element that is v-ifed ouf ot existence does not register for .contains
+            // event test. This leads to issues with event triggered right after v-if condition
+            // changes.
             ignoreClickedOutsideCallback: false,
         }
     },

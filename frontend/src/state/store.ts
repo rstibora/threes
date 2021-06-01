@@ -108,6 +108,19 @@ export default createStore({
       }
       commit("updateReviewPeriodConfigurations", configurations)
       commit("updateReviewPeriods", reviews)
+    },
+
+    async updateTask({ dispatch, commit, state }, payload: { task: Task }) {
+      const response: Response = await dispatch("fetchResourceWithToken",
+                                                { method: "PUT", apiPath: `/api/tasks/${payload.task.id}/`,
+                                                  data: JSON.stringify(payload.task.serialize()) })
+      if (!response.ok) {
+        return
+      }
+
+      const tasks = new Map(state.tasks)
+      tasks.set(payload.task.id, payload.task)
+      commit("updateTasks", tasks)
     }
   },
 })
