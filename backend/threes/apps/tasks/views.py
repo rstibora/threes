@@ -13,7 +13,3 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
-
-    def perform_update(self, serializer):
-        print("YOLO")
-        return super().perform_update(serializer)

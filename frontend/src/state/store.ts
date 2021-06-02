@@ -101,7 +101,7 @@ export default createStore({
       for (const review of reviewsJson as Array<ReviewPeriodSerialized>) {
         const configuration = configurations.get(review.configuration)
         if (configurations == null) {
-          console.error(`Did not get configuraiton (id ${review.configuration}for review`)
+          console.error(`Did not get configuraiton (id ${review.configuration}) for review`)
           continue
         }
         reviews.set(review.id, new ReviewPeriod(review, configuration as ReviewPeriodConfiguration))
@@ -113,7 +113,7 @@ export default createStore({
     async updateTask({ dispatch, commit, state }, payload: { task: Task }) {
       const response: Response = await dispatch("fetchResourceWithToken",
                                                 { method: "PUT", apiPath: `/api/tasks/${payload.task.id}/`,
-                                                  data: JSON.stringify(payload.task.serialize()) })
+                                                  data: payload.task.serialize() })
       if (!response.ok) {
         return
       }
