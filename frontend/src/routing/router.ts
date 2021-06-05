@@ -10,6 +10,7 @@ const routes = [
     { path: "/tasks", component: Tasks, name: "tasks" },
     { path: "/tasks/:taskId", component: TaskOverview, name: "task",
       props: (route: any) => ({ taskId: parseInt(route.params.taskId) }) },
+    { path: "/tasks/new", component: TaskOverview, name: "newTask"},
 
 ]
 

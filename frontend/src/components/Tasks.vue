@@ -8,10 +8,11 @@
             </select>
         </div>
 
-        <button @click="newTaskModalOpen = true" class="button is-success my-2 mr-2">New</button>
-        <teleport to="body">
-            <create-task v-if="newTaskModalOpen" @closed="newTaskModalOpen = false" ></create-task>
-        </teleport>
+        <router-link :to="({ name: 'newTask' })" class="button is-success my-2 mr-2">New</router-link>
+        <!-- <button @click="newTaskModalOpen = true" class="button is-success my-2 mr-2">New</button> -->
+        <!-- <teleport to="body"> -->
+            <!-- <create-task v-if="newTaskModalOpen" @closed="newTaskModalOpen = false" ></create-task> -->
+        <!-- </teleport> -->
 
     </div>
     <section class="section">

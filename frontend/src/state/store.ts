@@ -7,7 +7,7 @@ import { fetchResource } from "src/network/fetchResource"
 import { Effort, EffortSerialized } from "src/network/models/effort"
 import { ReviewPeriod, ReviewPeriodSerialized } from "src/network/models/reviewPeriod"
 import { ReviewPeriodConfiguration, ReviewPeriodConfigurationSerialized } from "src/network/models/reviewPeriodConfiguration"
-import { Task, TaskSerialized } from "src/network/models/task"
+import { NewTask, Task, TaskSerialized } from "src/network/models/task"
 
 
 export default createStore({
@@ -81,7 +81,8 @@ export default createStore({
       const json: Array<TaskSerialized> = await response.json()
       let tasks = new Map<number, Task>()
       for (const taskSerialized of json) {
-        tasks.set(taskSerialized.id, new Task(taskSerialized))
+        const task = Task.deserialize(taskSerialized)
+        tasks.set(task.id, task)
       }
       commit("updateTasks", tasks)
     },
@@ -115,12 +116,26 @@ export default createStore({
                                                 { method: "PUT", apiPath: `/api/tasks/${payload.task.id}/`,
                                                   data: payload.task.serialize() })
       if (!response.ok) {
-        return
+        throw Error("Could not update task.")
       }
 
       const tasks = new Map(state.tasks)
       tasks.set(payload.task.id, payload.task)
       commit("updateTasks", tasks)
+    },
+    async createTask({ dispatch, commit, state }, payload: { task: NewTask }): Promise<Task> {
+      const response: Response = await dispatch("fetchResourceWithToken",
+                                                { method: "POST", apiPath: `/api/tasks/`,
+                                                  data: payload.task.serialize() })
+      if (!response.ok) {
+        throw Error("Could not create a new task.")
+      }
+      const json: TaskSerialized = await response.json()
+      const newTask = Task.deserialize(json)
+      let allTasks = new Map(state.tasks)
+      allTasks.set(newTask.id, newTask)
+      commit("updateTasks", allTasks)
+      return newTask
     }
   },
 })

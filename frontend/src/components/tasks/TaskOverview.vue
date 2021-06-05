@@ -1,7 +1,7 @@
 <template>
     <div class="box">
-        <h1><editable-text v-model="editedTask.name" @update:modelValue="updateTask({task: editedTask})"/></h1>
-        <p><editable-text v-model="editedTask.description" @update:modelValue="updateTask({task: editedTask})"/></p>
+        <h1><editable-text v-model="editedTask.name" @update:modelValue="updateOrCreateTask()"/></h1>
+        <p><editable-text v-model="editedTask.description" @update:modelValue="updateOrCreateTask()"/></p>
     </div>
 </template>
 
@@ -9,7 +9,7 @@
 import { defineComponent } from "vue"
 import { mapActions, mapState } from "vuex"
 
-import { Task } from "src/network/models/task"
+import { NewTask, Task } from "src/network/models/task"
 
 import EditableText from "src/components/utility/EditableText.vue"
 
@@ -18,28 +18,34 @@ export default defineComponent({
     props: {
         taskId: {
             type: Number,
-            required: true
         }
     },
     data: function() {
         return {
-            editedTask: undefined as Task | undefined
+            editedTask: new NewTask("New Task", "Description of the new task.") as Task | NewTask
         }
     },
     computed: {
         ...mapState(["tasks"]),
-        task(): Task {
-            return this.tasks.get(this.taskId)
-        }
     },
     methods: {
-        ...mapActions(["updateTask"])
+        async updateOrCreateTask() {
+            if (!(this.editedTask instanceof Task)) {
+                this.editedTask = await this.createTask({task: this.editedTask})
+            } else {
+                await this.updateTask({task: this.editedTask})
+                this.editedTask = this.tasks.get(this.taskId)
+            }
+        },
+        ...mapActions(["updateTask", "createTask"])
     },
     components: {
         EditableText,
     },
     created: function() {
-        this.editedTask = this.task
+        if (this.taskId != undefined) {
+            this.editedTask = this.tasks.get(this.taskId)
+        }
     }
 })
 </script>
