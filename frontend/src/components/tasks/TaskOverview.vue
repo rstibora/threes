@@ -31,7 +31,8 @@ export default defineComponent({
     methods: {
         async updateOrCreateTask() {
             if (!(this.editedTask instanceof Task)) {
-                this.editedTask = await this.createTask({task: this.editedTask})
+                const newTask = await this.createTask({task: this.editedTask})
+                this.$router.push({ name: "task", params: { taskId: newTask.id }})
             } else {
                 await this.updateTask({task: this.editedTask})
                 this.editedTask = this.tasks.get(this.taskId)
