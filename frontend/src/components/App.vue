@@ -5,9 +5,9 @@
     <a @click="logout()" class="button m-2">{{ session != null ? session.userEmail.substr(0, 1) : "X" }}</a>
 </aside>
 <div class="content">
-    <router-view v-slot="{ Component }">
+    <router-view v-slot="{ Component, route }">
         <keep-alive>
-            <component :is="Component"/>
+            <component :is="Component" :key="route.path"/>
         </keep-alive>
     </router-view>
     <nav class="bottom-navbar box">

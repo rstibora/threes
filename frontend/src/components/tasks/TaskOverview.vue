@@ -14,6 +14,10 @@ import { NewTask, Task } from "src/network/models/task"
 import EditableText from "src/components/utility/EditableText.vue"
 
 
+function freshNewTask(): NewTask {
+    return new NewTask("New Task", "Description of the new task.")
+}
+
 export default defineComponent({
     props: {
         taskId: {
@@ -22,7 +26,7 @@ export default defineComponent({
     },
     data: function() {
         return {
-            editedTask: new NewTask("New Task", "Description of the new task.") as Task | NewTask
+            editedTask: freshNewTask() as Task | NewTask
         }
     },
     computed: {
@@ -33,6 +37,7 @@ export default defineComponent({
             if (!(this.editedTask instanceof Task)) {
                 const newTask = await this.createTask({task: this.editedTask})
                 this.$router.push({ name: "task", params: { taskId: newTask.id }})
+                this.editedTask = freshNewTask()
             } else {
                 await this.updateTask({task: this.editedTask})
                 this.editedTask = this.tasks.get(this.taskId)
