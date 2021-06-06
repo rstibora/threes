@@ -67,11 +67,12 @@ export default createStore({
         return
       }
       const json: Array<EffortSerialized> = await response.json()
-      let effort = new Map<number, Effort>()
+      let efforts = new Map<number, Effort>()
       for (const effortSerialized of json) {
-        effort.set(effortSerialized.id, new Effort(effortSerialized))
+        const effort = Effort.deserialize(effortSerialized)
+        efforts.set(effort.id, effort)
       }
-      commit("updateEfforts", effort)
+      commit("updateEfforts", efforts)
     },
     async fetchTasks({ dispatch, commit }) {
       const response: Response = await dispatch("fetchResourceWithToken", { method: "GET", apiPath: "/api/tasks" })

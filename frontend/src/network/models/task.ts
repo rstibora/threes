@@ -1,4 +1,4 @@
-import { JsonDeserializable, JsonSerializable } from "src/network/models/deserializable"
+import { ExistingItem, JsonSerializable } from "src/network/models/base"
 
 
 export interface TaskSerialized {
@@ -6,10 +6,6 @@ export interface TaskSerialized {
     name?: string
     description?: string
     created?: string
-}
-
-interface ExistingItem {
-    id: number
 }
 
 export class NewTask implements JsonSerializable<TaskSerialized> {
@@ -32,7 +28,7 @@ export class NewTask implements JsonSerializable<TaskSerialized> {
     }
 }
 
-export class Task extends NewTask implements ExistingItem{
+export class Task extends NewTask implements ExistingItem, JsonSerializable<TaskSerialized> {
     id: number
 
     constructor(id: number, name: string, description: string, created: Date) {
