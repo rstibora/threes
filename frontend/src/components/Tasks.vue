@@ -9,11 +9,6 @@
         </div>
 
         <router-link :to="({ name: 'newTask' })" class="button is-success my-2 mr-2">New</router-link>
-        <!-- <button @click="newTaskModalOpen = true" class="button is-success my-2 mr-2">New</button> -->
-        <!-- <teleport to="body"> -->
-            <!-- <create-task v-if="newTaskModalOpen" @closed="newTaskModalOpen = false" ></create-task> -->
-        <!-- </teleport> -->
-
     </div>
     <section class="section">
         <div class="card" v-for="[id, task] in tasks" :key="id">
@@ -27,12 +22,7 @@
 import { defineComponent } from "vue"
 import { mapActions, mapState } from "vuex"
 
-import CreateTask from "./tasks/CreateTask.vue"
-
 export default defineComponent({
-    components: {
-        CreateTask
-    },
     data: function() {
         return {
             newTaskModalOpen: false,
