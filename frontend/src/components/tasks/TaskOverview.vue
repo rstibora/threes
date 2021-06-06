@@ -2,6 +2,10 @@
     <div class="box">
         <h1><editable-text v-model="editedTask.name" @update:modelValue="updateOrCreateTask()"/></h1>
         <p><editable-text v-model="editedTask.description" @update:modelValue="updateOrCreateTask()"/></p>
+        <ul v-if="taskEfforts.length > 0">
+            <li v-for="effort of taskEfforts" :key="effort.id">{{ effort.starts }}: {{ effort.duration }} minutes</li>
+        </ul>
+        <p v-else>No effort logged for this task yet.</p>
     </div>
 </template>
 
@@ -9,6 +13,7 @@
 import { defineComponent } from "vue"
 import { mapActions, mapState } from "vuex"
 
+import { Effort } from "src/network/models/effort"
 import { NewTask, Task } from "src/network/models/task"
 
 import EditableText from "src/components/utility/EditableText.vue"
@@ -30,7 +35,20 @@ export default defineComponent({
         }
     },
     computed: {
-        ...mapState(["tasks"]),
+        taskEfforts(): Array<Effort> {
+            let filteredEfforts = new Array<Effort>()
+            if (!(this.editedTask instanceof Task)) {
+                return filteredEfforts
+            }
+
+            for (const effort of this.efforts.values()) {
+                if (effort.taskId == this.editedTask.id) {
+                    filteredEfforts.push(effort)
+                }
+            }
+            return filteredEfforts
+        },
+        ...mapState(["efforts", "tasks"]),
     },
     methods: {
         async updateOrCreateTask() {
