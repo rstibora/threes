@@ -4,7 +4,7 @@ import { createStore } from "vuex"
 import { Session } from "src/state/session"
 import { fetchResource } from "src/network/fetchResource"
 
-import { Effort, EffortSerialized } from "src/network/models/effort"
+import { Effort, EffortSerialized, NewEffort } from "src/network/models/effort"
 import { ReviewPeriod, ReviewPeriodSerialized } from "src/network/models/reviewPeriod"
 import { ReviewPeriodConfiguration, ReviewPeriodConfigurationSerialized } from "src/network/models/reviewPeriodConfiguration"
 import { NewTask, Task, TaskSerialized } from "src/network/models/task"
@@ -112,6 +112,32 @@ export default createStore({
       commit("updateReviewPeriods", reviews)
     },
 
+    async updateEffort({ dispatch, commit, state }, payload: { effort: Effort }) {
+      const response: Response = await dispatch("fetchResourceWithToken",
+                                                { method: "PUT", apiPath: `/api/efforts/${payload.effort.id}/`,
+                                                  data: payload.effort.serialize() })
+      if (!response.ok) {
+        throw Error("Could not update effort.")
+      }
+
+      const efforts = new Map(state.efforts)
+      efforts.set(payload.effort.id, payload.effort)
+      commit("updateEfforts", efforts)
+    },
+    async createEffort({ dispatch, commit, state }, payload: { effort: NewEffort }): Promise<Effort> {
+      const response: Response = await dispatch("fetchResourceWithToken",
+                                                { method: "POST", apiPath: `/api/efforts/`,
+                                                  data: payload.effort.serialize() })
+      if (!response.ok) {
+        throw Error("Could not create new effort.")
+      }
+      const responseJson: EffortSerialized = await response.json()
+      const newEffort = Effort.deserialize(responseJson)
+      let efforts = new Map(state.efforts)
+      efforts.set(newEffort.id, newEffort)
+      commit("updateEfforts", efforts)
+      return newEffort
+    },
     async updateTask({ dispatch, commit, state }, payload: { task: Task }) {
       const response: Response = await dispatch("fetchResourceWithToken",
                                                 { method: "PUT", apiPath: `/api/tasks/${payload.task.id}/`,

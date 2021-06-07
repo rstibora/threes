@@ -1,11 +1,15 @@
 <template>
+    <teleport to="body">
+        <effort-modal v-if="effortModalItem != null" @closed="effortModalItem = undefined" :effortOrTaskId="effortModalItem"></effort-modal>
+    </teleport>
+
     <div class="box">
         <h1><editable-text v-model="editedTask.name" @update:modelValue="updateOrCreateTask()"/></h1>
         <p><editable-text v-model="editedTask.description" @update:modelValue="updateOrCreateTask()"/></p>
         <ul v-if="taskEfforts.length > 0">
-            <li v-for="effort of taskEfforts" :key="effort.id">{{ effort.starts }}: {{ effort.duration }} minutes</li>
+            <li v-for="effort of taskEfforts" :key="effort.id" @click="effortModalItem = effort">{{ effort.starts }}: {{ effort.duration }} minutes</li>
         </ul>
-        <p v-else>No effort logged for this task yet.</p>
+        <button v-if="!editedTaskIsNewTask" @click="effortModalItem = editedTask.id" class="buttton">New Effort</button>
     </div>
 </template>
 
@@ -16,6 +20,7 @@ import { mapActions, mapState } from "vuex"
 import { Effort } from "src/network/models/effort"
 import { NewTask, Task } from "src/network/models/task"
 
+import EffortModal from "src/components/effort/EffortModal.vue"
 import EditableText from "src/components/utility/EditableText.vue"
 
 
@@ -31,7 +36,8 @@ export default defineComponent({
     },
     data: function() {
         return {
-            editedTask: freshNewTask() as Task | NewTask
+            editedTask: freshNewTask() as Task | NewTask,
+            effortModalItem: undefined as Effort | number | undefined
         }
     },
     computed: {
@@ -47,6 +53,9 @@ export default defineComponent({
                 }
             }
             return filteredEfforts
+        },
+        editedTaskIsNewTask(): boolean {
+            return !(this.editedTask instanceof Task)
         },
         ...mapState(["efforts", "tasks"]),
     },
@@ -65,6 +74,7 @@ export default defineComponent({
     },
     components: {
         EditableText,
+        EffortModal,
     },
     created: function() {
         if (this.taskId != undefined) {
