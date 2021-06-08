@@ -51,7 +51,4 @@ export default defineComponent({
     height: 100%;
     min-height: 100%;
 }
-.review {
-    width: 600px;
-}
 </style>

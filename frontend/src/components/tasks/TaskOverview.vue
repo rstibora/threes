@@ -83,9 +83,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style scoped>
-.box {
-    width: 600px;
-}
-</style>
