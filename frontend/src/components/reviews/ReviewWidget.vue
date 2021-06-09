@@ -1,24 +1,20 @@
 <template>
-    <div class="box">
-        <nav class="navbar">
-            <button :disabled="previousButtonDisabled"  @click="changeSelectedReviewIndexBy(-1)">
-                Previous
-            </button>
-            <div v-if="selectedReviewPeriod != null">
-                <strong>{{ selectedReviewPeriod != null ? selectedReviewPeriod.name() : "Create your first Review Period" }}</strong>
-                <br>{{ selectedReviewPeriod.starts.toLocaleString() }} - {{ selectedReviewPeriod.ends.toLocaleString() }}
-            </div>
-            <p v-else>Create your first Review Period</p>
-            <button :disabled="nextButtonDisabled" @click="changeSelectedReviewIndexBy(1)">
-                Next
-            </button>
-        </nav>
-
-        <div class="box">
-            {{ plannedTasks.length != 0 ? `${plannedTasks.length} Planned tasks:` : "No planned tasks" }}
-            <task-pill v-for="task in plannedTasks" :key="task.id" :task="task" :efforts="effortPerTaskForSelectedReview.get(task.id)"/>
+    <nav class="navbar">
+        <button :disabled="previousButtonDisabled"  @click="changeSelectedReviewIndexBy(-1)">
+            Previous
+        </button>
+        <div v-if="selectedReviewPeriod != null">
+            <strong>{{ selectedReviewPeriod != null ? selectedReviewPeriod.name() : "Create your first Review Period" }}</strong>
+            <br>{{ selectedReviewPeriod.starts.toLocaleString() }} - {{ selectedReviewPeriod.ends.toLocaleString() }}
         </div>
-    </div>
+        <p v-else>Create your first Review Period</p>
+        <button :disabled="nextButtonDisabled" @click="changeSelectedReviewIndexBy(1)">
+            Next
+        </button>
+    </nav>
+
+    {{ plannedTasks.length != 0 ? `${plannedTasks.length} Planned tasks:` : "No planned tasks" }}
+    <task-pill v-for="task in plannedTasks" :key="task.id" :task="task" :efforts="effortPerTaskForSelectedReview.get(task.id)"/>
 </template>
 
 <script lang="ts">

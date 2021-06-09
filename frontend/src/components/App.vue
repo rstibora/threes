@@ -1,8 +1,8 @@
 <template>
 <aside class="side-navbar">
-    <router-link :to="{ name: 'dashboard' }" class="button m-2"><i data-feather="home"/></router-link>
-    <router-link :to="{ name: 'tasks' }" class="button m-2"><i data-feather="file-text"/></router-link>
-    <a @click="logout()" class="button m-2">{{ session != null ? session.userEmail.substr(0, 1) : "X" }}</a>
+    <router-link :to="{ name: 'dashboard' }"><i data-feather="home"/></router-link>
+    <router-link :to="{ name: 'tasks' }"><i data-feather="file-text"/></router-link>
+    <a @click="logout()">{{ session != null ? session.userEmail.substr(0, 1) : "X" }}</a>
 </aside>
 <div class="content">
     <router-view v-slot="{ Component, route }">
@@ -10,10 +10,9 @@
             <component :is="Component" :key="route.path"/>
         </keep-alive>
     </router-view>
-    <nav class="bottom-navbar box">
-        <router-link :to="{ name: 'dashboard' }" class="button m-2"><i data-feather="home"/></router-link>
-        <router-link :to="{ name: 'tasks' }" class="button m-2"><i data-feather="file-text"/></router-link>
-        <a class="button m-2"><i data-feather="award"/></a>
+    <nav class="bottom-navbar">
+        <router-link :to="{ name: 'dashboard' }"><i data-feather="home"/></router-link>
+        <router-link :to="{ name: 'tasks' }"><i data-feather="file-text"/></router-link>
     </nav>
 </div>
 </template>
@@ -58,50 +57,48 @@ export default defineComponent({
 })
 </script>
 
-<style>
-html, body {
-    height: fit-content;
-    min-height: 100%;
-}
-#app {
-    display: flex;
-    align-items: stretch;
-    min-height: 100%;
-    max-height: 100%;
-    width: 100%;
-}
-.app-inner {
-    display: flex;
-    flex-direction: row;
-    min-height: 100%;
-    max-height: 100%;
-    width: 100%;
-}
-.side-navbar {
-    flex-direction: column;
-    width: 80px;
-    height: 100%;
-    position: sticky;
-    top: 0;
-}
-.bottom-navbar {
-    display: none;
-    justify-content: space-between;
-    flex-direction: row;
-    width: 100%;
-    position: fixed;
-    bottom: 0;
-}
-@media (max-width: 480px) {
-    .side-navbar {
-        display: none;
-    }
-    .bottom-navbar {
-        display: flex;
-    }
-}
-.content {
-    flex-grow: 1;
-    height: fit-content;
-}
+<style lang="sass">
+html, body
+    height: fit-content
+    min-height: 100%
+
+#app
+    display: flex
+    align-items: stretch
+    min-height: 100%
+    max-height: 100%
+    width: 100%
+
+.app-inner
+    display: flex
+    flex-direction: row
+    min-height: 100%
+    max-height: 100%
+    width: 100%
+
+.side-navbar
+    flex-direction: column
+    width: 80px
+    height: 100%
+    position: sticky
+    top: 0
+
+.bottom-navbar
+    display: none
+    justify-content: space-between
+    flex-direction: row
+    width: 100%
+    position: fixed
+    bottom: 0
+
+@media (max-width: 480px)
+    .side-navbar
+        display: none
+
+    .bottom-navbar
+        display: flex
+
+.content
+    flex-grow: 1
+    height: fit-content
 </style>

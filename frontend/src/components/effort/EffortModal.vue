@@ -1,23 +1,29 @@
 <template>
-        <div class="modal is-active">
-            <div @click="$emit('closed')" class="modal-background"></div>
-            <div class="modal-content">
-                <div class="box">
-                    <div class="field">
-                        <label class="label">Duration</label>
-                        <div class="control">
-                            <input v-model="editedEffort.duration" class="input" type="number">
-                        </div>
+    <div class="modal is-active">
+        <div @click="$emit('closed')" class="modal-background"></div>
+        <div class="modal-content">
+            <div class="box">
+                <div class="field">
+                    <label class="label">Duration</label>
+                    <div class="control">
+                        <input v-model="editedEffort.duration" class="input" type="number">
                     </div>
-                    <div class="field">
-                        <div class="control">
-                            <button @click="updateOrCreateEffort" class="button">Save Effort Details</button>
-                            <!-- <span v-if="failed" class="has-text-danger">Something went wrong.</span> -->
-                        </div>
+                </div>
+                <div class="field">
+                    <label class="label">Date and Time</label>
+                    <div class="control">
+                        <input v-model="editedEffort.duration" class="input" type="number">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button @click="updateOrCreateEffort" class="button">Save Effort Details</button>
+                        <!-- <span v-if="failed" class="has-text-danger">Something went wrong.</span> -->
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </template>
 
 <script lang="ts">

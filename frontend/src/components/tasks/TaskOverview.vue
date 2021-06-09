@@ -3,13 +3,13 @@
         <effort-modal v-if="effortModalItem != null" @closed="effortModalItem = undefined" :effortOrTaskId="effortModalItem"></effort-modal>
     </teleport>
 
-    <div class="box">
+    <div>
         <h1><editable-text v-model="editedTask.name" @update:modelValue="updateOrCreateTask()"/></h1>
         <p><editable-text v-model="editedTask.description" @update:modelValue="updateOrCreateTask()"/></p>
         <ul v-if="taskEfforts.length > 0">
             <li v-for="effort of taskEfforts" :key="effort.id" @click="effortModalItem = effort">{{ effort.starts }}: {{ effort.duration }} minutes</li>
         </ul>
-        <button v-if="!editedTaskIsNewTask" @click="effortModalItem = editedTask.id" class="buttton">New Effort</button>
+        <button v-if="!editedTaskIsNewTask" @click="effortModalItem = editedTask.id">New Effort</button>
     </div>
 </template>
 

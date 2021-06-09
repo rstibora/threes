@@ -1,19 +1,11 @@
 <template>
-    <div class="top-navbar box" role="navigation">
-        <div class="input m-2"></div>
-        <div class="select m-2">
-            <select>
-                <option>Active</option>
-                <option>Backlog</option>
-            </select>
-        </div>
-
-        <router-link :to="({ name: 'newTask' })" class="button is-success my-2 mr-2">New</router-link>
+    <div class="top-navbar" role="navigation">
+        <router-link :to="({ name: 'newTask' })">New</router-link>
     </div>
-    <section class="section">
-        <div class="card" v-for="[id, task] in tasks" :key="id">
-            <div class="card-header">{{ task.name }}</div>
-            <div class="card-content">{{ task.description }}</div>
+    <section>
+        <div v-for="[id, task] in tasks" :key="id">
+            <div>{{ task.name }}</div>
+            <div>{{ task.description }}</div>
         </div>
     </section>
 </template>
