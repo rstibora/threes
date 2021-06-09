@@ -58,6 +58,8 @@ export default defineComponent({
 </script>
 
 <style lang="sass">
+@use "src/styles/base"
+
 html, body
     height: fit-content
     min-height: 100%
@@ -91,7 +93,7 @@ html, body
     position: fixed
     bottom: 0
 
-@media (max-width: 480px)
+@media (max-width: base.$breakpoint-mobile)
     .side-navbar
         display: none
 
