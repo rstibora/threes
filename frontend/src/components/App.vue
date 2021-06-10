@@ -1,8 +1,8 @@
 <template>
 <aside class="side-navbar">
-    <router-link :to="{ name: 'dashboard' }"><i data-feather="home"/></router-link>
-    <router-link :to="{ name: 'tasks' }"><i data-feather="file-text"/></router-link>
-    <a @click="logout()">{{ session != null ? session.userEmail.substr(0, 1) : "X" }}</a>
+    <router-link :to="{ name: 'dashboard' }" class="button"><i data-feather="home"/></router-link>
+    <router-link :to="{ name: 'tasks' }" class="button"><i data-feather="file-text"/></router-link>
+    <a @click="logout()" class="button">{{ session != null ? session.userEmail.substr(0, 1) : "X" }}</a>
 </aside>
 <div class="content">
     <router-view v-slot="{ Component, route }">
@@ -10,11 +10,11 @@
             <component :is="Component" :key="route.path"/>
         </keep-alive>
     </router-view>
-    <nav class="bottom-navbar">
-        <router-link :to="{ name: 'dashboard' }"><i data-feather="home"/></router-link>
-        <router-link :to="{ name: 'tasks' }"><i data-feather="file-text"/></router-link>
-    </nav>
 </div>
+<nav class="bottom-navbar">
+    <router-link :to="{ name: 'dashboard' }" class="button"><i data-feather="home"/></router-link>
+    <router-link :to="{ name: 'tasks' }" class="button"><i data-feather="file-text"/></router-link>
+</nav>
 </template>
 
 <script lang="ts">
@@ -58,17 +58,13 @@ export default defineComponent({
 </script>
 
 <style lang="sass">
+@use "src/styles/reset"
 @use "src/styles/base"
-
-html, body
-    height: fit-content
-    min-height: 100%
 
 #app
     display: flex
     align-items: stretch
-    min-height: 100%
-    max-height: 100%
+    height: 100%
     width: 100%
 
 .app-inner
@@ -103,4 +99,20 @@ html, body
 .content
     flex-grow: 1
     height: fit-content
+</style>
+
+<style lang="sass" scoped>
+@use "src/styles/utils"
+
+.button
+    @include utils.centered
+    padding-top: 25%
+    padding-bottom: 25%
+    cursor: pointer
+    border-style: solid
+    border-width: 1px
+    border-color: rgb(0 0 0 / 0%)
+
+.button:hover
+    border-color: rgb(0 0 0 / 100%)
 </style>
