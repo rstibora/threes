@@ -59,7 +59,7 @@ export default defineComponent({
 
 <style lang="sass">
 @use "src/styles/reset"
-@use "src/styles/base"
+@use "src/styles/constants"
 
 #app
     display: flex
@@ -76,20 +76,20 @@ export default defineComponent({
 
 .side-navbar
     flex-direction: column
-    width: 80px
+    width: constants.$side-navbar-width
     height: 100%
     position: sticky
     top: 0
 
 .bottom-navbar
     display: none
-    justify-content: space-between
+    justify-content: space-around
     flex-direction: row
     width: 100%
     position: fixed
     bottom: 0
 
-@media (max-width: base.$breakpoint-mobile)
+@media (max-width: constants.$breakpoint-mobile)
     .side-navbar
         display: none
 

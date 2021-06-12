@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <router-link :to="({ name: 'task', params: { taskId: this.task.id }})">
+    <div class="pill">
+        <router-link :to="({ name: 'task', params: { taskId: task.id }})" class="pill block">
             {{ task.name }}: {{ taskEffort }}
         </router-link>
     </div>
@@ -27,3 +27,17 @@ export default defineComponent({
     }
 })
 </script>
+
+<style lang="sass" scoped>
+@use "src/styles/constants"
+@use "src/styles/visual"
+
+.pill
+    @include visual.rounded
+    margin-top: constants.$margin-medium
+    padding: .05em
+    background-color: Aquamarine
+
+.block
+    display: block
+</style>

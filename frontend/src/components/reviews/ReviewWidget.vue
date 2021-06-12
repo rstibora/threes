@@ -1,20 +1,20 @@
 <template>
-    <nav class="navbar">
-        <button :disabled="previousButtonDisabled"  @click="changeSelectedReviewIndexBy(-1)">
-            Previous
-        </button>
-        <div v-if="selectedReviewPeriod != null">
-            <strong>{{ selectedReviewPeriod != null ? selectedReviewPeriod.name() : "Create your first Review Period" }}</strong>
-            <br>{{ selectedReviewPeriod.starts.toLocaleString() }} - {{ selectedReviewPeriod.ends.toLocaleString() }}
-        </div>
-        <p v-else>Create your first Review Period</p>
-        <button :disabled="nextButtonDisabled" @click="changeSelectedReviewIndexBy(1)">
-            Next
-        </button>
-    </nav>
-
-    {{ plannedTasks.length != 0 ? `${plannedTasks.length} Planned tasks:` : "No planned tasks" }}
-    <task-pill v-for="task in plannedTasks" :key="task.id" :task="task" :efforts="effortPerTaskForSelectedReview.get(task.id)"/>
+    <div class="card">
+        <nav class="navbar">
+            <button :disabled="previousButtonDisabled"  @click="changeSelectedReviewIndexBy(-1)" class="round">
+                &lt;
+            </button>
+            <div v-if="selectedReviewPeriod != null">
+                <strong>{{ selectedReviewPeriod != null ? selectedReviewPeriod.name() : "Create your first Review Period" }}</strong>
+                <br>{{ selectedReviewPeriod.starts.toLocaleString() }} - {{ selectedReviewPeriod.ends.toLocaleString() }}
+            </div>
+            <p v-else>Create your first Review Period</p>
+            <button :disabled="nextButtonDisabled" @click="changeSelectedReviewIndexBy(1)" class="round">
+                &gt;
+            </button>
+        </nav>
+        <task-pill v-for="task in plannedTasks" :key="task.id" :task="task" :efforts="effortPerTaskForSelectedReview.get(task.id)"/>
+    </div>
 </template>
 
 <script lang="ts">
@@ -106,10 +106,28 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-.navbar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
+<style scoped lang="sass">
+@use "src/styles/constants"
+@use "src/styles/visual"
+
+$margin: constants.$margin-small
+
+.navbar
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+
+.round
+    border-radius: 50%
+    width: 2.5em
+    height: 2.5em
+
+.card
+    @include visual.rounded
+    margin: $margin
+    padding: .5em
+    width: calc(100% - #{2 * $margin})
+    max-width: constants.$card-max-width
+    background-color: WhiteSmoke
+
 </style>
