@@ -5,7 +5,7 @@
                 &lt;
             </button>
             <div v-if="selectedReviewPeriod != null">
-                <strong>{{ selectedReviewPeriod != null ? selectedReviewPeriod.name() : "Create your first Review Period" }}</strong>
+                <strong>{{ reviewPeriodName != null ? reviewPeriodName : "Create your first Review Period" }}</strong>
                 <br>{{ selectedReviewPeriod.starts.toLocaleString() }} - {{ selectedReviewPeriod.ends.toLocaleString() }}
             </div>
             <p v-else>Create your first Review Period</p>
@@ -35,11 +35,13 @@ export default defineComponent({
             required: true,
         }
     },
+
     data: function() {
         return {
             selectedReviewIndex: 0,
         }
     },
+
     computed: {
         ...mapState(["efforts", "reviewPeriods", "tasks"]),
         effortPerTaskForSelectedReview(): Map<number, Array<Effort>> {
@@ -69,7 +71,7 @@ export default defineComponent({
         },
         reviewPeriodsForConfiguration(): Array<ReviewPeriod> {
             return [...this.reviewPeriods.values()].filter(
-                (reviewPeriod: ReviewPeriod) => reviewPeriod.configuration.id == this.configuration.id)
+                (reviewPeriod: ReviewPeriod) => reviewPeriod.configurationId == this.configuration.id)
         },
         plannedTasks(): Array<Task> {
             let plannedTasks: Array<Task> = []
@@ -80,6 +82,13 @@ export default defineComponent({
                 plannedTasks.push(this.tasks.get(id))
             }
             return plannedTasks
+        },
+        reviewPeriodName(): string | null {
+            if (this.selectedReviewPeriod == null) {
+                return null
+            }
+            return this.configuration.constructName(this.selectedReviewPeriod.index,
+                                                    this.selectedReviewPeriod.reviewPeriodIndex)
         },
         previousButtonDisabled(): boolean { 
             return this.selectedReviewIndex == 0 },
@@ -92,15 +101,20 @@ export default defineComponent({
             return null
         }
     },
+
     methods: {
         ...mapActions(["fetchEfforts"]),
         changeSelectedReviewIndexBy(step: number) {
             this.selectedReviewIndex = Math.max(Math.min(this.selectedReviewIndex + step,
                                                          this.reviewPeriodsForConfiguration.length - 1), 0)
         }
-    }, components: {
+    },
+
+    components: {
         TaskPill,
-    }, created: async function() {
+    },
+    
+    created: async function() {
         this.fetchEfforts()
     }
 })

@@ -100,13 +100,9 @@ export default createStore({
         configurations.set(configuration.id, new ReviewPeriodConfiguration(configuration))
       }
       let reviews = new Map<number, ReviewPeriod>()
-      for (const review of reviewsJson as Array<ReviewPeriodSerialized>) {
-        const configuration = configurations.get(review.configuration)
-        if (configurations == null) {
-          console.error(`Did not get configuraiton (id ${review.configuration}) for review`)
-          continue
-        }
-        reviews.set(review.id, new ReviewPeriod(review, configuration as ReviewPeriodConfiguration))
+      for (const reviewSerialized of reviewsJson as Array<ReviewPeriodSerialized>) {
+        const review = ReviewPeriod.deserialize(reviewSerialized)
+        reviews.set(review.id, review)
       }
       commit("updateReviewPeriodConfigurations", configurations)
       commit("updateReviewPeriods", reviews)
