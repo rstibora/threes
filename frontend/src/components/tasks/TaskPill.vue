@@ -1,9 +1,7 @@
 <template>
-    <div class="pill">
-        <router-link :to="({ name: 'task', params: { taskId: task.id }})" class="pill block">
-            {{ task.name }}: {{ taskEffort }}
-        </router-link>
-    </div>
+    <router-link :to="({ name: 'task', params: { taskId: task.id }})" class="pill block">
+        {{ task.name }}: {{ taskEffort }}
+    </router-link>
 </template>
 
 <script lang="ts">
