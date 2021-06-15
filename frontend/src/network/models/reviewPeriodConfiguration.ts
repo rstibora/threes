@@ -1,6 +1,7 @@
 import { DateTime, Duration } from "luxon"
 
 import { getStringEnumKeyByValue } from "src/utils/enum"
+import { NewReviewPeriod, ReviewPeriod } from "./reviewPeriod"
 
 
 export interface ReviewPeriodConfigurationSerialized {
@@ -61,7 +62,7 @@ export class ReviewPeriodConfiguration {
         this.duration = Duration.fromObject(durationObject)
     }
 
-    constructName(index: number, review_period_index: number): string {
+    constructName(reviewPeriod: ReviewPeriod | NewReviewPeriod): string {
         let prefix = ""
         switch (this.indexType) {
             case IndexType.WEEK_NUMBER: { prefix = "Week"; break }
@@ -74,16 +75,16 @@ export class ReviewPeriodConfiguration {
         }
 
         // Humans are used to indexing starting from one.
-        let stringIndex = (index + 1).toString()
+        let stringIndex = (reviewPeriod.index + 1).toString()
 
         if (this.indexType == IndexType.MONTH_NAME) {
-            stringIndex = new Date(1991, index).toLocaleString("default", { month: "long"})
+            stringIndex = new Date(1991, reviewPeriod.index).toLocaleString("default", { month: "long"})
         } else if (this.indexType == IndexType.QUARTER_NUMBER) {
-            stringIndex = ["Q1", "Q2", "Q3", "Q4"][index]
+            stringIndex = ["Q1", "Q2", "Q3", "Q4"][reviewPeriod.index]
         } else if (this.indexType == IndexType.YEAR_NUMBER) {
-            stringIndex = (this.starts.year + index).toString()
+            stringIndex = (this.starts.year + reviewPeriod.index).toString()
         }
-        const suffix = this.indexReset == IndexReset.END_OF_YEAR ? this.starts.year + review_period_index : ""
+        const suffix = this.indexReset == IndexReset.END_OF_YEAR ? this.starts.year + reviewPeriod.reviewPeriodIndex : ""
 
         return [prefix, stringIndex, suffix].join(" ")
     }

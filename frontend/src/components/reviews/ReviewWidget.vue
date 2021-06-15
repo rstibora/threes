@@ -87,8 +87,7 @@ export default defineComponent({
             if (this.selectedReviewPeriod == null) {
                 return null
             }
-            return this.configuration.constructName(this.selectedReviewPeriod.index,
-                                                    this.selectedReviewPeriod.reviewPeriodIndex)
+            return this.configuration.constructName(this.selectedReviewPeriod)
         },
         previousButtonDisabled(): boolean { 
             return this.selectedReviewIndex == 0 },
@@ -113,7 +112,7 @@ export default defineComponent({
     components: {
         TaskPill,
     },
-    
+
     created: async function() {
         this.fetchEfforts()
     }
@@ -143,5 +142,4 @@ $margin: constants.$margin-small
     width: calc(100% - #{2 * $margin})
     max-width: constants.$card-max-width
     background-color: constants.$colour-background
-
 </style>

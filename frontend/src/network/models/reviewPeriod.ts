@@ -2,8 +2,6 @@ import { DateTime } from "luxon"
 
 import { ExistingItem, JsonSerializable  } from "src/network/models/base"
 
-import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
-
 
 export interface ReviewPeriodSerialized {
     id?: number
