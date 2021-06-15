@@ -128,6 +128,6 @@ $margin: constants.$margin-small
     padding: .5em
     width: calc(100% - #{2 * $margin})
     max-width: constants.$card-max-width
-    background-color: WhiteSmoke
+    background-color: constants.$colour-background
 
 </style>

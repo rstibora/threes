@@ -3,13 +3,15 @@
         <effort-modal v-if="effortModalItem != null" @closed="effortModalItem = undefined" :effortOrTaskId="effortModalItem"></effort-modal>
     </teleport>
 
-    <div>
-        <h1><editable-text v-model="editedTask.name" @update:modelValue="updateOrCreateTask()"/></h1>
-        <p><editable-text v-model="editedTask.description" @update:modelValue="updateOrCreateTask()"/></p>
-        <ul v-if="taskEfforts.length > 0">
-            <li v-for="effort of taskEfforts" :key="effort.id" @click="effortModalItem = effort">{{ effort.starts }}: {{ effort.duration }} minutes</li>
-        </ul>
-        <button v-if="!editedTaskIsNewTask" @click="effortModalItem = editedTask.id">New Effort</button>
+    <div class="centering-wrapper">
+        <div class="card">
+            <h1><editable-text v-model="editedTask.name" @update:modelValue="updateOrCreateTask()"/></h1>
+            <p><editable-text v-model="editedTask.description" @update:modelValue="updateOrCreateTask()"/></p>
+            <ul v-if="taskEfforts.length > 0">
+                <li v-for="effort of taskEfforts" :key="effort.id" @click="effortModalItem = effort">{{ effort.starts }}: {{ effort.duration }} minutes</li>
+            </ul>
+            <button v-if="!editedTaskIsNewTask" @click="effortModalItem = editedTask.id">New Effort</button>
+        </div>
     </div>
 </template>
 
@@ -83,3 +85,22 @@ export default defineComponent({
     }
 })
 </script>
+
+<style lang="sass" scoped>
+@use "src/styles/constants"
+@use "src/styles/utils"
+@use "src/styles/visual"
+
+$margin: constants.$margin-small
+
+.centering-wrapper
+    @include utils.centered-main-axis
+
+.card
+    @include visual.rounded
+    margin: $margin
+    padding: .5em
+    width: calc(100% - #{2 * $margin})
+    max-width: constants.$card-max-width
+    background-color: constants.$colour-background
+</style>

@@ -59,13 +59,17 @@ export default defineComponent({
 
 <style lang="sass">
 @use "src/styles/reset"
-@use "src/styles/constants"
 
 #app
     display: flex
     align-items: stretch
     height: 100%
     width: 100%
+</style>
+
+<style lang="sass" scoped>
+@use "src/styles/constants"
+@use "src/styles/utils"
 
 .app-inner
     display: flex
@@ -99,15 +103,11 @@ export default defineComponent({
 .content
     flex-grow: 1
     height: fit-content
-</style>
-
-<style lang="sass" scoped>
-@use "src/styles/utils"
 
 .button
     @include utils.centered
-    padding-top: 25%
-    padding-bottom: 25%
+    padding-top: calc(#{constants.$side-navbar-width} / 4)
+    padding-bottom: calc(#{constants.$side-navbar-width} / 4)
     cursor: pointer
     border-style: solid
     border-width: 1px
