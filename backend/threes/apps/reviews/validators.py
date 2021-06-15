@@ -18,6 +18,9 @@ class OwnedBySameUserValidator(BaseDuplicateValidator):
 
     def _validate(self, attrs: dict[str, Any]) -> Optional[Tuple[str, str]]:
         owner = attrs["owner"]
+        # Empty many-to-many fields are not included in the form (and thus attrs).
+        if self._ids_field_name not in attrs:
+            return None
         filtered = (self._queryset.filter(id__in=attrs[self._ids_field_name])
                     if isinstance(attrs[self._ids_field_name], Iterable)
                     else self._queryset.filter(id=attrs[self._ids_field_name]))

@@ -84,7 +84,7 @@ class ReviewPeriod(models.Model):
     owner = models.ForeignKey(EmailUser, on_delete=models.CASCADE, related_name="review_periods")
     configuration = models.ForeignKey(ReviewPeriodConfiguration, on_delete=models.CASCADE)
 
-    planned_tasks = models.ManyToManyField(Task, related_name="review_periods")
+    planned_tasks = models.ManyToManyField(Task, related_name="review_periods", blank=True)
 
     index = models.IntegerField()
     review_period_index = models.IntegerField()
