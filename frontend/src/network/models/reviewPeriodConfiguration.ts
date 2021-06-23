@@ -62,6 +62,13 @@ export class ReviewPeriodConfiguration {
         this.duration = Duration.fromObject(durationObject)
     }
 
+    startsEndsDateTime(index: number, reviewPeriodIndex: number): [DateTime, DateTime] {
+        let starts = this.starts.plus(Duration.fromObject({ years: this.indexReset == IndexReset.END_OF_YEAR ? reviewPeriodIndex : 0 }))
+
+        return [starts.plus(this.duration.mapUnits(x => x * index)),
+                starts.plus(this.duration.mapUnits(x => x * (index + 1)))]
+    }
+
     constructName(reviewPeriod: ReviewPeriod | NewReviewPeriod): string {
         let prefix = ""
         switch (this.indexType) {

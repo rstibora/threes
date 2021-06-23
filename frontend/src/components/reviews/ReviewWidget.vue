@@ -6,7 +6,7 @@
             </button>
             <div v-if="selectedReviewPeriod != null">
                 <strong>{{ reviewPeriodName != null ? reviewPeriodName : "Create your first Review Period" }}</strong>
-                <br>{{ selectedReviewPeriod.starts.toLocaleString() }} - {{ selectedReviewPeriod.ends.toLocaleString() }}
+                <br>{{ selectedReviewPeriodStartsEndsDateTime[0].toLocaleString() }} - {{ selectedReviewPeriodStartsEndsDateTime[1].toLocaleString() }}
             </div>
             <p v-else>Create your first Review Period</p>
             <button :disabled="nextButtonDisabled" @click="changeSelectedReviewIndexBy(1)" class="round">
@@ -27,6 +27,7 @@ import { Effort } from "src/network/models/effort"
 import { ReviewPeriod } from "src/network/models/reviewPeriod"
 import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
 import { Task } from "src/network/models/task"
+import { DateTime } from "luxon"
 
 export default defineComponent({
     props: {
@@ -98,6 +99,13 @@ export default defineComponent({
                 return this.reviewPeriodsForConfiguration[this.selectedReviewIndex]
             }
             return null
+        },
+        selectedReviewPeriodStartsEndsDateTime(): [DateTime, DateTime] | undefined {
+            if (this.selectedReviewPeriod == null) {
+                return undefined
+            }
+            return this.configuration.startsEndsDateTime(
+                this.selectedReviewPeriod.index, this.selectedReviewPeriod.reviewPeriodIndex)
         }
     },
 
