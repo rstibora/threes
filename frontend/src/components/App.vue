@@ -79,6 +79,7 @@ export default defineComponent({
     width: 100%
 
 .side-navbar
+    display: flex
     flex-direction: column
     width: constants.$side-navbar-width
     height: 100%
@@ -115,4 +116,7 @@ export default defineComponent({
 
 .button:hover
     border-color: rgb(0 0 0 / 100%)
+
+.button:last-of-type
+    margin-top: auto
 </style>
