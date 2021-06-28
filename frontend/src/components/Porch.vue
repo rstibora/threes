@@ -7,7 +7,7 @@
 import { defineComponent } from "vue"
 import { mapState } from "vuex"
 
-import { Session } from "src/state/session"
+import { Session } from "../state/session"
 import { fetchResource } from "src/network/fetchResource"
 
 import App from "src/components/App.vue"

@@ -1,12 +1,17 @@
-const path = require("path")
+import path from "path"
+import { fileURLToPath } from "url"
 
-const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin")
-const WebpackCleanPlugin = require("webpack-clean-plugin")
-const { WebpackManifestPlugin } = require("webpack-manifest-plugin")
+import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin"
+import WebpackCleanPlugin from "webpack-clean-plugin"
+import { WebpackManifestPlugin } from "webpack-manifest-plugin"
 
-const { VueLoaderPlugin } = require("vue-loader")
+import { VueLoaderPlugin } from "vue-loader"
 
-module.exports = {
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+
+export default {
     entry: {
         main: "./src/index.ts"
     },
