@@ -19,7 +19,7 @@ router.register(r"review_configurations", ReviewConfigurationViewSet,
                 basename=r"reviewconfiguration")
 router.register(r"user_review_configuration", UserReviewConfigurationViewSet,
                 basename=r"userreviewperiod")
-router.register(r"review_periods", ReviewViewSet, basename=r"reviewperiod")
+router.register(r"reviews", ReviewViewSet, basename=r"review")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
