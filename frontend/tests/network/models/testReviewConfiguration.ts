@@ -26,6 +26,7 @@ _chai.should();
     }
 
     @params({ configurationName: ConfigurationName.WEEKLY, datetime: DateTime.fromObject({ year: 2020, month: 3, day: 5 }) })
+    @params({ configurationName: ConfigurationName.WEEKLY, datetime: DateTime.fromObject({ year: 2020, month: 3, day: 5 }) })
     testGetIntervalGetIndex({ configurationName, datetime }) {
         const configuration = new ReviewConfiguration(configurationName)
         const index = configuration.getIndex(datetime)

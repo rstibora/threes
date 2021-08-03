@@ -4,7 +4,7 @@ import { getStringEnumKeyByValue } from "src/utils/enum"
 
 
 export interface ReviewConfigurationSerialized {
-    id?: number
+    id: number
     name: string
 }
 
@@ -17,20 +17,23 @@ export enum ConfigurationName {
 }
 
 export class ReviewConfiguration {
+    id: number
     name: ConfigurationName
 
-    constructor(name: ConfigurationName) {
+    constructor(id: number, name: ConfigurationName) {
+        this.id = id
         this.name = name
     }
 
     serialize(): ReviewConfigurationSerialized {
         return { 
-            name: this.name
+            id: this.id,
+            name: this.name,
         }
     }
 
     static deserialize(serialized: ReviewConfigurationSerialized): ReviewConfiguration {
-        return new ReviewConfiguration(ConfigurationName[getStringEnumKeyByValue(ConfigurationName, serialized.name)])
+        return new ReviewConfiguration(serialized.id, ConfigurationName[getStringEnumKeyByValue(ConfigurationName, serialized.name)])
     }
 
     getInterval(index: number): Interval {
@@ -63,6 +66,37 @@ export class ReviewConfiguration {
         const index = Interval.fromDateTimes(DateTime.fromSeconds(0), datetime).length(durationUnit as keyof DurationObjectUnits)
         return Math.floor(index / indexMultiplier)
     }
+
+    getName(index: number): string {
+        return "YOLO"
+    }
+
+    // constructName(reviewPeriod: ReviewPeriod | NewReviewPeriod): string {
+    //     let prefix = ""
+    //     switch (this.indexType) {
+    //         case IndexType.WEEK_NUMBER: { prefix = "Week"; break }
+    //         case IndexType.FORTNIGHT_NUMBER: { prefix = "Fortnight"; break }
+    //         case IndexType.YEAR_NUMBER: { prefix = "Year"; break }
+    //         case IndexType.INTEGER : 
+    //         case IndexType.MONTH_NAME:
+    //         case IndexType.QUARTER_NUMBER: { break }
+    //         default: { throw Error(`Unknown index type ${this.indexType}`)}
+    //     }
+
+    //     // Humans are used to indexing starting from one.
+    //     let stringIndex = (reviewPeriod.index + 1).toString()
+
+    //     if (this.indexType == IndexType.MONTH_NAME) {
+    //         stringIndex = new Date(1991, reviewPeriod.index).toLocaleString("default", { month: "long"})
+    //     } else if (this.indexType == IndexType.QUARTER_NUMBER) {
+    //         stringIndex = ["Q1", "Q2", "Q3", "Q4"][reviewPeriod.index]
+    //     } else if (this.indexType == IndexType.YEAR_NUMBER) {
+    //         stringIndex = (this.starts.year + reviewPeriod.index).toString()
+    //     }
+    //     const suffix = this.indexReset == IndexReset.END_OF_YEAR ? this.starts.year + reviewPeriod.reviewPeriodIndex : ""
+
+    //     return [prefix, stringIndex, suffix].join(" ")
+    // }
 
     private getDuration(): Duration {
         if (this.name === ConfigurationName.WEEKLY) {

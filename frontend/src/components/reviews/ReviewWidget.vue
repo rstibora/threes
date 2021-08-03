@@ -4,9 +4,9 @@
             <button :disabled="previousButtonDisabled"  @click="changeSelectedReviewIndexBy(-1)" class="round">
                 &lt;
             </button>
-            <div v-if="selectedReviewPeriod != null">
+            <div v-if="selectedReviewBundle != null">
                 <strong>{{ reviewPeriodName != null ? reviewPeriodName : "Create your first Review Period" }}</strong>
-                <br>{{ selectedReviewPeriodStartsEndsDateTime[0].toLocaleString() }} - {{ selectedReviewPeriodStartsEndsDateTime[1].toLocaleString() }}
+                <br>{{ selectedReviewInterval[0].toLocaleString() }} - {{ selectedReviewInterval[1].toLocaleString() }}
             </div>
             <p v-else>Create your first Review Period</p>
             <button :disabled="nextButtonDisabled" @click="changeSelectedReviewIndexBy(1)" class="round">
@@ -18,21 +18,31 @@
 </template>
 
 <script lang="ts">
+import { DateTime, Duration, Interval } from "luxon"
 import { defineComponent, PropType } from "vue"
 import { mapActions, mapState } from "vuex"
 
 import TaskPill from "src/components/tasks/TaskPill.vue"
 
 import { Effort } from "src/network/models/effort"
-import { ReviewPeriod } from "src/network/models/reviewPeriod"
-import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
+import { Review } from "src/network/models/review"
+import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
 import { Task } from "src/network/models/task"
-import { DateTime } from "luxon"
+
+
+interface ReviewBundle {
+    /**
+     * Bunch of data bundled together to avoid the need for many computed methods.
+     */
+    review: Review,
+    interval: Interval,
+    reviewName: string,
+}
 
 export default defineComponent({
     props: {
         configuration: {
-            type: Object as PropType<ReviewPeriodConfiguration>,
+            type: Object as PropType<ReviewConfiguration>,
             required: true,
         }
     },
@@ -54,59 +64,44 @@ export default defineComponent({
                 }
             }
 
-            for (const effort of this.efforts.values() as Array<Effort>) {
-                // TODO: dumb for now.
-                if (this.selectedReviewPeriod == null
-                        || effort.starts < this.selectedReviewPeriod.starts
-                        || effort.starts > this.selectedReviewPeriod.ends) {
-                    return effortPerTask
-                }
+            if (this.selectedReviewBundle === undefined) {
+                return effortPerTask
+            }
 
-                if (!effortPerTask.has(effort.taskId)) {
-                    effortPerTask.set(effort.taskId, new Array<Effort>())
+            for (const effort of this.efforts.values() as Array<Effort>) {
+                if (effort.interval.intersection(this.selectedReviewBundle.interval) !== null) {
+                    effortPerTask.get(effort.taskId)?.push(effort)
                 }
-                let efforts = effortPerTask.get(effort.taskId) as Array<Effort>
-                efforts.push(effort)
             }
             return effortPerTask
         },
-        reviewPeriodsForConfiguration(): Array<ReviewPeriod> {
+        reviewPeriodsForConfiguration(): Array<Review> {
             return [...this.reviewPeriods.values()].filter(
-                (reviewPeriod: ReviewPeriod) => reviewPeriod.configurationId == this.configuration.id)
+                (reviewPeriod: Review) => reviewPeriod.configurationId == this.configuration.id)
         },
         plannedTasks(): Array<Task> {
             let plannedTasks: Array<Task> = []
-            if (this.selectedReviewPeriod == null) {
+            if (this.selectedReviewBundle === undefined) {
                 return plannedTasks
             }
-            for (const id of this.selectedReviewPeriod.plannedTasksIds) {
+            for (const id of this.selectedReviewBundle.review.plannedTasksIds) {
                 plannedTasks.push(this.tasks.get(id))
             }
             return plannedTasks
-        },
-        reviewPeriodName(): string | null {
-            if (this.selectedReviewPeriod == null) {
-                return null
-            }
-            return this.configuration.constructName(this.selectedReviewPeriod)
         },
         previousButtonDisabled(): boolean { 
             return this.selectedReviewIndex == 0 },
         nextButtonDisabled(): boolean { 
             return this.selectedReviewIndex == Math.max(0, this.reviewPeriodsForConfiguration.length - 1)},
-        selectedReviewPeriod(): ReviewPeriod | null {
-            if (this.reviewPeriodsForConfiguration.length > 0) {
-                return this.reviewPeriodsForConfiguration[this.selectedReviewIndex]
-            }
-            return null
-        },
-        selectedReviewPeriodStartsEndsDateTime(): [DateTime, DateTime] | undefined {
-            if (this.selectedReviewPeriod == null) {
+        selectedReviewBundle(): ReviewBundle | undefined {
+            if (this.reviewPeriodsForConfiguration.length === 0) {
                 return undefined
             }
-            return this.configuration.startsEndsDateTime(
-                this.selectedReviewPeriod.index, this.selectedReviewPeriod.reviewPeriodIndex)
-        }
+            const review = this.reviewPeriodsForConfiguration[this.selectedReviewIndex]
+            return { review,
+                     interval: this.configuration.getInterval(review.index),
+                     reviewName: this.configuration.getName(review.index) } 
+        },
     },
 
     methods: {

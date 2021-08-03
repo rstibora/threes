@@ -11,18 +11,21 @@ import { mapActions, mapState } from "vuex"
 import ReviewWidget from "src/components/reviews/ReviewWidget.vue"
 import TaskCard from "src/components/tasks/TaskCard.vue"
 
-import { ReviewPeriodConfiguration } from "src/network/models/reviewPeriodConfiguration"
+import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
+import { UserReviewConfiguration } from "src/network/models/userReviewConfiguration"
+import { MapById } from "src/state/store"
 
 export default defineComponent({
     computed: {
         ...mapState([
-            "reviewPeriodConfigurations"
+            "reviewConfigurations", "userReviewConfigurations"
         ]),
         activeReviewPeriodConfigurations() {
-            const filtered = new Map<number, ReviewPeriodConfiguration>()
-            for (const [id, configuration] of this.reviewPeriodConfigurations) {
-                if (configuration.active) {
-                    filtered.set(id, configuration)
+            const filtered = new Map<number, ReviewConfiguration>()
+            for (const [id, userConfiguration] of this.userReviewConfigurations as MapById<UserReviewConfiguration>) {
+                if (userConfiguration.isActive) {
+                    const configuration = this.reviewConfigurations.get(userConfiguration.configurationId)
+                    filtered.set(configuration.id, configuration)
                 }
             }
             return filtered

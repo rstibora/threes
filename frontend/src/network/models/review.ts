@@ -5,7 +5,7 @@ export interface ReviewSerialized {
     planned_tasks: Array<number>
 }
 
-export class Review {
+export class NewReview {
     configurationId: number
     index: number
     plannedTasksIds: Array<number>
@@ -23,8 +23,24 @@ export class Review {
             planned_tasks: this.plannedTasksIds
         }
     }
+}
+
+export class Review extends NewReview {
+    id: number
+
+    constructor(id: number, configurationId: number, index: number, plannedTasksIds: Array<number>) {
+        super(configurationId, index, plannedTasksIds)
+        this.id = id
+    }
+
+    serialize(): ReviewSerialized {
+        return { id: this.id, ...super.serialize()}
+    }
 
     static deserialize(serialized: ReviewSerialized): Review {
-        return new Review(serialized.configuration, serialized.index, serialized.planned_tasks)
+        if (serialized.id === undefined) {
+            throw Error(`Can't deserialize ${serialized} with undefined id.`)
+        }
+        return new Review(serialized.id, serialized.configuration, serialized.index, serialized.planned_tasks)
     }
 }

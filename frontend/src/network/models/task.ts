@@ -8,7 +8,7 @@ export interface TaskSerialized {
     created: string
 }
 
-export class Task {
+export class NewTask {
     name: string
     description: string
     created: DateTime
@@ -16,7 +16,7 @@ export class Task {
     constructor(name: string, description: string, created?: DateTime) {
         this.name = name
         this.description = description
-        this.created = created !== undefined ? created : DateTime.now())
+        this.created = created !== undefined ? created : DateTime.now()
     }
 
     serialize(): TaskSerialized {
@@ -26,8 +26,24 @@ export class Task {
             created: this.created.toISO(),
         }
     }
+}
+
+export class Task extends NewTask {
+    id: number
+
+    constructor(id: number, name: string, description: string, created: DateTime) {
+        super(name, description, created)
+        this.id = id
+    }
+
+    serialize(): TaskSerialized {
+        return { id: this.id, ...super.serialize() }
+    }
 
     static deserialize(serialized: TaskSerialized): Task {
-        return new Task(serialized.name, serialized.description, DateTime.fromISO(serialized.created))
+        if (serialized.id === undefined) {
+            throw Error(`Can't deserialize ${serialized} with undefined id.`)
+        }
+        return new Task(serialized.id, serialized.name, serialized.description, DateTime.fromISO(serialized.created))
     }
 }

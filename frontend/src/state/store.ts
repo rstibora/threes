@@ -4,40 +4,47 @@ import { createStore } from "vuex"
 import { Session } from "src/state/session"
 import { fetchResource } from "src/network/fetchResource"
 
-import { Effort, EffortSerialized, NewEffort } from "src/network/models/effort"
-import { ReviewPeriod, ReviewPeriodSerialized } from "src/network/models/reviewPeriod"
-import { ReviewPeriodConfiguration, ReviewPeriodConfigurationSerialized } from "src/network/models/reviewPeriodConfiguration"
-import { NewTask, Task, TaskSerialized } from "src/network/models/task"
+import { Effort, NewEffort, EffortSerialized } from "src/network/models/effort"
+import { Review, NewReview, ReviewSerialized } from "src/network/models/review"
+import { ReviewConfiguration, ReviewConfigurationSerialized } from "src/network/models/reviewConfiguration"
+import { Task, NewTask, TaskSerialized } from "src/network/models/task"
+import { UserReviewConfiguration, NewUserReviewConfiguration, UserReviewConfigurationSerialized } from "src/network/models/userReviewConfiguration"
 
+
+export type MapById<T> = Map<number, T>
 
 export default createStore({
-  state() {
-      return {
-        efforts: new Map<number, Effort>(),
-        tasks: new Map<number, Task>(),
-        reviewPeriodConfigurations: new Map<number, ReviewPeriodConfiguration>(),
-        reviewPeriods: new Map<number, ReviewPeriod>(),
-        session: undefined as Session | undefined,
-      }
-  },
-  mutations: {
-    updateEfforts(state: State, payload: Map<number, Effort>) {
-      state.efforts = payload
+    state() {
+        return {
+            efforts: new Map<number, Effort>(),
+            reviews: new Map<number, Review>(),
+            reviewConfigurations: new Map<number, ReviewConfiguration>(),
+            session: undefined as Session | undefined,
+            tasks: new Map<number, Task>(),
+            userReviewConfigurations: new Map<number, UserReviewConfiguration>(),
+        }
     },
-    updateReviewPeriods(state: State, payload: Map<number, ReviewPeriod>) {
-      state.reviewPeriods = payload
+    mutations: {
+        updateEfforts(state: State, payload: MapById<Effort>) {
+            state.efforts = payload
+        },
+        updateReviews(state: State, payload: MapById<Review>) {
+            state.reviews = payload
+        },
+        updateReviewConfigurations(state: State, payload: MapById<ReviewConfiguration>) {
+            state.reviewConfigurations = payload
+        },
+        updateTasks(state: State, payload: MapById<Task>) {
+            state.tasks = payload
+        },
+        updateSession(state: State, payload: {session?: Session}) {
+            state.session = payload.session
+        },
+        updateUserReviewConfigurations(state: State, payload: MapById<UserReviewConfiguration>) {
+            state.userReviewConfigurations = payload
+        },
     },
-    updateReviewPeriodConfigurations(state: State, payload: Map<number, ReviewPeriodConfiguration>) {
-      state.reviewPeriodConfigurations = payload
-    },
-    updateTasks(state: State, payload: Map<number, Task>) {
-      state.tasks = payload
-    },
-    updateSession(state: State, payload: {session?: Session}) {
-      state.session = payload.session
-    }
-  },
-  actions: {
+    actions: {
     async refreshToken({ state, commit }): Promise<boolean> {
       if (state.session != null) {
         return true
@@ -88,24 +95,36 @@ export default createStore({
       commit("updateTasks", tasks)
     },
     async fetchReviewPeriods({ dispatch, commit }) {
-      const responses: [Response, Response] = await Promise.all([
-        dispatch("fetchResourceWithToken", { method: "GET", apiPath: "/api/review_period_configurations" }),
-        dispatch("fetchResourceWithToken", { method: "GET", apiPath: "/api/review_periods" })])
-      if (!responses.every(response => response.ok)) {
-        return
-      }
-      const [configurationsJson, reviewsJson] = await Promise.all(responses.map(response => response.json()))
-      let configurations = new Map<number, ReviewPeriodConfiguration>()
-      for (const configuration of configurationsJson as Array<ReviewPeriodConfigurationSerialized>) {
-        configurations.set(configuration.id, new ReviewPeriodConfiguration(configuration))
-      }
-      let reviews = new Map<number, ReviewPeriod>()
-      for (const reviewSerialized of reviewsJson as Array<ReviewPeriodSerialized>) {
-        const review = ReviewPeriod.deserialize(reviewSerialized)
-        reviews.set(review.id, review)
-      }
-      commit("updateReviewPeriodConfigurations", configurations)
-      commit("updateReviewPeriods", reviews)
+        const responses: [Response, Response] = await Promise.all([
+            dispatch("fetchResourceWithToken", { method: "GET", apiPath: "/api/review_configurations" }),
+            dispatch("fetchResourceWithToken", { method: "GET", apiPath: "/api/user_review_configurations" })])
+            dispatch("fetchResourceWithToken", { method: "GET", apiPath: "/api/reviews" })
+
+        if (!responses.every(response => response.ok)) {
+            return
+        }
+        const [configurationsJson, userConfigurationsJson, reviewsJson] = await Promise.all(responses.map(response => response.json()))
+
+        let configurations = new Map<number, ReviewConfiguration>()
+        for (const configurationSerialized of configurationsJson as Array<ReviewConfigurationSerialized>) {
+            const configuration = ReviewConfiguration.deserialize(configurationSerialized)
+            configurations.set(configuration.id, configuration)
+        }
+
+        let userConfigurations = new Map<number, UserReviewConfiguration>()
+        for (const userConfigurationSerialized of userConfigurationsJson as Array<UserReviewConfigurationSerialized>) {
+            const userReview = UserReviewConfiguration.deserialize(userConfigurationSerialized)
+            userConfigurations.set(userReview.id, userReview)
+        }
+
+        let reviews = new Map<number, Review>()
+        for (const reviewSerialized of reviewsJson as Array<ReviewSerialized>) {
+            const review = Review.deserialize(reviewSerialized)
+            reviews.set(review.id, review)
+        }
+        commit("updateReviewPeriodConfigurations", configurations)
+        commit("updateUserReviewPeriodConfigurations", userConfigurations)
+        commit("updateReviewPeriods", reviews)
     },
 
     async updateEffort({ dispatch, commit, state }, payload: { effort: Effort }) {
@@ -120,7 +139,7 @@ export default createStore({
       efforts.set(payload.effort.id, payload.effort)
       commit("updateEfforts", efforts)
     },
-    async createEffort({ dispatch, commit, state }, payload: { effort: NewEffort }): Promise<Effort> {
+    async createEffort({ dispatch, commit, state }, payload: { effort: Effort }): Promise<Effort> {
       const response: Response = await dispatch("fetchResourceWithToken",
                                                 { method: "POST", apiPath: `/api/efforts/`,
                                                   data: payload.effort.serialize() })
@@ -134,27 +153,27 @@ export default createStore({
       commit("updateEfforts", efforts)
       return newEffort
     },
-    async updateTask({ dispatch, commit, state }, payload: { task: Task }) {
+    async updateTask({ dispatch, commit, state }, payload: { id: number, task: Task }) {
       const response: Response = await dispatch("fetchResourceWithToken",
-                                                { method: "PUT", apiPath: `/api/tasks/${payload.task.id}/`,
-                                                  data: payload.task.serialize() })
+                                                { method: "PUT", apiPath: `/api/tasks/${payload.id}/`,
+                                                  data: { id: payload.id, ...payload.task.serialize() }})
       if (!response.ok) {
         throw Error("Could not update task.")
       }
 
       const tasks = new Map(state.tasks)
-      tasks.set(payload.task.id, payload.task)
+      tasks.set(payload.id, payload.task)
       commit("updateTasks", tasks)
     },
-    async createTask({ dispatch, commit, state }, payload: { task: NewTask }): Promise<Task> {
+    async createTask({ dispatch, commit, state }, payload: { task: Task }): Promise<Task> {
       const response: Response = await dispatch("fetchResourceWithToken",
                                                 { method: "POST", apiPath: `/api/tasks/`,
                                                   data: payload.task.serialize() })
       if (!response.ok) {
         throw Error("Could not create a new task.")
       }
-      const json: TaskSerialized = await response.json()
-      const newTask = Task.deserialize(json)
+      const taskSerialized: TaskSerialized = await response.json()
+      const newTask = Task.deserialize(taskSerialized)
       let allTasks = new Map(state.tasks)
       allTasks.set(newTask.id, newTask)
       commit("updateTasks", allTasks)
