@@ -99,8 +99,8 @@ export default defineComponent({
             }
             const review = this.reviewsForConfiguration[this.selectedReviewIndex]
             return { review,
-                     interval: this.configuration.getInterval(review.index),
-                     reviewName: this.configuration.getName(review.index) } 
+                     interval: this.configuration.getReviewInterval(review.index),
+                     reviewName: this.configuration.getReviewName(review.index) } 
         },
     },
 
