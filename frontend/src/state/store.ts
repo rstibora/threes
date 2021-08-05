@@ -94,15 +94,16 @@ export default createStore({
       }
       commit("updateTasks", tasks)
     },
-    async fetchReviewPeriods({ dispatch, commit }) {
-        const responses: [Response, Response] = await Promise.all([
+    async fetchReviews({ dispatch, commit }) {
+        const responses: [Response, Response, Response] = await Promise.all([
             dispatch("fetchResourceWithToken", { method: "GET", apiPath: "/api/review_configurations" }),
-            dispatch("fetchResourceWithToken", { method: "GET", apiPath: "/api/user_review_configurations" })])
+            dispatch("fetchResourceWithToken", { method: "GET", apiPath: "/api/user_review_configurations" }),
             dispatch("fetchResourceWithToken", { method: "GET", apiPath: "/api/reviews" })
-
+        ])
         if (!responses.every(response => response.ok)) {
             return
         }
+
         const [configurationsJson, userConfigurationsJson, reviewsJson] = await Promise.all(responses.map(response => response.json()))
 
         let configurations = new Map<number, ReviewConfiguration>()
@@ -122,9 +123,9 @@ export default createStore({
             const review = Review.deserialize(reviewSerialized)
             reviews.set(review.id, review)
         }
-        commit("updateReviewPeriodConfigurations", configurations)
-        commit("updateUserReviewPeriodConfigurations", userConfigurations)
-        commit("updateReviewPeriods", reviews)
+        commit("updateReviewConfigurations", configurations)
+        commit("updateUserReviewConfigurations", userConfigurations)
+        commit("updateReviews", reviews)
     },
 
     async updateEffort({ dispatch, commit, state }, payload: { effort: Effort }) {
@@ -165,7 +166,7 @@ export default createStore({
       tasks.set(payload.id, payload.task)
       commit("updateTasks", tasks)
     },
-    async createTask({ dispatch, commit, state }, payload: { task: Task }): Promise<Task> {
+    async createTask({ dispatch, commit, state }, payload: { task: NewTask }): Promise<Task> {
       const response: Response = await dispatch("fetchResourceWithToken",
                                                 { method: "POST", apiPath: `/api/tasks/`,
                                                   data: payload.task.serialize() })

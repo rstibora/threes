@@ -32,7 +32,7 @@ export default defineComponent({
         },
     },
     methods: {
-        ...mapActions(["fetchTasks", "fetchReviewPeriods"])
+        ...mapActions(["fetchTasks", "fetchReviews"])
     },
     components: {
         ReviewWidget,
@@ -40,7 +40,7 @@ export default defineComponent({
     },
     created: async function() {
         this.fetchTasks()
-        this.fetchReviewPeriods()
+        this.fetchReviews()
     }
 })
 </script>

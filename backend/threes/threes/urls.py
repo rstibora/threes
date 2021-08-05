@@ -17,7 +17,7 @@ router.register(r"tasks", TaskViewSet, basename=r"task")
 router.register(r"users", EmailUserViewSet, basename=r"user")
 router.register(r"review_configurations", ReviewConfigurationViewSet,
                 basename=r"reviewconfiguration")
-router.register(r"user_review_configuration", UserReviewConfigurationViewSet,
+router.register(r"user_review_configurations", UserReviewConfigurationViewSet,
                 basename=r"userreviewperiod")
 router.register(r"reviews", ReviewViewSet, basename=r"review")
 

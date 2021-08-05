@@ -1,13 +1,14 @@
+from django.db.models import query
 from rest_framework import permissions, viewsets
 
-from .models import Review, UserReviewConfiguration
+from .models import Review, ReviewConfiguration, UserReviewConfiguration
 from .serializers import (
     ReviewConfigurationSerializer, ReviewSerializer, UserReviewConfigurationSerializer)
 
 
-class ReviewConfigurationViewSet(viewsets.ModelViewSet):
-    # TODO: it should be read only.
+class ReviewConfigurationViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ReviewConfigurationSerializer
+    queryset = ReviewConfiguration.objects.all()
 
 
 class UserReviewConfigurationViewSet(viewsets.ModelViewSet):

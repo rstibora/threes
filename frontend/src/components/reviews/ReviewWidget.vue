@@ -5,8 +5,8 @@
                 &lt;
             </button>
             <div v-if="selectedReviewBundle != null">
-                <strong>{{ reviewPeriodName != null ? reviewPeriodName : "Create your first Review Period" }}</strong>
-                <br>{{ selectedReviewInterval[0].toLocaleString() }} - {{ selectedReviewInterval[1].toLocaleString() }}
+                <strong>{{ selectedReviewBundle.reviewName }}</strong>
+                <br>{{ selectedReviewBundle.interval.start.toLocaleString() }} - {{ selectedReviewBundle.interval.end.toLocaleString() }}
             </div>
             <p v-else>Create your first Review Period</p>
             <button :disabled="nextButtonDisabled" @click="changeSelectedReviewIndexBy(1)" class="round">
@@ -54,7 +54,7 @@ export default defineComponent({
     },
 
     computed: {
-        ...mapState(["efforts", "reviewPeriods", "tasks"]),
+        ...mapState(["efforts", "reviews", "tasks"]),
         effortPerTaskForSelectedReview(): Map<number, Array<Effort>> {
             let effortPerTask = new Map<number, Array<Effort>>()
             // Ensure there is at least an empty array for each task id.
@@ -75,9 +75,9 @@ export default defineComponent({
             }
             return effortPerTask
         },
-        reviewPeriodsForConfiguration(): Array<Review> {
-            return [...this.reviewPeriods.values()].filter(
-                (reviewPeriod: Review) => reviewPeriod.configurationId == this.configuration.id)
+        reviewsForConfiguration(): Array<Review> {
+            return [...this.reviews.values()].filter(
+                (review: Review) => review.configurationId == this.configuration.id)
         },
         plannedTasks(): Array<Task> {
             let plannedTasks: Array<Task> = []
@@ -92,12 +92,12 @@ export default defineComponent({
         previousButtonDisabled(): boolean { 
             return this.selectedReviewIndex == 0 },
         nextButtonDisabled(): boolean { 
-            return this.selectedReviewIndex == Math.max(0, this.reviewPeriodsForConfiguration.length - 1)},
+            return this.selectedReviewIndex == Math.max(0, this.reviewsForConfiguration.length - 1)},
         selectedReviewBundle(): ReviewBundle | undefined {
-            if (this.reviewPeriodsForConfiguration.length === 0) {
+            if (this.reviewsForConfiguration.length === 0) {
                 return undefined
             }
-            const review = this.reviewPeriodsForConfiguration[this.selectedReviewIndex]
+            const review = this.reviewsForConfiguration[this.selectedReviewIndex]
             return { review,
                      interval: this.configuration.getInterval(review.index),
                      reviewName: this.configuration.getName(review.index) } 
@@ -108,7 +108,7 @@ export default defineComponent({
         ...mapActions(["fetchEfforts"]),
         changeSelectedReviewIndexBy(step: number) {
             this.selectedReviewIndex = Math.max(Math.min(this.selectedReviewIndex + step,
-                                                         this.reviewPeriodsForConfiguration.length - 1), 0)
+                                                         this.reviewsForConfiguration.length - 1), 0)
         }
     },
 
