@@ -63,7 +63,7 @@ export class ReviewConfiguration {
             case ConfigurationName.WEEKLY: { break }
             case ConfigurationName.FORTNIGHTLY: { indexMultiplier = 2; break }
             case ConfigurationName.MONTHLY: { durationUnit = "months"; break }
-            case ConfigurationName.QUARTERLY: { indexMultiplier = 3; break }
+            case ConfigurationName.QUARTERLY: { durationUnit = "months"; indexMultiplier = 3; break }
             case ConfigurationName.YEARLY: { durationUnit = "years"; break }
             default: { throw Error(`Unknown review configuration ${this.name}`)}
         }
