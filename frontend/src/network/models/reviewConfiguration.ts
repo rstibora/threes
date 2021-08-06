@@ -20,9 +20,17 @@ export class ReviewConfiguration {
     id: number
     name: ConfigurationName
 
+    // Differs for week-based configurations.
+    private readonly epoch_start: DateTime
+
     constructor(id: number, name: ConfigurationName) {
         this.id = id
         this.name = name
+
+        this.epoch_start = DateTime.fromObject({ year: 1970, month: 1, day: 1})
+        if (this.name === ConfigurationName.WEEKLY || this.name === ConfigurationName.FORTNIGHTLY) {
+            this.epoch_start = DateTime.fromObject({ year: 1970, month: 1, day: 5})
+        }
     }
 
     serialize(): ReviewConfigurationSerialized {
@@ -40,8 +48,8 @@ export class ReviewConfiguration {
         /**
          * Calculates interval (datetime from, to) for the review with this configuration and the given index.
          */
-        const starts = DateTime.fromSeconds(0).plus(this.getDuration().mapUnits(durationUnit => durationUnit * index))
-        const ends = starts.plus(this.getDuration())
+        const starts = this.epoch_start.plus(this.getDuration().mapUnits(durationUnit => durationUnit * index))
+        const ends = starts.plus(this.getDuration()).minus(Duration.fromObject({ days: 1 }))
         return Interval.fromDateTimes(starts, ends)
     }
 
@@ -53,13 +61,13 @@ export class ReviewConfiguration {
         let indexMultiplier = 1
         switch (this.name) {
             case ConfigurationName.WEEKLY: { break }
-            case ConfigurationName.FORTNIGHTLY: { indexMultiplier = 2; break}
+            case ConfigurationName.FORTNIGHTLY: { indexMultiplier = 2; break }
             case ConfigurationName.MONTHLY: { durationUnit = "months"; break }
             case ConfigurationName.QUARTERLY: { indexMultiplier = 3; break }
             case ConfigurationName.YEARLY: { durationUnit = "years"; break }
             default: { throw Error(`Unknown review configuration ${this.name}`)}
         }
-        const index = Interval.fromDateTimes(DateTime.fromSeconds(0), datetime)
+        const index = Interval.fromDateTimes(this.epoch_start, datetime)
                         .length(durationUnit as keyof DurationObjectUnits)
         return Math.floor(index / indexMultiplier)
     }

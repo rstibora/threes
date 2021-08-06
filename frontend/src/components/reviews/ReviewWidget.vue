@@ -25,7 +25,7 @@ import { mapActions, mapState } from "vuex"
 import TaskPill from "src/components/tasks/TaskPill.vue"
 
 import { Effort } from "src/network/models/effort"
-import { Review } from "src/network/models/review"
+import { Review, NewReview } from "src/network/models/review"
 import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
 import { Task } from "src/network/models/task"
 
@@ -34,7 +34,7 @@ interface ReviewBundle {
     /**
      * Bunch of data bundled together to avoid the need for many computed methods.
      */
-    review: Review,
+    review: Review | NewReview,
     interval: Interval,
     reviewName: string,
 }
@@ -49,12 +49,30 @@ export default defineComponent({
 
     data: function() {
         return {
-            selectedReviewIndex: 0,
+            selectedReviewIndex: this.configuration.getReviewIndex(DateTime.now())
         }
     },
 
     computed: {
         ...mapState(["efforts", "reviews", "tasks"]),
+        reviewsByIndex(): Map<number, Review> {
+            let reviewsByIndex = new Map<number, Review>()
+            for (const review of this.reviews.values()) {
+                if (review.configurationId == this.configuration.id) {
+                    reviewsByIndex.set(review.index, review)
+                }
+            }
+            return reviewsByIndex
+        },
+        selectedReviewBundle(): ReviewBundle {
+            let review = new NewReview(this.configuration.id, this.selectedReviewIndex, [])
+            if (this.reviewsByIndex.has(this.selectedReviewIndex)) {
+                review = this.reviewsByIndex.get(this.selectedReviewIndex) as Review
+            }
+            return { review,
+                     interval: this.configuration.getReviewInterval(review.index),
+                     reviewName: this.configuration.getReviewName(review.index) } 
+        },
         effortPerTaskForSelectedReview(): Map<number, Array<Effort>> {
             let effortPerTask = new Map<number, Array<Effort>>()
             // Ensure there is at least an empty array for each task id.
@@ -75,10 +93,6 @@ export default defineComponent({
             }
             return effortPerTask
         },
-        reviewsForConfiguration(): Array<Review> {
-            return [...this.reviews.values()].filter(
-                (review: Review) => review.configurationId == this.configuration.id)
-        },
         plannedTasks(): Array<Task> {
             let plannedTasks: Array<Task> = []
             if (this.selectedReviewBundle === undefined) {
@@ -90,25 +104,17 @@ export default defineComponent({
             return plannedTasks
         },
         previousButtonDisabled(): boolean { 
-            return this.selectedReviewIndex == 0 },
+            return this.selectedReviewIndex == 0 
+        },
         nextButtonDisabled(): boolean { 
-            return this.selectedReviewIndex == Math.max(0, this.reviewsForConfiguration.length - 1)},
-        selectedReviewBundle(): ReviewBundle | undefined {
-            if (this.reviewsForConfiguration.length === 0) {
-                return undefined
-            }
-            const review = this.reviewsForConfiguration[this.selectedReviewIndex]
-            return { review,
-                     interval: this.configuration.getReviewInterval(review.index),
-                     reviewName: this.configuration.getReviewName(review.index) } 
+            return false
         },
     },
 
     methods: {
         ...mapActions(["fetchEfforts"]),
         changeSelectedReviewIndexBy(step: number) {
-            this.selectedReviewIndex = Math.max(Math.min(this.selectedReviewIndex + step,
-                                                         this.reviewsForConfiguration.length - 1), 0)
+            this.selectedReviewIndex = this.selectedReviewIndex + step
         }
     },
 
