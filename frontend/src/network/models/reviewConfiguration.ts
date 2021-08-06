@@ -79,21 +79,13 @@ export class ReviewConfiguration {
     }
 
     private getDuration(): Duration {
-        if (this.name === ConfigurationName.WEEKLY) {
-            return Duration.fromObject({ weeks: 1 })
+        switch (this.name) {
+            case ConfigurationName.WEEKLY: { return Duration.fromObject({ weeks: 1 }) }
+            case ConfigurationName.FORTNIGHTLY: { return Duration.fromObject({ weeks: 2 }) }
+            case ConfigurationName.MONTHLY: { return Duration.fromObject({ months: 1 }) }
+            case ConfigurationName.QUARTERLY: { return Duration.fromObject({ months: 3 }) }
+            case ConfigurationName.YEARLY: { return Duration.fromObject({ years: 1 }) }
+            default: { throw Error(`Unknown review configuration ${this.name}`)}
         }
-        if (this.name === ConfigurationName.FORTNIGHTLY) {
-            return Duration.fromObject({ weeks: 2 })
-        }
-        if (this.name === ConfigurationName.MONTHLY) {
-            return Duration.fromObject({ months: 1 })
-        }
-        if (this.name === ConfigurationName.QUARTERLY) {
-            return Duration.fromObject({ months: 3 })
-        }
-        if (this.name === ConfigurationName.YEARLY) {
-            return Duration.fromObject({ years: 1 })
-        }
-        throw Error(`Unknown configuration name '${this.name}'.`)
     }
 }
