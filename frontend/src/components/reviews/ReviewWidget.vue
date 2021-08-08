@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <nav class="navbar">
-            <button :disabled="previousButtonDisabled"  @click="changeSelectedReviewIndexBy(-1)" class="round">
+            <button :disabled="!changeReviewButtonsEnabled.previous"  @click="changeSelectedReviewIndexBy(-1)" class="round">
                 &lt;
             </button>
             <div v-if="selectedReviewBundle != null">
@@ -9,7 +9,7 @@
                 <br>{{ selectedReviewBundle.interval.start.toLocaleString() }} - {{ selectedReviewBundle.interval.end.toLocaleString() }}
             </div>
             <p v-else>Create your first Review Period</p>
-            <button :disabled="nextButtonDisabled" @click="changeSelectedReviewIndexBy(1)" class="round">
+            <button :disabled="!changeReviewButtonsEnabled.next" @click="changeSelectedReviewIndexBy(1)" class="round">
                 &gt;
             </button>
         </nav>
@@ -37,6 +37,11 @@ interface ReviewBundle {
     review: Review | NewReview,
     interval: Interval,
     reviewName: string,
+}
+
+interface ChangeReviewButtonsEnabled {
+    previous: boolean,
+    next: boolean,
 }
 
 export default defineComponent({
@@ -103,11 +108,12 @@ export default defineComponent({
             }
             return plannedTasks
         },
-        previousButtonDisabled(): boolean { 
-            return this.configuration.getReviewInterval(this.selectedReviewIndex - 1).end.valueOf() < this.session.dateJoined.valueOf()
-        },
-        nextButtonDisabled(): boolean { 
-            return false
+        changeReviewButtonsEnabled(): ChangeReviewButtonsEnabled {
+            return {
+                previous: (this.configuration.getReviewInterval(this.selectedReviewIndex - 1).end.valueOf()
+                           >= this.session.dateJoined.valueOf()),
+                next: true,
+            }
         },
     },
 
