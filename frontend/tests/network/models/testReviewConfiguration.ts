@@ -8,17 +8,21 @@ import { ConfigurationName, ReviewConfiguration } from "src/network/models/revie
 
 _chai.should();
 @suite class ReviewPeriodConfigurationTests {
+    // The week with index 0 is the first complete week of the epoch.
     @params({ configurationName: ConfigurationName.WEEKLY, index: 0,
-              expectedInterval: Interval.fromDateTimes(DateTime.fromMillis(0), DateTime.fromMillis(0).plus(Duration.fromObject({ weeks: 1})))})
+              expectedInterval: Interval.fromDateTimes(DateTime.fromObject({ year: 1970, month: 1, day: 5}),
+                                                       DateTime.fromObject({ year: 1970, month: 1, day: 11}))})
+    @params({ configurationName: ConfigurationName.MONTHLY, index: 1,
+              expectedInterval: Interval.fromDateTimes(DateTime.fromObject({ year: 1970, month: 2, day: 1}),
+                                                       DateTime.fromObject({ year: 1970, month: 2, day: 28}))})
     testgetReviewInterval({ configurationName, index, expectedInterval }) {
         const configuration = new ReviewConfiguration(0, configurationName)
         const interval = configuration.getReviewInterval(index)
         interval.equals(expectedInterval).should.be.true
     }
 
-    @params({ configurationName: ConfigurationName.WEEKLY, datetime: DateTime.fromSeconds(0), expectedIndex: 0})
-    @params({ configurationName: ConfigurationName.WEEKLY, datetime: DateTime.fromSeconds(1), expectedIndex: 0})
-    @params({ configurationName: ConfigurationName.WEEKLY, datetime: DateTime.fromObject({ year: 2020, month: 11, day: 20 }), expectedIndex: 2655})
+    @params({ configurationName: ConfigurationName.WEEKLY, datetime: DateTime.fromObject({ year: 1970, month: 1, day: 6}), expectedIndex: 0})
+    @params({ configurationName: ConfigurationName.WEEKLY, datetime: DateTime.fromObject({ year: 2020, month: 11, day: 20 }), expectedIndex: 2654})
     testgetReviewIndex({ configurationName, datetime, expectedIndex }) {
         const configuration = new ReviewConfiguration(0, configurationName)
         const index = configuration.getReviewIndex(datetime)
