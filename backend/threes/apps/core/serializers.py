@@ -9,7 +9,7 @@ from .models import EmailUser
 class EmailUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmailUser
-        fields = ["id", "email"]
+        fields = ["id", "email", "date_joined"]
 
 
 class EmailUserTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -17,6 +17,7 @@ class EmailUserTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user: EmailUser):
         token = super().get_token(user)
         token["email"] = user.email
+        token["date_joined"] = user.date_joined.isoformat()
         return token
 
 

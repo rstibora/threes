@@ -54,7 +54,7 @@ export default defineComponent({
     },
 
     computed: {
-        ...mapState(["efforts", "reviews", "tasks"]),
+        ...mapState(["efforts", "reviews", "session", "tasks"]),
         reviewsByIndex(): Map<number, Review> {
             let reviewsByIndex = new Map<number, Review>()
             for (const review of this.reviews.values()) {
@@ -104,7 +104,7 @@ export default defineComponent({
             return plannedTasks
         },
         previousButtonDisabled(): boolean { 
-            return this.selectedReviewIndex == 0 
+            return this.configuration.getReviewInterval(this.selectedReviewIndex - 1).end.valueOf() < this.session.dateJoined.valueOf()
         },
         nextButtonDisabled(): boolean { 
             return false

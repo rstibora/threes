@@ -22,6 +22,7 @@ def signup(request):
             user = form.save()
             refresh_token = RefreshToken.for_user(user)
             refresh_token["email"] = user.email
+            refresh_token["date_joined"] = user.date_joined.isoformat()
             response = redirect("app")
             response.set_cookie("refresh_token", str(refresh_token))
             return response
@@ -40,6 +41,7 @@ def signin(request):
             if user is not None:
                 refresh_token = RefreshToken.for_user(user)
                 refresh_token["email"] = user.email
+                refresh_token["date_joined"] = user.date_joined.isoformat()
                 response = redirect("app")
                 response.set_cookie("refresh_token", str(refresh_token))
                 return response
