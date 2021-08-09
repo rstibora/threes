@@ -1,6 +1,7 @@
 <template>
     <router-link :to="({ name: 'task', params: { taskId: task.id }})" class="pill block">
         {{ task.name }}: {{ taskEffort }}
+        <router-link :to="({ name: 'effort', params: { taskId: task.id }})">+</router-link>
     </router-link>
 </template>
 

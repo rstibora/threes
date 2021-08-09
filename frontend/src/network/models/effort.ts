@@ -6,6 +6,7 @@ export interface EffortSerialized {
     task: number
     starts: string
     duration: number
+    description: string
 }
 
 export class NewEffort {
@@ -13,11 +14,13 @@ export class NewEffort {
     readonly starts: DateTime
     readonly duration: number
     readonly interval: Interval
+    readonly description: string
 
-    constructor(taskId: number, starts: DateTime, duration: number) {
+    constructor(taskId: number, starts: DateTime, duration: number, description: string) {
         this.taskId = taskId
         this.starts = starts
         this.duration = duration
+        this.description = description
         this.interval = Interval.fromDateTimes(
             this.starts, this.starts.plus(Duration.fromObject({ minutes: this.duration})))
     }
@@ -27,6 +30,7 @@ export class NewEffort {
             task: this.taskId,
             starts: this.starts.toISO(),
             duration: this.duration,
+            description: this.description,
         }
     }
 }
@@ -34,8 +38,8 @@ export class NewEffort {
 export class Effort extends NewEffort {
     id: number
 
-    constructor(id: number, taskId: number, starts: DateTime, duration: number) {
-        super(taskId, starts, duration)
+    constructor(id: number, taskId: number, starts: DateTime, duration: number, description: string) {
+        super(taskId, starts, duration, description)
         this.id = id
     }
 
@@ -47,6 +51,7 @@ export class Effort extends NewEffort {
         if (serialized.id === undefined) {
             throw Error(`Can't deserialize ${serialized} with undefined id.`)
         }
-        return new Effort(serialized.id, serialized.task, DateTime.fromISO(serialized.starts), serialized.duration)
+        return new Effort(serialized.id, serialized.task, DateTime.fromISO(serialized.starts),
+                          serialized.duration, serialized.description)
     }
 }
