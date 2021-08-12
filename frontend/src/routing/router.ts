@@ -14,7 +14,7 @@ const routes = [
     { path: "/tasks/new", component: TaskOverview, name: "newTask"},
     { path: "/tasks/:taskId/effort/:effortId?", component: EffortOverview, name: "effort",
       props: (route: any) => ({ taskId: parseInt(route.params.taskId),
-                                effortId: route.params.effortid === undefined ? undefined : parseInt(route.params.effortId)  })}
+                                effortId: route.params.effortId === undefined ? undefined : parseInt(route.params.effortId)  })}
 
 ]
 

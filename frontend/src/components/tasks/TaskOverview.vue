@@ -1,16 +1,13 @@
 <template>
-    <teleport to="body">
-        <effort-modal v-if="effortModalItem != null" @closed="effortModalItem = undefined" :effortOrTaskId="effortModalItem"></effort-modal>
-    </teleport>
-
     <div class="centering-wrapper">
         <div class="card">
             <h1><editable-text v-model="editedTask.name" @update:modelValue="updateOrCreateTask()"/></h1>
             <p><editable-text v-model="editedTask.description" @update:modelValue="updateOrCreateTask()"/></p>
             <ul v-if="taskEfforts.length > 0">
-                <li v-for="effort of taskEfforts" :key="effort.id" @click="effortModalItem = effort">{{ effort.starts }}: {{ effort.duration }} minutes</li>
+                <li v-for="effort of taskEfforts" :key="effort.id"
+                    @click="routerPushEffort(effort.id)">{{ effort.starts }}: {{ effort.duration }} minutes</li>
             </ul>
-            <button v-if="!editedTaskIsNewTask" @click="effortModalItem = editedTask.id">New Effort</button>
+            <button v-if="!editedTaskIsNewTask" @click="routerPushEffort()">New Effort</button>
         </div>
     </div>
 </template>
@@ -39,7 +36,6 @@ export default defineComponent({
     data: function() {
         return {
             editedTask: freshNewTask() as Task | NewTask,
-            effortModalItem: undefined as Effort | number | undefined
         }
     },
     computed: {
@@ -70,6 +66,16 @@ export default defineComponent({
             } else {
                 await this.updateTask({task: this.editedTask})
                 this.editedTask = this.tasks.get(this.taskId)
+            }
+        },
+        routerPushEffort(effortId: number | undefined = undefined) {
+            if (this.editedTask instanceof Task) {
+                const params = { taskId: this.editedTask.id }
+                if (effortId !== undefined) {
+                    // TODO: ugly.
+                    (params as any).effortId = effortId
+                }
+                this.$router.push({name: "effort", params })
             }
         },
         ...mapActions(["updateTask", "createTask"])
