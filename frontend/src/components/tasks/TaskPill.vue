@@ -1,7 +1,7 @@
 <template>
-    <router-link :to="({ name: 'task', params: { taskId: task.id }})" class="pill block">
-        {{ task.name }}: {{ taskEffort }}
-        <router-link :to="({ name: 'effort', params: { taskId: task.id }})">+</router-link>
+    <router-link :to="({ name: 'task', params: { taskId: task.id }})" class="pill grid">
+        <div class="left-part">{{ task.name }}: {{ taskEffort }}</div>
+        <router-link :to="({ name: 'effort', params: { taskId: task.id }})" class="right-part">+</router-link>
     </router-link>
 </template>
 
@@ -37,6 +37,10 @@ export default defineComponent({
     padding: .05em
     background-color: Aquamarine
 
-.block
-    display: block
+.grid
+    display: grid
+    grid-template-columns: auto 1fr auto
+
+.right-part
+    grid-column: 3
 </style>
