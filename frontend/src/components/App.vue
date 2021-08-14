@@ -4,12 +4,14 @@
     <router-link :to="{ name: 'tasks' }" class="button"><i data-feather="file-text"/></router-link>
     <a @click="logout()" class="button">{{ session != null ? session.userEmail.substr(0, 1) : "X" }}</a>
 </aside>
-<div class="content">
-    <router-view v-slot="{ Component, route }">
-        <keep-alive>
-            <component :is="Component" :key="route.path"/>
-        </keep-alive>
-    </router-view>
+<div class="content-wrapper">
+    <div class="content">
+        <router-view v-slot="{ Component, route }">
+            <keep-alive>
+                <component :is="Component" :key="route.path"/>
+            </keep-alive>
+        </router-view>
+    </div>
 </div>
 <nav class="bottom-navbar">
     <router-link :to="{ name: 'dashboard' }" class="button"><i data-feather="home"/></router-link>
@@ -101,9 +103,15 @@ export default defineComponent({
     .bottom-navbar
         display: flex
 
-.content
+.content-wrapper
+    display: flex
     flex-grow: 1
     height: fit-content
+    justify-content: center
+
+.content
+    max-width: constants.$card-max-width
+    width: 100%
 
 .button
     @include utils.centered

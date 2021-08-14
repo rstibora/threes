@@ -1,15 +1,13 @@
 <template>
-    <div class="centering-wrapper">
-        <div class="card">
-            <h1><editable-text v-model="editedTask.name" @update:modelValue="updateOrCreateTask()"/></h1>
-            <p><editable-text v-model="editedTask.description" @update:modelValue="updateOrCreateTask()"/></p>
-            <ul v-if="taskEfforts.length > 0">
-                <li v-for="effort of taskEfforts" :key="effort.id"
-                    @click="routerPushEffort(effort.id)">{{ effort.starts }}: {{ effort.duration }} minutes</li>
-            </ul>
-            <button v-if="!editedTaskIsNewTask" @click="routerPushEffort()">New Effort</button>
-        </div>
-    </div>
+<div class="card">
+    <h1><editable-text v-model="editedTask.name" @update:modelValue="updateOrCreateTask()"/></h1>
+    <p><editable-text v-model="editedTask.description" @update:modelValue="updateOrCreateTask()"/></p>
+    <ul v-if="taskEfforts.length > 0">
+        <li v-for="effort of taskEfforts" :key="effort.id"
+            @click="routerPushEffort(effort.id)">{{ effort.starts }}: {{ effort.duration }} minutes</li>
+    </ul>
+    <button v-if="!editedTaskIsNewTask" @click="routerPushEffort()">New Effort</button>
+</div>
 </template>
 
 <script lang="ts">
@@ -99,14 +97,9 @@ export default defineComponent({
 
 $margin: constants.$margin-small
 
-.centering-wrapper
-    @include utils.centered-main-axis
-
 .card
     @include visual.rounded
     margin: $margin
     padding: .5em
-    width: calc(100% - #{2 * $margin})
-    max-width: constants.$card-max-width
     background-color: constants.$colour-background
 </style>
