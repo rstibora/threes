@@ -2,7 +2,7 @@
 <div class="card">
     <h1>Effort for {{ task.name }}</h1>
     <p><editable-text v-model="effort.description"/></p>
-    <p>Duration: <input type="number" min="0" max="600" v-model="effort.duration"> minutes</p>
+    <p>Duration: <input type="number" min="0" v-model.number="effort.duration"> minutes</p>
     <button @click="saveChanges">Save</button>
 </div>
 </template>
