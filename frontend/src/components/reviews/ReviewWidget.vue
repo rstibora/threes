@@ -8,7 +8,7 @@
             <div>
                 <router-link :to="({ name: 'review', params: { configurationId: selectedReviewBundle.review.configurationId,
                                                                reviewIndex: selectedReviewIndex,
-                                                               reviewId: selectedReviewBundle.review.id }})">
+                                                               ...((selectedReviewBundle.review.id !== undefined) && { reviewId: selectedReviewBundle.review.id })}})">
                     <strong>{{ selectedReviewBundle.reviewName }}</strong>
                 </router-link>
                 <br>{{ selectedReviewBundle.interval.start.toLocaleString() }} - {{ selectedReviewBundle.interval.end.toLocaleString() }}
