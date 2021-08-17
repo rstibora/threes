@@ -4,16 +4,21 @@
             <button :disabled="!changeReviewButtonsEnabled.previous"  @click="changeSelectedReviewIndexBy(-1)" class="round">
                 &lt;
             </button>
-            <div v-if="selectedReviewBundle != null">
-                <strong>{{ selectedReviewBundle.reviewName }}</strong>
+
+            <div>
+                <router-link :to="({ name: 'review', params: { configurationId: selectedReviewBundle.review.configurationId,
+                                                               reviewIndex: selectedReviewIndex,
+                                                               reviewId: selectedReviewBundle.review.id }})">
+                    <strong>{{ selectedReviewBundle.reviewName }}</strong>
+                </router-link>
                 <br>{{ selectedReviewBundle.interval.start.toLocaleString() }} - {{ selectedReviewBundle.interval.end.toLocaleString() }}
             </div>
-            <p v-else>Create your first Review Period</p>
+
             <button :disabled="!changeReviewButtonsEnabled.next" @click="changeSelectedReviewIndexBy(1)" class="round">
                 &gt;
             </button>
         </nav>
-        <task-pill v-for="task in plannedTasks" :key="task.id" :task="task" :efforts="effortPerTaskForSelectedReview.get(task.id)"/>
+        <task-pill v-for="task in plannedTasks" :key="task.id" :task="task" :efforts="effortsPerTask.get(task.id)"/>
     </div>
 </template>
 
@@ -78,17 +83,13 @@ export default defineComponent({
                      interval: this.configuration.getReviewInterval(review.index),
                      reviewName: this.configuration.getReviewName(review.index) } 
         },
-        effortPerTaskForSelectedReview(): Map<number, Array<Effort>> {
+        effortsPerTask(): Map<number, Array<Effort>> {
             let effortPerTask = new Map<number, Array<Effort>>()
             // Ensure there is at least an empty array for each task id.
             for (const task of this.plannedTasks) {
                 if (!effortPerTask.has(task.id)) {
                     effortPerTask.set(task.id, new Array<Effort>())
                 }
-            }
-
-            if (this.selectedReviewBundle === undefined) {
-                return effortPerTask
             }
 
             for (const effort of this.efforts.values() as Array<Effort>) {
@@ -100,9 +101,6 @@ export default defineComponent({
         },
         plannedTasks(): Array<Task> {
             let plannedTasks: Array<Task> = []
-            if (this.selectedReviewBundle === undefined) {
-                return plannedTasks
-            }
             for (const id of this.selectedReviewBundle.review.plannedTasksIds) {
                 plannedTasks.push(this.tasks.get(id))
             }
@@ -154,7 +152,6 @@ $margin: constants.$margin-small
     @include visual.rounded
     margin: $margin
     padding: .5em
-    width: calc(100% - #{2 * $margin})
-    max-width: constants.$card-max-width
     background-color: constants.$colour-background
+    width: 100%
 </style>

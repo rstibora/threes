@@ -61,7 +61,6 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 @use "src/styles/constants"
-@use "src/styles/utils"
 @use "src/styles/visual"
 
 $margin: constants.$margin-small
