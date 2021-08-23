@@ -1,3 +1,4 @@
+import { Interval } from "luxon"
 import { State } from "@vue/runtime-core"
 import { createStore } from "vuex"
 
@@ -46,6 +47,9 @@ export default createStore({
     },
     getters: {
         plannedTasks: (state) => (review: Review | NewReview): MapById<Task> => {
+          /**
+           * Returns tasks planned for the given review.
+           */
             let plannedTasks = new Map()
             for (const task of state.tasks.values()) {
                 if (review.plannedTasksIds.includes(task.id)) {
@@ -53,6 +57,22 @@ export default createStore({
                 }
             }
             return plannedTasks
+        },
+        effortsPerTask: (state) => (task: Task, interval?: Interval): MapById<Effort> => {
+            /**
+             * Returns all efforts for the given task, possibly limited to the given interval.
+             */
+            let efforts = new Map()
+            for (const effort of state.efforts.values()) {
+                if (effort.taskId !== task.id) {
+                    continue
+                }
+                if (interval !== undefined && interval.intersection(effort.interval) == null) {
+                    continue
+                }
+                efforts.set(effort.id, effort)
+            }
+            return efforts
         }
     },
     actions: {

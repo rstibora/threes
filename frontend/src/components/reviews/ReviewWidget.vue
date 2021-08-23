@@ -18,7 +18,7 @@
                 &gt;
             </button>
         </nav>
-        <task-pill v-for="task of plannedTasks(selectedReviewBundle.review).values()" :key="task.id" :task="task" :efforts="effortsPerTask.get(task.id)"/>
+        <task-pill v-for="task of plannedTasks(selectedReviewBundle.review).values()" :key="task.id" :task="task" :efforts="effortsPerTask(task, selectedReviewBundle.interval)"/>
     </div>
 </template>
 
@@ -64,7 +64,7 @@ export default defineComponent({
 
     computed: {
         ...mapState(["efforts", "reviews", "session", "tasks"]),
-        ...mapGetters(["plannedTasks"]),
+        ...mapGetters(["plannedTasks", "effortsPerTask"]),
         reviewsByIndex(): Map<number, Review> {
             let reviewsByIndex = new Map<number, Review>()
             for (const review of this.reviews.values()) {
@@ -82,22 +82,6 @@ export default defineComponent({
             return { review,
                      interval: this.configuration.getReviewInterval(review.index),
                      reviewName: this.configuration.getReviewName(review.index) } 
-        },
-        effortsPerTask(): Map<number, Array<Effort>> {
-            let effortPerTask = new Map<number, Array<Effort>>()
-            // Ensure there is at least an empty array for each task id.
-            for (const task of this.plannedTasks(this.selectedReviewBundle.review).values()) {
-                if (!effortPerTask.has(task.id)) {
-                    effortPerTask.set(task.id, new Array<Effort>())
-                }
-            }
-
-            for (const effort of this.efforts.values() as Array<Effort>) {
-                if (effort.interval.intersection(this.selectedReviewBundle.interval) !== null) {
-                    effortPerTask.get(effort.taskId)?.push(effort)
-                }
-            }
-            return effortPerTask
         },
         changeReviewButtonsEnabled(): ChangeReviewButtonsEnabled {
             return {

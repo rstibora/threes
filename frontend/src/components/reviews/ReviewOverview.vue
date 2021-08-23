@@ -3,7 +3,7 @@
     <h1>{{ configuration.getReviewName(reviewIndex) }}</h1>
     <p>{{ configuration.getReviewInterval(reviewIndex).start.toLocaleString() }} - {{ configuration.getReviewInterval(reviewIndex).end.toLocaleString() }}</p>
 
-    <task-pill v-for="task of plannedTasks(review).values()" :key="task.id" :task="task" :efforts="[]"/>
+    <task-pill v-for="task of plannedTasks(review).values()" :key="task.id" :task="task" :efforts="effortsPerTask(task, configuration.getReviewInterval(reviewIndex))"/>
 </div>
 </template>
 
@@ -33,7 +33,7 @@ export default defineComponent({
     },
     computed: {
         ...mapState(["reviews", "reviewConfigurations", "tasks"]),
-        ...mapGetters(["plannedTasks"]),
+        ...mapGetters(["plannedTasks", "effortsPerTask"]),
         configuration(): ReviewConfiguration {
             return this.reviewConfigurations.get(this.configurationId) as ReviewConfiguration
         },

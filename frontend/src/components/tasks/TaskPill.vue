@@ -1,12 +1,14 @@
 <template>
     <router-link :to="({ name: 'task', params: { taskId: task.id }})" class="pill grid">
-        <div class="left-part">{{ task.name }}: {{ taskEffort }}</div>
+        <div class="left-part">{{ task.name }}: {{ totalEffort }}</div>
         <router-link :to="({ name: 'effort', params: { taskId: task.id }})" class="right-part">+</router-link>
     </router-link>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
+
+import { MapById } from "src/state/store"
 
 import { Effort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
@@ -15,13 +17,18 @@ export default defineComponent({
     props: {
         task: Task,
         efforts: {
-            type: Object as PropType<Array<Effort>>,
+            type: Object as PropType<MapById<Effort>>,
             required: true,
         }
     },
     computed: {
-        taskEffort(): number {
-            return this.efforts.reduce((total, effort) => total += effort.duration, 0)
+        totalEffort(): number {
+            // TODO: possibly incorrect as it always adds the total effort time.
+            let totalEffort = 0
+            for (const effort of this.efforts.values()) {
+                totalEffort += effort.duration
+            }
+            return totalEffort
         }
     }
 })
