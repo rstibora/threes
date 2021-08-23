@@ -44,6 +44,17 @@ export default createStore({
             state.userReviewConfigurations = payload
         },
     },
+    getters: {
+        plannedTasks: (state) => (review: Review | NewReview): MapById<Task> => {
+            let plannedTasks = new Map()
+            for (const task of state.tasks.values()) {
+                if (review.plannedTasksIds.includes(task.id)) {
+                    plannedTasks.set(task.id, task)
+                }
+            }
+            return plannedTasks
+        }
+    },
     actions: {
     async refreshToken({ state, commit }): Promise<boolean> {
       if (state.session != null) {

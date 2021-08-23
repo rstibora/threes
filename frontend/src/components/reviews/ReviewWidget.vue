@@ -18,25 +18,20 @@
                 &gt;
             </button>
         </nav>
-        <task-pill v-for="task of plannedTasks.values()" :key="task.id" :task="task" :efforts="effortsPerTask.get(task.id)"/>
+        <task-pill v-for="task of plannedTasks(selectedReviewBundle.review).values()" :key="task.id" :task="task" :efforts="effortsPerTask.get(task.id)"/>
     </div>
 </template>
 
 <script lang="ts">
-import { DateTime, Duration, Interval } from "luxon"
+import { DateTime, Interval } from "luxon"
 import { defineComponent, PropType } from "vue"
-import { mapActions, mapState } from "vuex"
+import { mapActions, mapGetters, mapState } from "vuex"
 
 import TaskPill from "src/components/tasks/TaskPill.vue"
-
-import { filterTasks } from "src/components/reviews/reviewUtils"
 
 import { Effort } from "src/network/models/effort"
 import { Review, NewReview } from "src/network/models/review"
 import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
-import { Task } from "src/network/models/task"
-
-import { MapById } from "src/state/store"
 
 
 interface ReviewBundle {
@@ -69,6 +64,7 @@ export default defineComponent({
 
     computed: {
         ...mapState(["efforts", "reviews", "session", "tasks"]),
+        ...mapGetters(["plannedTasks"]),
         reviewsByIndex(): Map<number, Review> {
             let reviewsByIndex = new Map<number, Review>()
             for (const review of this.reviews.values()) {
@@ -90,7 +86,7 @@ export default defineComponent({
         effortsPerTask(): Map<number, Array<Effort>> {
             let effortPerTask = new Map<number, Array<Effort>>()
             // Ensure there is at least an empty array for each task id.
-            for (const task of this.plannedTasks.values()) {
+            for (const task of this.plannedTasks(this.selectedReviewBundle.review).values()) {
                 if (!effortPerTask.has(task.id)) {
                     effortPerTask.set(task.id, new Array<Effort>())
                 }
@@ -102,9 +98,6 @@ export default defineComponent({
                 }
             }
             return effortPerTask
-        },
-        plannedTasks(): MapById<Task> {
-            return filterTasks(this.tasks, this.configuration, this.selectedReviewBundle.review).planned
         },
         changeReviewButtonsEnabled(): ChangeReviewButtonsEnabled {
             return {
