@@ -1,8 +1,15 @@
 <template>
-    <router-link :to="({ name: 'task', params: { taskId: task.id }})" class="pill grid">
-        <div class="left-part">{{ task.name }}: {{ totalEffort }}</div>
-        <router-link :to="({ name: 'effort', params: { taskId: task.id }})" class="right-part">+</router-link>
-    </router-link>
+    <div class="pill">
+        <router-link :to="({ name: 'task', params: { taskId: task.id }})" class="grid">
+            <div class="left-part">{{ task.name }}: {{ totalEffort }}</div>
+            <router-link :to="({ name: 'effort', params: { taskId: task.id }})" class="right-part">+</router-link>
+        </router-link>
+        <ul>
+            <router-link v-for="effort of efforts.values()" :key="effort.id" :to="({ name: 'effort', params: { taskId: task.id, effortId: effort.id}})">
+                <li >{{ effortDescriptionText(effort) }}</li>
+            </router-link>
+        </ul>
+    </div>
 </template>
 
 <script lang="ts">
@@ -10,7 +17,7 @@ import { defineComponent, PropType } from 'vue'
 
 import { MapById } from "src/state/store"
 
-import { Effort } from "src/network/models/effort"
+import { Effort, NewEffort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
 
 export default defineComponent({
@@ -29,6 +36,14 @@ export default defineComponent({
                 totalEffort += effort.duration
             }
             return totalEffort
+        },
+    },
+    methods: {
+        effortDescriptionText(effort: Effort | NewEffort): string {
+            const description = (effort.description !== ""
+                                 ? `${effort.description} (${effort.duration} minutes)`
+                                 : `${effort.duration} minutes of effort`)
+            return `${effort.starts.toLocaleString()}: ${description}`
         }
     }
 })
