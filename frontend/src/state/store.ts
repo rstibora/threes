@@ -73,6 +73,20 @@ export default createStore({
                 efforts.set(effort.id, effort)
             }
             return efforts
+        },
+        tasksAndEffortsForInterval: (state, getters) => (interval: Interval): Array<[Task, MapById<Effort>]> => {
+            /**
+             * Returns tasks that have an effort in the given interval. Also returns efforts per task for the interval.
+             */
+            let tasksAndEfforts = new Array()
+            for (const task of state.tasks.values()) {
+                const taskEfforts = getters.effortsPerTask(task, interval)
+                if (taskEfforts.size === 0) {
+                    continue
+                }
+                tasksAndEfforts.push([task, taskEfforts])
+            }
+            return tasksAndEfforts
         }
     },
     actions: {

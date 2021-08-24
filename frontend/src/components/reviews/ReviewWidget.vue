@@ -18,7 +18,10 @@
                 &gt;
             </button>
         </nav>
-        <task-pill v-for="task of plannedTasks(selectedReviewBundle.review).values()" :key="task.id" :task="task" :efforts="effortsPerTask(task, selectedReviewBundle.interval)"/>
+        <task-pill v-for="task of plannedTasks(selectedReviewBundle.review).values()" :key="task.id" :task="task"
+                   :efforts="effortsPerTask(task, selectedReviewBundle.interval)"/>
+        <task-pill v-for="[task, efforts] of tasksAndEffortsForInterval(selectedReviewBundle.interval)" :key="task.id" :task="task"
+                   :efforts="efforts"/>
     </div>
 </template>
 
@@ -64,7 +67,7 @@ export default defineComponent({
 
     computed: {
         ...mapState(["efforts", "reviews", "session", "tasks"]),
-        ...mapGetters(["plannedTasks", "effortsPerTask"]),
+        ...mapGetters(["plannedTasks", "effortsPerTask", "tasksAndEffortsForInterval"]),
         reviewsByIndex(): Map<number, Review> {
             let reviewsByIndex = new Map<number, Review>()
             for (const review of this.reviews.values()) {
