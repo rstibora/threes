@@ -4,7 +4,7 @@
             <div class="left-part">{{ task.name }}: {{ totalEffort }}</div>
             <router-link :to="({ name: 'effort', params: { taskId: task.id }})" class="right-part">+</router-link>
         </router-link>
-        <ul>
+        <ul v-if="configuration?.listEfforts">
             <router-link v-for="effort of efforts.values()" :key="effort.id" :to="({ name: 'effort', params: { taskId: task.id, effortId: effort.id}})">
                 <li >{{ effortDescriptionText(effort) }}</li>
             </router-link>
@@ -20,12 +20,22 @@ import { MapById } from "src/state/store"
 import { Effort, NewEffort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
 
+
+interface Configuration {
+    listEfforts?: boolean
+}
+
+
 export default defineComponent({
     props: {
         task: Task,
         efforts: {
             type: Object as PropType<MapById<Effort>>,
             required: true,
+        },
+        configuration: {
+            type: Object as PropType<Configuration>,
+            required: false
         }
     },
     computed: {
