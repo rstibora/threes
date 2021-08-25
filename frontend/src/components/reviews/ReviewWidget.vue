@@ -20,7 +20,7 @@
         </nav>
         <task-pill v-for="task of plannedTasks(selectedReviewBundle.review).values()" :key="task.id" :task="task"
                    :efforts="effortsPerTask(task, selectedReviewBundle.interval)"/>
-        <task-pill v-for="[task, efforts] of tasksAndEffortsForInterval(selectedReviewBundle.interval)" :key="task.id" :task="task"
+        <task-pill v-for="[task, efforts] of tasksAndEffortsForInterval(selectedReviewBundle.interval, plannedTasks(selectedReviewBundle.review))" :key="task.id" :task="task"
                    :efforts="efforts"/>
     </div>
 </template>

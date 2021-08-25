@@ -5,7 +5,7 @@ import { createStore } from "vuex"
 import { Session } from "src/state/session"
 import { fetchResource } from "src/network/fetchResource"
 
-import { Effort, NewEffort, EffortSerialized } from "src/network/models/effort"
+import { Effort, EffortSerialized } from "src/network/models/effort"
 import { Review, NewReview, ReviewSerialized } from "src/network/models/review"
 import { ReviewConfiguration, ReviewConfigurationSerialized } from "src/network/models/reviewConfiguration"
 import { Task, NewTask, TaskSerialized } from "src/network/models/task"
@@ -74,17 +74,24 @@ export default createStore({
             }
             return efforts
         },
-        tasksAndEffortsForInterval: (state, getters) => (interval: Interval): Array<[Task, MapById<Effort>]> => {
+        tasksAndEffortsForInterval: (state, getters) => (interval: Interval, ignoreTasks?: MapById<Task>): Array<[Task, MapById<Effort>]> => {
             /**
              * Returns tasks that have an effort in the given interval. Also returns efforts per task for the interval.
              */
+            let taskIdsToConsider = new Set(state.tasks.keys())
+            if (ignoreTasks !== undefined) {
+                for (const ignoreTaskId of ignoreTasks.keys()) {
+                    taskIdsToConsider.delete(ignoreTaskId)
+                }
+            }
+
             let tasksAndEfforts = new Array()
-            for (const task of state.tasks.values()) {
-                const taskEfforts = getters.effortsPerTask(task, interval)
+            for (const taskId of taskIdsToConsider) {
+                const taskEfforts = getters.effortsPerTask(state.tasks.get(taskId), interval)
                 if (taskEfforts.size === 0) {
                     continue
                 }
-                tasksAndEfforts.push([task, taskEfforts])
+                tasksAndEfforts.push([state.tasks.get(taskId), taskEfforts])
             }
             return tasksAndEfforts
         }
