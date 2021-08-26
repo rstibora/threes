@@ -4,6 +4,7 @@
     <p><editable-text v-model="effort.description"/></p>
     <p>Duration: <input type="number" min="0" v-model.number="effort.duration"> minutes</p>
     <button @click="saveChanges">Save</button>
+    <button v-if="effort.id !== undefined" @click="destroy">Delete</button>
 </div>
 </template>
 
@@ -28,7 +29,7 @@ export default defineComponent({
     },
     data: function() {
         return {
-            effort: new NewEffort(this.taskId, DateTime.now(), 15, "")
+            effort: new NewEffort(this.taskId, DateTime.now(), 15, "") as Effort | NewEffort
         }
     },
     computed: {
@@ -38,12 +39,18 @@ export default defineComponent({
         },
     },
     methods: {
-        ...mapActions(["createEffort", "updateEffort"]),
+        ...mapActions(["createEffort", "destroyEffort", "updateEffort"]),
         async saveChanges(): Promise<void> {
             if (!(this.effort instanceof Effort)) {
                 await this.createEffort({ effort: this.effort })
             } else {
                 await this.updateEffort({ effort: this.effort })
+            }
+            this.$router.go(-1)
+        },
+        async destroy(): Promise<void> {
+            if (this.effort instanceof Effort) {
+                this.destroyEffort({ effort: this.effort })
             }
             this.$router.go(-1)
         }

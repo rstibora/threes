@@ -9,7 +9,7 @@ import { Effort, EffortSerialized } from "src/network/models/effort"
 import { Review, NewReview, ReviewSerialized } from "src/network/models/review"
 import { ReviewConfiguration, ReviewConfigurationSerialized } from "src/network/models/reviewConfiguration"
 import { Task, NewTask, TaskSerialized } from "src/network/models/task"
-import { UserReviewConfiguration, NewUserReviewConfiguration, UserReviewConfigurationSerialized } from "src/network/models/userReviewConfiguration"
+import { UserReviewConfiguration, UserReviewConfigurationSerialized } from "src/network/models/userReviewConfiguration"
 
 
 export type MapById<T> = Map<number, T>
@@ -231,6 +231,18 @@ export default createStore({
             allTasks.set(newTask.id, newTask)
             commit("updateTasks", allTasks)
             return newTask
+        },
+        async destroyEffort({ dispatch, commit, state }, payload: { effort: Effort }): Promise<boolean> {
+            const response: Response = await dispatch("fetchResourceWithToken", 
+                                                       { method: "DELETE",
+                                                         apiPath: `/api/efforts/${payload.effort.id}` })
+            if (!response.ok) {
+                throw Error(`Could not destroy ${payload.effort}`)
+            }
+            let efforts = new Map(state.efforts)
+            efforts.delete(payload.effort.id)
+            commit("updateEfforts", efforts)
+            return true
         }
     },
 })
