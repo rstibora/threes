@@ -15,7 +15,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 
-import { MapById } from "src/state/store"
+import { MapById } from "src/utils/types"
 
 import { Effort, NewEffort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"

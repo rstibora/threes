@@ -19,6 +19,5 @@ export async function fetchResource(method: string, resource: string, data?: any
     if (data != null) {
         fetch_args.body = JSON.stringify(data)
     }
-    console.debug(`Fetch of ${resource} via ${method} with data ${data} and token ${access_token}`)
     return fetch(HOST + resource, fetch_args)
 }

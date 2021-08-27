@@ -12,10 +12,13 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import { mapActions, mapState } from "vuex"
+import { mapState } from "vuex"
 
 import { Effort } from "src/network/models/effort"
 import { NewTask, Task } from "src/network/models/task"
+
+import { Actions } from "src/state/storeAccess"
+import { State } from "src/state/store"
 
 import EffortModal from "src/components/effort/EffortModal.vue"
 import EditableText from "src/components/utility/EditableText.vue"
@@ -43,7 +46,7 @@ export default defineComponent({
                 return filteredEfforts
             }
 
-            for (const effort of this.efforts.values()) {
+            for (const effort of this.$store.state.efforts.efforts.values()) {
                 if (effort.taskId == this.editedTask.id) {
                     filteredEfforts.push(effort)
                 }
@@ -53,17 +56,17 @@ export default defineComponent({
         editedTaskIsNewTask(): boolean {
             return !(this.editedTask instanceof Task)
         },
-        ...mapState(["efforts", "tasks"]),
+        ...mapState({ tasks: state => (state as State).tasks.tasks }),
     },
     methods: {
         async updateOrCreateTask() {
-            if (!(this.editedTask instanceof Task)) {
-                const newTask = await this.createTask({task: this.editedTask})
+            if (this.taskId === undefined) {
+                const newTask = await this.$store.dispatch(Actions.CREATE_TASK, {task: this.editedTask })
                 this.$router.push({ name: "task", params: { taskId: newTask.id }})
                 this.editedTask = freshNewTask()
             } else {
-                await this.updateTask({task: this.editedTask})
-                this.editedTask = this.tasks.get(this.taskId)
+                await this.$store.dispatch(Actions.UPDATE_TASKS, {task: this.editedTask})
+                this.editedTask = this.tasks.get(this.taskId) as Task
             }
         },
         routerPushEffort(effortId: number | undefined = undefined) {
@@ -76,7 +79,6 @@ export default defineComponent({
                 this.$router.push({name: "effort", params })
             }
         },
-        ...mapActions(["updateTask", "createTask"])
     },
     components: {
         EditableText,
@@ -84,7 +86,7 @@ export default defineComponent({
     },
     created: function() {
         if (this.taskId != undefined) {
-            this.editedTask = this.tasks.get(this.taskId)
+            this.editedTask = this.tasks.get(this.taskId) as Task
         }
     }
 })

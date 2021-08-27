@@ -10,8 +10,9 @@
 
 <script lang="ts">
 import { DateTime } from "luxon"
-import { defineComponent, PropType } from "vue"
-import { mapActions, mapState } from "vuex"
+import { defineComponent } from "vue"
+
+import { Actions } from "src/state/storeAccess"
 
 import EditableText from "src/components/utility/EditableText.vue"
 
@@ -33,24 +34,23 @@ export default defineComponent({
         }
     },
     computed: {
-        ...mapState(["efforts", "tasks"]),
         task(): Task {
-            return this.tasks.get(this.taskId) as Task
+            return this.$store.state.tasks.tasks.get(this.taskId) as Task
         },
     },
     methods: {
-        ...mapActions(["createEffort", "destroyEffort", "updateEffort"]),
         async saveChanges(): Promise<void> {
+            const payload = { effort: this.effort }
             if (!(this.effort instanceof Effort)) {
-                await this.createEffort({ effort: this.effort })
+                await this.$store.dispatch(Actions.CREATE_EFFORT, payload)
             } else {
-                await this.updateEffort({ effort: this.effort })
+                await this.$store.dispatch(Actions.UPDATE_EFFORT, payload)
             }
             this.$router.go(-1)
         },
         async destroy(): Promise<void> {
             if (this.effort instanceof Effort) {
-                this.destroyEffort({ effort: this.effort })
+                await this.$store.dispatch(Actions.DESTROY_EFFORT, { effort: this.effort })
             }
             this.$router.go(-1)
         }
@@ -60,7 +60,7 @@ export default defineComponent({
     },
     created: function() {
         if (this.effortId !== undefined) {
-            this.effort = this.efforts.get(this.effortId) as Effort
+            this.effort = this.$store.state.efforts.efforts.get(this.effortId) as Effort
         }
     }
 })

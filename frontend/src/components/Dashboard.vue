@@ -6,41 +6,38 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import { mapActions, mapState } from "vuex"
+
+import { Actions } from "src/state/storeAccess"
 
 import ReviewWidget from "src/components/reviews/ReviewWidget.vue"
 import TaskCard from "src/components/tasks/TaskCard.vue"
 
 import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
-import { UserReviewConfiguration } from "src/network/models/userReviewConfiguration"
-import { MapById } from "src/state/store"
+
 
 export default defineComponent({
     computed: {
-        ...mapState([
-            "reviewConfigurations", "userReviewConfigurations"
-        ]),
         activeReviewPeriodConfigurations() {
             const filtered = new Map<number, ReviewConfiguration>()
-            for (const [id, userConfiguration] of this.userReviewConfigurations as MapById<UserReviewConfiguration>) {
+            for (const [id, userConfiguration] of this.$store.state.reviews.userConfigurations) {
                 if (userConfiguration.isActive) {
-                    const configuration = this.reviewConfigurations.get(userConfiguration.configurationId)
+                    const configuration = this.$store.state.reviews.configurations.get(
+                        userConfiguration.configurationId) as ReviewConfiguration
                     filtered.set(configuration.id, configuration)
                 }
             }
             return filtered
         },
     },
-    methods: {
-        ...mapActions(["fetchTasks", "fetchReviews"])
-    },
     components: {
         ReviewWidget,
         TaskCard,
     },
     created: async function() {
-        this.fetchTasks()
-        this.fetchReviews()
+        await this.$store.dispatch(Actions.FETCH_TASKS)
+        await this.$store.dispatch(Actions.FETCH_REVIEW_CONFIGURATIONS)
+        await this.$store.dispatch(Actions.FETCH_USER_REVIEW_CONFIGURATIONS)
+        await this.$store.dispatch(Actions.FETCH_REVIEWS)
     }
 })
 </script>

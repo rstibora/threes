@@ -2,7 +2,7 @@
 <aside class="side-navbar">
     <router-link :to="{ name: 'dashboard' }" class="button"><i data-feather="home"/></router-link>
     <router-link :to="{ name: 'tasks' }" class="button"><i data-feather="file-text"/></router-link>
-    <a @click="logout()" class="button">{{ session != null ? session.userEmail.substr(0, 1) : "X" }}</a>
+    <a @click="logout()" class="button">{{ session !== undefined ? session.userEmail.substr(0, 1) : "X" }}</a>
 </aside>
 <div class="content-wrapper">
     <div class="content">
@@ -27,22 +27,25 @@ import { mapState } from "vuex"
 
 import { fetchResource } from "src/network/fetchResource"
 
+import { Mutations } from "src/state/storeAccess"
+import { State } from "src/state/store"
+
 import Dashboard from "./Dashboard.vue"
 import Tasks from "./Tasks.vue"
 
 export default defineComponent({
     computed: {
-        ...mapState(["session"])
+        ...mapState({ session: state => (state as State).session.session })
     },
     methods: {
         async logout() {
-            if (this.$store.state.session == null) {
+            if (this.session === undefined) {
                 return
             }
 
-            const response = await fetchResource("POST", "/logout/", undefined, this.$store.state.session?.accessJwt)
+            const response = await fetchResource("POST", "/logout/", undefined, this.session?.accessJwt)
             if (response.ok) {
-                this.$store.commit("updateSession", {"session": undefined})
+                this.$store.commit(Mutations.UPDATE_SESSION, { session: undefined })
                 // TODO: fix.
                 window.location.replace("/signin/")
             }

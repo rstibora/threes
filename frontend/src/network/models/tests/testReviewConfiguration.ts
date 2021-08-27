@@ -1,12 +1,9 @@
-import { params, suite } from '@testdeck/mocha'
-import * as _chai from 'chai'
+import { params, suite } from '@testdeck/jest'
 
-import { DateTime, Interval, Duration } from 'luxon';
+import { DateTime, Interval } from 'luxon';
 
 import { ConfigurationName, ReviewConfiguration } from "src/network/models/reviewConfiguration"
 
-
-_chai.should();
 @suite class ReviewPeriodConfigurationTests {
     // The week with index 0 is the first complete week of the epoch.
     @params({ configurationName: ConfigurationName.WEEKLY, index: 0,
@@ -18,7 +15,7 @@ _chai.should();
     testgetReviewInterval({ configurationName, index, expectedInterval }) {
         const configuration = new ReviewConfiguration(0, configurationName)
         const interval = configuration.getReviewInterval(index)
-        interval.equals(expectedInterval).should.be.true
+        expect(interval.equals(expectedInterval)).toBe(true)
     }
 
     @params({ configurationName: ConfigurationName.WEEKLY, datetime: DateTime.fromObject({ year: 1970, month: 1, day: 6}), expectedIndex: 0})
@@ -26,7 +23,7 @@ _chai.should();
     testgetReviewIndex({ configurationName, datetime, expectedIndex }) {
         const configuration = new ReviewConfiguration(0, configurationName)
         const index = configuration.getReviewIndex(datetime)
-        index.should.equal(expectedIndex)
+        expect(index).toEqual(expectedIndex)
     }
 
     @params({ configurationName: ConfigurationName.WEEKLY, datetime: DateTime.fromObject({ year: 2020, month: 3, day: 5 }) })
@@ -35,6 +32,6 @@ _chai.should();
         const configuration = new ReviewConfiguration(0, configurationName)
         const index = configuration.getReviewIndex(datetime)
         const interval = configuration.getReviewInterval(index)
-        interval.contains(datetime).should.be.true
+        expect(interval.contains(datetime)).toBe(true)
     }
 }

@@ -30,8 +30,9 @@
 import { DateTime } from "luxon"
 import { defineComponent, PropType } from "vue"
 
+import { Actions } from "src/state/storeAccess"
+
 import { Effort, NewEffort } from "src/network/models/effort"
-import { mapActions } from "vuex"
 
 
 function getEditedEffort(effortOrTaskId: Effort | number): Effort | NewEffort {
@@ -55,13 +56,12 @@ export default defineComponent({
         }
     },
     methods: {
-        ...mapActions(["createEffort", "updateEffort"]),
         async updateOrCreateEffort() {
             if (!(this.editedEffort instanceof Effort)) {
-                await this.createEffort({ effort: this.editedEffort })
+                await this.$store.dispatch(Actions.CREATE_EFFORT, { effort: this.editedEffort })
                 this.$emit("closed")
             } else {
-                await this.updateEffort({ effort: this.editedEffort })
+                await this.$store.dispatch(Actions.UPDATE_EFFORT, { effort: this.editedEffort })
                 this.$emit("closed")
             }
         }

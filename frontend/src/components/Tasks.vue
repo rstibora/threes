@@ -12,7 +12,9 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import { mapActions, mapState } from "vuex"
+
+import { Actions } from "src/state/storeAccess"
+
 
 export default defineComponent({
     data: function() {
@@ -20,18 +22,11 @@ export default defineComponent({
             newTaskModalOpen: false,
         }
     },
-    methods: {
-        ...mapActions([
-            "fetchTasks"
-        ])
-    },
     computed: {
-        ...mapState([
-            "tasks"
-        ])
+        tasks() { return this.$store.state.tasks.tasks }
     },
     created: function() {
-        this.fetchTasks()
+        this.$store.dispatch(Actions.FETCH_TASKS)
     }
 })
 </script>

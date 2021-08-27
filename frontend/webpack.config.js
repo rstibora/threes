@@ -36,6 +36,8 @@ export default {
                 options: {
                     appendTsSuffixTo: [/\.vue$/],
                     transpileOnly: true,
+                    projectReferences: true,
+                    configFile: "build-tsconfig.json",
                 },
             },
             { 
@@ -73,9 +75,11 @@ export default {
         new VueLoaderPlugin(),
         new WebpackManifestPlugin(),
         new WebpackCleanPlugin({ root: path.join(__dirname, 'dist') }),
-        new ForkTsCheckerWebpackPlugin({ typescript: { extensions: { vue: {
-            enabled: true,
-            compiler: "@vue/compiler-sfc",}
+        new ForkTsCheckerWebpackPlugin({ typescript: { 
+            configFile: "./build-tsconfig.json",
+            extensions: { vue: {
+                enabled: true,
+                compiler: "@vue/compiler-sfc",}
         }}}),
     ],
 

@@ -1,22 +1,4 @@
 {
-    "compilerOptions": {
-      "experimentalDecorators": true,
-      "baseUrl": ".",
-      "jsx": "preserve",
-      "target": "ES5",
-      "lib": ["ES6", "DOM"],
-      "outDir": "./dist/",
-      "strict": true,
-      "noImplicitAny": true,
-      "module": "ESNext",
-      "moduleResolution": "Node",
-      "allowSyntheticDefaultImports": true,
-      "sourceMap": true,
-      "importsNotUsedAsValues": "preserve",
-      "downlevelIteration": true,
-      "importHelpers": true,
-    },
-    "include": ["src/**/*.ts",
-                "src/**/*.vue"],
-    "exclude": ["node_modules"],
+    "extends": "./base-tsconfig.json",
+    "include": ["src/**/*"]
 }

@@ -3,6 +3,8 @@ module.exports = {
     // **optional** default: `[{ root: './' }]`
     // support monorepos
     projects: [
-      './frontend'
-    ]
+      {
+        root: './frontend',
+        tsconfig: "./tsconfig.json"
+      }],
   }
