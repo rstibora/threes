@@ -34,7 +34,7 @@ export const EffortsModule: Module<State, any> = {
             const responseJson: EffortSerialized = await response.json()
 
             const effort = Effort.deserialize(responseJson)
-            commit(Mutations.UPDATE_EFFORTS, new Map([[effort.id, effort]]))
+            commit(Mutations.UPDATE_EFFORTS, { efforts: new Map([[effort.id, effort]]) })
             return effort
         },
         async [Actions.UPDATE_EFFORT] ({ dispatch, commit }, payload: { effort: Effort }): Promise<Effort> {
@@ -42,7 +42,7 @@ export const EffortsModule: Module<State, any> = {
             const response: Response = await dispatch(
                 Actions.FETCH_RESOURCE, { method: "PUT", apiPath: `/api/efforts/${payload.effort.id}/`,
                                           data: payload.effort.serialize() })
-            commit(Mutations.UPDATE_EFFORTS, new Map([[payload.effort.id, payload.effort]]))
+            commit(Mutations.UPDATE_EFFORTS, { efforts: new Map([[payload.effort.id, payload.effort]]) })
             return payload.effort
         },
         async [Actions.DESTROY_EFFORT] ({ dispatch, commit }, payload: { effort: Effort }) {

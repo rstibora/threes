@@ -31,14 +31,14 @@ export const TasksModule: Module<State, any> = {
                                           data: payload.task.serialize() })
             const taskSerialized = await response.json()
             const task = Task.deserialize(taskSerialized)
-            commit(Mutations.UPDATE_TASKS, new Map([[task.id, task]]))
+            commit(Mutations.UPDATE_TASKS, { tasks: new Map([[task.id, task]]) })
         },
         async [Actions.UPDATE_TASKS] ({ dispatch, commit }, payload: { task: Task }): Promise<Task> {
             // TODO: handle failure cases.
             const response: Response = await dispatch(
                 Actions.FETCH_RESOURCE, { method: "PUT", apiPath: `/api/tasks/${payload.task.id}/`,
                                           data: payload.task.serialize() })
-            commit(Mutations.UPDATE_TASKS, new Map([[payload.task.id, payload.task]]))
+            commit(Mutations.UPDATE_TASKS, { tasks: new Map([[payload.task.id, payload.task]]) })
             return payload.task
         },
         async [Actions.FETCH_TASKS] ({ dispatch, commit }) {

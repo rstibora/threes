@@ -35,7 +35,7 @@ export const SessionModule: Module<State, any> = {
             }
 
             const refreshResponseJson = await refreshResponse.json()
-            commit(Mutations.UPDATE_SESSION, {"session": new Session(refreshResponseJson["access"])})
+            commit(Mutations.UPDATE_SESSION, { session: new Session(refreshResponseJson["access"]) })
             return true
 
         },
