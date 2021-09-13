@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import { mapGetters, mapState } from "vuex"
+import { mapGetters } from "vuex"
 
 import TaskPill from "src/components/tasks/TaskPill.vue"
 
@@ -34,10 +34,9 @@ export default defineComponent({
         },
     },
     computed: {
-        ...mapState(["reviews", "reviewConfigurations", "tasks"]),
         ...mapGetters(["plannedTasks", "effortsPerTask"]),
         configuration(): ReviewConfiguration {
-            return this.reviewConfigurations.get(this.configurationId) as ReviewConfiguration
+            return this.$store.state.reviews.configurations.get(this.configurationId) as ReviewConfiguration
         },
     },
     data: function() {
@@ -50,7 +49,7 @@ export default defineComponent({
     },
     created: function() {
         if (this.reviewId !== undefined) {
-            this.review = this.reviews.get(this.reviewId) as Review
+            this.review = this.$store.state.reviews.reviews.get(this.reviewId) as Review
         }
     }
 })

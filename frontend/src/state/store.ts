@@ -36,7 +36,7 @@ export default createStore({
         tasks: TasksModule,
     },
     getters: {
-        plannedTasks: (state) => (review: Review | NewReview): MapById<Task> => {
+        plannedTasks: (state: State) => (review: Review | NewReview): MapById<Task> => {
           /**
            * Returns tasks planned for the given review.
            */
@@ -48,7 +48,7 @@ export default createStore({
             }
             return plannedTasks
         },
-        effortsPerTask: (state) => (task: Task, interval?: Interval): MapById<Effort> => {
+        effortsPerTask: (state: State) => (task: Task, interval?: Interval): MapById<Effort> => {
             /**
              * Returns all efforts for the given task, possibly limited to the given interval.
              */
