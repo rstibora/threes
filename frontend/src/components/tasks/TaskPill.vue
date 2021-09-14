@@ -21,7 +21,7 @@ import { Effort, NewEffort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
 
 
-interface Configuration {
+interface ComponentConfiguration {
     listEfforts?: boolean
 }
 
@@ -34,7 +34,7 @@ export default defineComponent({
             required: true,
         },
         configuration: {
-            type: Object as PropType<Configuration>,
+            type: Object as PropType<ComponentConfiguration>,
             required: false
         }
     },
