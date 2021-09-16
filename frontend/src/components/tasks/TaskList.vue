@@ -15,14 +15,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent} from "vue"
-
-import TaskPill from "src/components/tasks/TaskPill.vue"
+import { defineComponent, PropType } from "vue"
 
 import { Task } from "src/network/models/task"
 
+import TaskPill from "src/components/tasks/TaskPill.vue"
+
+import { TaskListConfiguration } from "src/components/tasks/taskList"
+
 
 export default defineComponent({
+    props: {
+        configuration: {
+            type: Object as PropType<TaskListConfiguration>,
+        }
+    },
     data: function() {
         return {
             searchTerm: ""
