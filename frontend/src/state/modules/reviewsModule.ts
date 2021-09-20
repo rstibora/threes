@@ -2,7 +2,7 @@ import { Module, Store as VuexStore } from "vuex"
 
 import { MapById } from "src/utils/types"
 
-import { Review, ReviewSerialized } from "src/network/models/review"
+import { NewReview, Review, ReviewSerialized } from "src/network/models/review"
 import { ReviewConfiguration, ReviewConfigurationSerialized } from "src/network/models/reviewConfiguration"
 import { UserReviewConfiguration, UserReviewConfigurationSerialized } from "src/network/models/userReviewConfiguration"
 
@@ -76,5 +76,24 @@ export const ReviewsModule: Module<State, any> = {
             commit(Mutations.UPDATE_USER_REVIEW_CONFIGURATIONS, { userConfigurations })
             return userConfigurations
         },
+        async [Actions.CREATE_REVIEW] ({ dispatch, commit }, payload: { review: NewReview}) : Promise<Review> {
+            // TODO: handle failure cases.
+            const response: Response = await dispatch(
+                Actions.FETCH_RESOURCE, { method: "POST", apiPath: `/api/reviews/`, data: payload.review.serialize() })
+            const reviewSerialized = await response.json()
+            const review = Review.deserialize(reviewSerialized)
+            commit(Mutations.UPDATE_REVIEWS, { reviews: new Map([[review.id, review]])})
+            return review
+        },
+        async [Actions.UPDATE_REVIEW] ({ dispatch, commit }, payload: { review: Review }): Promise<Review> {
+            // TODO: handle failure cases.
+            const response: Response = await dispatch(
+                Actions.FETCH_RESOURCE, { method: "PUT", apiPath: `/api/reviews/${payload.review.id}/`,
+                                          data: payload.review.serialize() })
+            const reviewSerialized = await response.json()
+            const review = Review.deserialize(reviewSerialized)
+            commit(Mutations.UPDATE_REVIEWS, { reviews: new Map([[review.id, review]])})
+            return review
+        }
     }
 }

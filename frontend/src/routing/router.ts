@@ -3,34 +3,37 @@ import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecor
 import Dashboard from "src/components/Dashboard.vue"
 import EffortOverview from "src/components/effort/EffortOverview.vue"
 import ReviewOverview from "src/components/reviews/ReviewOverview.vue"
+import { ExistingReviewIdentification, NewReviewIdentification } from "src/network/models/review"
 import TaskList from "src/components/tasks/TaskList.vue"
-import { TaskListConfiguration, SelectForReviewAction } from "src/components/tasks/taskList"
+import { TaskListConfiguration } from "src/components/tasks/taskList"
 import TaskOverview from "src/components/tasks/TaskOverview.vue"
 
 
-function getTaskListProps(route: RouteLocationNormalized): TaskListConfiguration | undefined {
-    if (route.query?.selectForReview !== null) {
-        return { action: { reviewId: parseInt(route.query.selectForReview as string) }}
-    }
-    return undefined
+function parseTaskListConfiguration(route: RouteLocationNormalized): TaskListConfiguration | undefined {
+    if (route.query?.action === "selectForReview") {
+        if (route.query?.reviewId !== undefined) {
+            return { action: { reviewIdentification: { id: parseInt(route.query.reviewId as string) }}}
+        }
+    } 
+    return undefined  
 }
 
 
 const routes: Array<RouteRecordRaw> = [
     { path: "/dashboard", component: Dashboard, name: "dashboard", alias: "/" },
     { path: "/tasks", component: TaskList, name: "tasks",
-      props: (route) => getTaskListProps(route) },
+      props: (route) => ({ configuration: parseTaskListConfiguration(route) }) },
     { path: "/tasks/:taskId", component: TaskOverview, name: "task",
       props: (route) => ({ taskId: parseInt(route.params.taskId as string) }) },
     { path: "/tasks/new", component: TaskOverview, name: "newTask"},
     { path: "/tasks/:taskId/effort/:effortId?", component: EffortOverview, name: "effort",
       props: (route) => ({ taskId: parseInt(route.params.taskId as string),
-                                effortId: route.params.effortId === undefined ? undefined : parseInt(route.params.effortId as string) })},
-    { path: "/reviews/:configurationId/:reviewIndex/:reviewId?", component: ReviewOverview, name: "review",
-      props: (route) => ({ configurationId: parseInt(route.params.configurationId as string),
-                                reviewIndex: parseInt(route.params.reviewIndex as string),
-                                reviewId: route.params.reviewId === undefined ? undefined : parseInt(route.params.reviewId as string) })}
-
+                           effortId: route.params.effortId === undefined ? undefined : parseInt(route.params.effortId as string) })},
+    { path: "/reviews/:configurationId/:reviewIndex", component: ReviewOverview, name: "newReview",
+      props: (route) => ({ reviewIdentification: { configurationId: parseInt(route.params.configurationId as string),
+                                                   index: parseInt(route.params.reviewIndex as string) } as NewReviewIdentification })},
+    { path: "/reviews/:reviewId", component: ReviewOverview, name: "review",
+      props: (route) => ({ reviewIdentification: { id: parseInt(route.params.reviewId as string) } as ExistingReviewIdentification})}
 ]
 
 export default createRouter({

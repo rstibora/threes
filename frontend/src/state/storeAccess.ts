@@ -9,6 +9,7 @@ export enum Mutations {
 
 export enum Actions {
     CREATE_EFFORT = "CREATE_EFFORT",
+    CREATE_REVIEW = "CREATE_REVIEW",
     CREATE_TASK = "CREATE_TASK",
 
     DESTROY_EFFORT = "DESTROY_EFFORT",
@@ -24,4 +25,5 @@ export enum Actions {
 
     UPDATE_EFFORT = "UPDATE_EFFORT",
     UPDATE_TASKS = "UPDATE_TASKS",
+    UPDATE_REVIEW = "UPDATE_REVIEW",
 }

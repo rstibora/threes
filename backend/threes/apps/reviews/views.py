@@ -1,4 +1,3 @@
-from django.db.models import query
 from rest_framework import permissions, viewsets
 
 from .models import Review, ReviewConfiguration, UserReviewConfiguration

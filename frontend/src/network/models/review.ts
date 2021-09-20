@@ -1,3 +1,21 @@
+export interface ExistingReviewIdentification {
+    id: number
+    configurationId?: never,
+    index?: never,
+}
+
+export interface NewReviewIdentification {
+    id?: never
+    configurationId: number,
+    index: number,
+}
+
+/**
+ * Review is identified either by DB id (existing reviews), or by its configuration id
+ * and an index (in case the review is not yet saved).
+*/
+export type ReviewIdentification = ExistingReviewIdentification | NewReviewIdentification
+
 export interface ReviewSerialized {
     id?: number
     configuration: number

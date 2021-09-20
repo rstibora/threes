@@ -1,7 +1,10 @@
-export interface SelectForReviewAction {
-    reviewId: number
+import { ReviewIdentification } from "src/network/models/review"
+
+
+export interface SelectTasksForReview {
+    reviewIdentification: ReviewIdentification
 }
 
 export interface TaskListConfiguration {
-    action?: SelectForReviewAction
+    action?: SelectTasksForReview
 }
