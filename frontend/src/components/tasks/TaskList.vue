@@ -9,14 +9,16 @@
         <li v-for="task of searchResult" :key="task.id" class="task-pill-wrapper">
             <task-pill :task="task" :efforts="new Map()" class="flex-grow-1"/>
 
-            <div v-if="configuration !== undefined">
+            <div v-if="configuration?.action !== undefined">
                 <input type="checkbox" id="task.id" v-model="selectedTasks" :value="task.id"/>
             </div>
         </li>
     </ul>
 
-    <div v-if="configuration !== undefined">
-        <button class="action-button" @click="trackSelectedTasks">Track Selected Tasks</button>
+    <div v-if="configuration?.action !== undefined">
+        <button class="action-button" @click="performAction">
+            {{ configuration.action.actionName }}
+        </button>
     </div>
 </div>
 </template>
@@ -24,14 +26,11 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue"
 
-import { ExistingReviewIdentification } from "src/network/models/review"
-import { Review } from "src/network/models/review"
 import { Task } from "src/network/models/task"
 
 import TaskPill from "src/components/tasks/TaskPill.vue"
 
 import { TaskListConfiguration } from "src/components/tasks/taskList"
-import { Actions } from "src/state/storeAccess"
 
 
 export default defineComponent({
@@ -59,17 +58,19 @@ export default defineComponent({
         }
     },
     methods: {
-        async trackSelectedTasks() {
-            const review = this.$store.state.reviews.reviews.get(
-                (this.configuration?.action?.reviewIdentification as ExistingReviewIdentification).id) as Review
-            for (const taskIdToTrack of this.selectedTasks) {
-                if (!review.plannedTasksIds.includes(taskIdToTrack)) {
-                    review.plannedTasksIds.push(taskIdToTrack)
-                }
+        async performAction() {
+            if (this.configuration?.action === undefined) {
+                return
             }
-            await this.$store.dispatch(Actions.UPDATE_REVIEW, { review })
+            await this.configuration.action.performAction(this.selectedTasks)
             this.$router.go(-1)
         }
+    },
+    created: function() {
+        if (this.configuration?.action === undefined) {
+            return
+        }
+        this.selectedTasks = this.configuration.action.getPreselected()
     },
     components: {
         TaskPill

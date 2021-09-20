@@ -1,8 +1,10 @@
-import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecordRaw } from "vue-router"
+import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecordRaw, } from "vue-router"
+import store from "src/state/store"
 
 import Dashboard from "src/components/Dashboard.vue"
 import EffortOverview from "src/components/effort/EffortOverview.vue"
 import ReviewOverview from "src/components/reviews/ReviewOverview.vue"
+import { TrackTasksAction } from "src/components/reviews/trackTasksAction"
 import { ExistingReviewIdentification, NewReviewIdentification } from "src/network/models/review"
 import TaskList from "src/components/tasks/TaskList.vue"
 import { TaskListConfiguration } from "src/components/tasks/taskList"
@@ -12,7 +14,7 @@ import TaskOverview from "src/components/tasks/TaskOverview.vue"
 function parseTaskListConfiguration(route: RouteLocationNormalized): TaskListConfiguration | undefined {
     if (route.query?.action === "selectForReview") {
         if (route.query?.reviewId !== undefined) {
-            return { action: { reviewIdentification: { id: parseInt(route.query.reviewId as string) }}}
+            return { action: new TrackTasksAction(store, parseInt(route.query.reviewId as string)) }
         }
     } 
     return undefined  
@@ -37,6 +39,6 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 export default createRouter({
-    history: createWebHashHistory(),
-    routes,
+  history: createWebHashHistory(),
+  routes,
 })

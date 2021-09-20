@@ -1,10 +1,9 @@
-import { ReviewIdentification } from "src/network/models/review"
-
-
-export interface SelectTasksForReview {
-    reviewIdentification: ReviewIdentification
+export interface SelectedTasksAction {
+    getPreselected: () => Array<number>
+    performAction: (selectedTasks: Array<number>) => Promise<void>
+    readonly actionName: string
 }
 
 export interface TaskListConfiguration {
-    action?: SelectTasksForReview
+    action?: SelectedTasksAction
 }

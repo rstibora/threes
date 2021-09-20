@@ -34,11 +34,16 @@ export default defineComponent({
         configuration(): ReviewConfiguration {
             return this.$store.state.reviews.configurations.get(this.review.configurationId) as ReviewConfiguration
         },
+        review(): Review | NewReview {
+            if (this.reviewId !== undefined) {
+                return this.$store.state.reviews.reviews.get(this.reviewId) as Review
+            }
+            return new NewReview(this.reviewIdentification.configurationId as number, this.reviewIdentification.index as number, [])
+        }
     },
     data: function() {
         return {
-            // Initialized in beforeCreate().
-            review: undefined as unknown as Review | NewReview,
+            reviewId: this.reviewIdentification.id
         }
     },
     methods: {
@@ -46,7 +51,7 @@ export default defineComponent({
             // Create the review if it doesn't exist.
             if (this.reviewIdentification.id === undefined) {
                 const createdReview: Review = await this.$store.dispatch(Actions.CREATE_REVIEW, { review: this.review as NewReview })
-                this.review = createdReview
+                this.reviewId = createdReview.id
                 this.$router.replace({ name: "review", params: { reviewId: createdReview.id }})
             }
             this.$router.push({ name: "tasks", query: { action: "selectForReview", reviewId: (this.review as Review).id }})
@@ -54,13 +59,6 @@ export default defineComponent({
     },
     components: {
         TaskPill,
-    },
-    created: function() {
-        if (this.reviewIdentification.id !== undefined) {
-            this.review = this.$store.state.reviews.reviews.get(this.reviewIdentification.id) as Review
-        } else {
-            this.review = new NewReview(this.reviewIdentification.configurationId, this.reviewIdentification.index, [])
-        }
     }
 })
 </script>
