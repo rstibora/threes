@@ -3,10 +3,20 @@
     <h1>{{ configuration.getReviewName(review.index) }}</h1>
     <p>{{ configuration.getReviewInterval(review.index).start.toLocaleString() }} - {{ configuration.getReviewInterval(review.index).end.toLocaleString() }}</p>
 
-    <task-pill v-for="task of plannedTasks(review).values()" :key="task.id"
-               :task="task" :efforts="effortsPerTask(task, configuration.getReviewInterval(review.index))"
-               :configuration="{ listEfforts: true }"/>
-    <button class="button-track-tasks" @click="buttonTrackTasksHandler">Track tasks</button>
+    <h2>Task Effort</h2>
+    <div v-if="plannedTasks(review).size > 0">
+        <p>Tracked</p>
+        <task-pill v-for="task of plannedTasks(review).values()" :key="task.id"
+                   :task="task" :efforts="effortsPerTask(task, configuration.getReviewInterval(review.index))"
+                   :configuration="{ listEfforts: true }"/>
+    </div>
+    <p v-else>No tasks tracked yet.</p>
+    <button class="button-track-tasks" @click="buttonTrackTasksHandler">Select tasks to track</button>
+    <div v-if="tasksAndEffortsForInterval(configuration.getReviewInterval(review.index), plannedTasks(review)).length > 0">
+        <p>Untracked</p>
+        <task-pill v-for="[task, efforts] of tasksAndEffortsForInterval(configuration.getReviewInterval(review.index), plannedTasks(review))"
+                   :key="task.id" :task="task" :efforts="efforts"/>
+    </div>
 </div>
 </template>
 
@@ -30,7 +40,7 @@ export default defineComponent({
         },
     },
     computed: {
-        ...mapGetters(["plannedTasks", "effortsPerTask"]),
+        ...mapGetters(["plannedTasks", "effortsPerTask", "tasksAndEffortsForInterval"]),
         configuration(): ReviewConfiguration {
             return this.$store.state.reviews.configurations.get(this.review.configurationId) as ReviewConfiguration
         },
