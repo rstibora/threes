@@ -23,14 +23,17 @@ function parseTaskListConfiguration(route: RouteLocationNormalized): TaskListCon
 
 const routes: Array<RouteRecordRaw> = [
     { path: "/dashboard", component: Dashboard, name: "dashboard", alias: "/" },
+
     { path: "/tasks", component: TaskList, name: "tasks",
       props: (route) => ({ configuration: parseTaskListConfiguration(route) }) },
     { path: "/tasks/:taskId", component: TaskOverview, name: "task",
       props: (route) => ({ taskId: parseInt(route.params.taskId as string) }) },
     { path: "/tasks/new", component: TaskOverview, name: "newTask"},
+    // TODO: the path does not feel right, perhaps it should be similar to /reviews/ logic instead.
     { path: "/tasks/:taskId/effort/:effortId?", component: EffortOverview, name: "effort",
       props: (route) => ({ taskId: parseInt(route.params.taskId as string),
                            effortId: route.params.effortId === undefined ? undefined : parseInt(route.params.effortId as string) })},
+
     { path: "/reviews/:configurationId/:reviewIndex", component: ReviewOverview, name: "newReview",
       props: (route) => ({ reviewIdentification: { configurationId: parseInt(route.params.configurationId as string),
                                                    index: parseInt(route.params.reviewIndex as string) } as NewReviewIdentification })},

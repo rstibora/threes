@@ -3,8 +3,9 @@
     <h1><editable-text v-model="editedTask.name" @update:modelValue="updateOrCreateTask()"/></h1>
     <p><editable-text v-model="editedTask.description" @update:modelValue="updateOrCreateTask()"/></p>
     <ul v-if="taskEfforts.length > 0">
-        <li v-for="effort of taskEfforts" :key="effort.id"
-            @click="routerPushEffort(effort.id)">{{ effort.starts }}: {{ effort.duration }} minutes</li>
+        <li v-for="effort of taskEfforts" :key="effort.id">
+            <effort-pill :effort="effort"/>
+        </li>
     </ul>
     <button v-if="!editedTaskIsNewTask" @click="routerPushEffort()">New Effort</button>
 </div>
@@ -20,7 +21,7 @@ import { NewTask, Task } from "src/network/models/task"
 import { Actions } from "src/state/storeAccess"
 import { State } from "src/state/store"
 
-import EffortModal from "src/components/effort/EffortModal.vue"
+import EffortPill from "src/components/effort/EffortPill.vue"
 import EditableText from "src/components/utility/EditableText.vue"
 
 
@@ -82,10 +83,10 @@ export default defineComponent({
     },
     components: {
         EditableText,
-        EffortModal,
+        EffortPill,
     },
     created: function() {
-        if (this.taskId != undefined) {
+        if (this.taskId !== undefined) {
             this.editedTask = this.tasks.get(this.taskId) as Task
         }
     }
