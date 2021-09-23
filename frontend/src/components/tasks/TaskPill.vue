@@ -5,15 +5,15 @@
             <router-link :to="({ name: 'effort', params: { taskId: task.id }})" class="right-part">+</router-link>
         </router-link>
         <ul v-if="configuration?.listEfforts">
-            <router-link v-for="effort of efforts.values()" :key="effort.id" :to="({ name: 'effort', params: { taskId: task.id, effortId: effort.id }})">
-                <li >{{ effortDescriptionText(effort) }}</li>
-            </router-link>
+            <effort-pill v-for="effort of efforts.values()" :key="effort.id" :effort="effort"/>
         </ul>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
+
+import EffortPill from "src/components/effort/EffortPill.vue"
 
 import { MapById } from "src/utils/types"
 
@@ -55,7 +55,10 @@ export default defineComponent({
                                  : `${effort.duration} minutes of effort`)
             return `${effort.starts.toLocaleString()}: ${description}`
         }
-    }
+    },
+    components: {
+        EffortPill
+    },
 })
 </script>
 

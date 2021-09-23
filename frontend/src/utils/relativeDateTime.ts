@@ -2,7 +2,6 @@ import { DateTime, DurationObjectUnits } from "luxon"
 
 
 export function relativeDateTime(datetime: DateTime): string {
-    console.debug(datetime)
     const units: (keyof DurationObjectUnits)[] = ["year", "month", "week", "day", "hour", "minute", "second"]
     const diff = datetime.diffNow().shiftTo(...units)
     const relativeFormatter = new Intl.RelativeTimeFormat('en', { numeric: "auto" });
