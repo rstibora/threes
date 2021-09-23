@@ -2,14 +2,14 @@
     <div class="pill">
         <router-link :to="({ name: 'effort', params: { taskId: effort.taskId, effortId: effort.id} })" class="grid">
             <div class="duration"> {{ effort.duration }} minutes</div>
-            <div class="date">{{ effort.starts }} </div>
+            <div class="date">{{ relativeDateTime(effort.starts) }} </div>
             <div class="description"> {{ effort.description }} </div>
         </router-link>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue"
+import { defineComponent } from "vue"
 
 import { Effort } from "src/network/models/effort"
 
@@ -35,11 +35,12 @@ export default defineComponent({
     background-color: HotPink
 .grid
     display: grid
-    grid-template: "duration space date" "description description description" / auto 1fr auto
+    grid-template: "duration date" "description description" / auto auto
 .duration
     grid-area: duration
 .date
     grid-area: date
+    text-align: end
 .description
     grid-area: description
 </style>
