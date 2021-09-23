@@ -9,7 +9,7 @@ class EffortViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        return Effort.objects.filter(owner=self.request.user.pk)
+        return Effort.objects.filter(owner=self.request.user.pk).order_by("-starts")
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
