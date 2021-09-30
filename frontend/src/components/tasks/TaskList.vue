@@ -20,6 +20,7 @@
             {{ configuration.action.actionName }}
         </button>
     </div>
+    <button v-else @click="this.$router.push({ name: 'newTask' })">Create a new task</button>
 </div>
 </template>
 
@@ -64,7 +65,7 @@ export default defineComponent({
             }
             await this.configuration.action.performAction(this.selectedTasks)
             this.$router.go(-1)
-        }
+        },
     },
     created: function() {
         if (this.configuration?.action === undefined) {
