@@ -4,6 +4,12 @@
     <p>{{ configuration.getReviewInterval(review.index).start.toLocaleString() }} - {{ configuration.getReviewInterval(review.index).end.toLocaleString() }}</p>
 
     <h2>Task Effort</h2>
+
+    <line-chart :data="[[0, 0], [10, 20], [100, 100]]"/>
+
+    <div class="chart">
+    </div>
+
     <div v-if="plannedTasks(review).size > 0">
         <p>Tracked</p>
         <task-pill v-for="task of plannedTasks(review).values()" :key="task.id"
@@ -25,6 +31,7 @@ import { defineComponent, PropType } from "vue"
 import { mapGetters } from "vuex"
 
 import TaskPill from "src/components/tasks/TaskPill.vue"
+import LineChart from "src/components/utility/LineChart.vue"
 
 import { Review, NewReview, ReviewIdentification } from "src/network/models/review"
 import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
@@ -68,6 +75,7 @@ export default defineComponent({
         },
     },
     components: {
+        LineChart,
         TaskPill,
     }
 })
