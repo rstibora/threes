@@ -1,6 +1,6 @@
 <template>
 <div class="svg-wrapper">
-    <svg id="svg" width="100%" height="100%" :viewBox="viewBoxString" preserveAspectRatio="none"/>
+    <svg id="svg" width="100%" height="100%" :viewBox="`0 0 ${this.width} ${this.height}`" preserveAspectRatio="none"/>
 </div>
 </template>
 
@@ -22,11 +22,21 @@ export default defineComponent({
             width: 0,
             height: 0,
             resizeObserver: undefined as ResizeObserver | undefined,
+
+            strokeWidth: 2.
         }
     },
     computed: {
-        viewBoxString(): string {
-            return `0 0 ${this.width} ${this.height}`
+        scaledData(): Array<[number, number]> {
+            const [xMin, xMax] = d3.extent(this.data, item => item[0])
+            const [yMin, yMax] = d3.extent(this.data, item => item[1])
+            if (xMin === undefined || xMax === undefined || yMin === undefined || yMax === undefined) {
+                return this.data
+            }
+            const xScaling = (this.width - 2 * this.strokeWidth) / (xMax - xMin)
+            const yScaling = (this.height - 2 * this.strokeWidth) / (yMax - yMin)
+            return this.data.map(([x, y]) => [(x - xMin) * xScaling + this.strokeWidth,
+                                              (y - yMin) * yScaling  + this.strokeWidth])
         }
     },
     methods: {
@@ -36,11 +46,12 @@ export default defineComponent({
             this.height = entry.contentRect.height
 
             const line = d3.line().curve(d3.curveStep)
+            d3.select("#svg").select("path").remove()
             d3.select("#svg").append("path")
-                .datum(this.data)
+                .datum(this.scaledData)
                 .attr("fill", "none")
                 .attr("stroke", "steelblue")
-                .attr("stroke-width", 1.5)
+                .attr("stroke-width", this.strokeWidth)
                 .attr("stroke-linejoin", "round")
                 .attr("stroke-linecap", "round")
                 .attr("d", line as any)
