@@ -5,7 +5,7 @@
 
     <h2>Task Effort</h2>
 
-    <line-chart :data="[[0, 0], [10, 20], [100, 100]]"/>
+    <line-chart :data="totalReviewEffortChartData"/>
 
     <div class="chart">
     </div>
@@ -30,11 +30,15 @@
 import { defineComponent, PropType } from "vue"
 import { mapGetters } from "vuex"
 
+import { MapById } from "src/utils/types"
+
 import TaskPill from "src/components/tasks/TaskPill.vue"
 import LineChart from "src/components/utility/LineChart.vue"
 
+import { Effort } from "src/network/models/effort"
 import { Review, NewReview, ReviewIdentification } from "src/network/models/review"
 import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
+import { Task } from "src/network/models/task"
 
 import { Actions } from "src/state/storeAccess"
 
@@ -56,6 +60,25 @@ export default defineComponent({
                 return this.$store.state.reviews.reviews.get(this.reviewId) as Review
             }
             return new NewReview(this.reviewIdentification.configurationId as number, this.reviewIdentification.index as number, [])
+        },
+        totalReviewEffortChartData(): Array<[number, number]> {
+            const dataPointsCount = 8
+            let totalEffortPerReview = new Array<number>()
+            for (let reviewIndex = this.review.index; reviewIndex > this.review.index - dataPointsCount; reviewIndex--) {
+                totalEffortPerReview.push(0)
+                const taskAndEfforts: Array<[Task, MapById<Effort>]> = this.tasksAndEffortsForInterval(
+                    this.configuration.getReviewInterval(reviewIndex))
+                for (const [_, efforts] of taskAndEfforts) {
+                    for (const [_, effort] of efforts) {
+                        totalEffortPerReview[totalEffortPerReview.length - 1] += effort.duration
+                    }
+                }
+            }
+            let output = new Array<[number, number]>()
+            for (let idx = 0; idx < totalEffortPerReview.length; idx++) {
+                output.push([idx, totalEffortPerReview[idx]])
+            }
+            return output
         }
     },
     data: function() {

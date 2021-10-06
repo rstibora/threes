@@ -35,8 +35,10 @@ export default defineComponent({
             }
             const xScaling = (this.width - 2 * this.strokeWidth) / (xMax - xMin)
             const yScaling = (this.height - 2 * this.strokeWidth) / (yMax - yMin)
-            return this.data.map(([x, y]) => [(x - xMin) * xScaling + this.strokeWidth,
+            const data = this.data.map(([x, y]) => [(x - xMin) * xScaling + this.strokeWidth,
                                               (y - yMin) * yScaling  + this.strokeWidth])
+            console.debug(data)
+            return data as Array<[number, number]>
         }
     },
     methods: {
