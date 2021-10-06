@@ -23,7 +23,7 @@ export default defineComponent({
             height: 0,
             resizeObserver: undefined as ResizeObserver | undefined,
 
-            strokeWidth: 2.
+            strokeWidth: 3.
         }
     },
     computed: {
@@ -33,11 +33,11 @@ export default defineComponent({
             if (xMin === undefined || xMax === undefined || yMin === undefined || yMax === undefined) {
                 return this.data
             }
-            const xScaling = (this.width - 2 * this.strokeWidth) / (xMax - xMin)
-            const yScaling = (this.height - 2 * this.strokeWidth) / (yMax - yMin)
-            const data = this.data.map(([x, y]) => [(x - xMin) * xScaling + this.strokeWidth,
-                                              (y - yMin) * yScaling  + this.strokeWidth])
-            console.debug(data)
+            const yScale = d3.scaleLinear().domain([yMin, yMax])
+                .range([this.height - 2 * this.strokeWidth, this.strokeWidth])
+            const xScale = d3.scaleLinear().domain([xMin, xMax])
+                .range([this.strokeWidth, this.width - 2 * this.strokeWidth])
+            const data = this.data.map(([x, y]) => [xScale(x), yScale(y)])
             return data as Array<[number, number]>
         }
     },
@@ -47,9 +47,11 @@ export default defineComponent({
             this.width = entry.contentRect.width
             this.height = entry.contentRect.height
 
-            const line = d3.line().curve(d3.curveStep)
-            d3.select("#svg").select("path").remove()
-            d3.select("#svg").append("path")
+            const svg = d3.select("#svg")
+            svg.selectChildren().remove()
+
+            const line = d3.line().curve(d3.curveLinear)
+            svg.append("path")
                 .datum(this.scaledData)
                 .attr("fill", "none")
                 .attr("stroke", "steelblue")
@@ -57,6 +59,15 @@ export default defineComponent({
                 .attr("stroke-linejoin", "round")
                 .attr("stroke-linecap", "round")
                 .attr("d", line as any)
+
+            svg.selectAll("circle")
+                .data(this.scaledData)
+                .enter()
+                    .append("circle")
+                    .style("fill", "steelblue")
+                    .attr("cx", ([x, _]) => x)
+                    .attr("cy", ([_, y]) => y)
+                    .attr("r", this.strokeWidth)
         },
     },
     created() {
@@ -65,6 +76,9 @@ export default defineComponent({
     mounted() {
         (this.resizeObserver as ResizeObserver).observe(this.$el)
     },
+    beforeUnmount() {
+        (this.resizeObserver as ResizeObserver).unobserve(this.$el)
+    }
 })
 </script>
 
