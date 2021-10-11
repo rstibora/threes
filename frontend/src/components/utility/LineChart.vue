@@ -10,6 +10,9 @@ import { defineComponent, PropType } from "vue"
 import { debounce } from "vue-debounce"
 
 
+const STROKE_WIDTH = 3
+
+
 export default defineComponent({
     props: {
         data: {
@@ -23,36 +26,45 @@ export default defineComponent({
             height: 0,
             resizeObserver: undefined as ResizeObserver | undefined,
 
-            strokeWidth: 3.
+            strokeWidth: STROKE_WIDTH,
+            margin: { top: STROKE_WIDTH, left: 5, bottom: STROKE_WIDTH + 20, right: 5 },
+            ticksUnit: "hours",
+            yTicksCount: 1
         }
     },
     computed: {
-        scaledData(): Array<[number, number]> {
+        scales(): [d3.ScaleLinear<number, number>, d3.ScaleLinear<number, number>] {
             const [xMin, xMax] = d3.extent(this.data, item => item[0])
             const [yMin, yMax] = d3.extent(this.data, item => item[1])
             if (xMin === undefined || xMax === undefined || yMin === undefined || yMax === undefined) {
-                return this.data
+                throw Error("Min or max is undefined.")
             }
             const yScale = d3.scaleLinear().domain([yMin, yMax])
-                .range([this.height - 2 * this.strokeWidth, this.strokeWidth])
+                .range([this.height - this.margin.bottom, this.margin.top]).nice(this.yTicksCount)
             const xScale = d3.scaleLinear().domain([xMin, xMax])
-                .range([this.strokeWidth, this.width - 2 * this.strokeWidth])
-            const data = this.data.map(([x, y]) => [xScale(x), yScale(y)])
-            return data as Array<[number, number]>
-        }
+                .range([this.margin.left , this.width - this.margin.right])
+            return [xScale, yScale]
+        },
+
     },
     methods: {
+        tickFormat(value: any, index: number): string {
+            return index === 0 ? `${value}` : `${value} ${this.ticksUnit}`
+        },
         updateSize(entries: Array<ResizeObserverEntry>, observer: ResizeObserver) {
             const entry = entries[0]
             this.width = entry.contentRect.width
             this.height = entry.contentRect.height
+
+            const [xScale, yScale] = this.scales
+            const data = this.data.map(([x, y]) => [xScale(x), yScale(y)])
 
             const svg = d3.select("#svg")
             svg.selectChildren().remove()
 
             const line = d3.line().curve(d3.curveLinear)
             svg.append("path")
-                .datum(this.scaledData)
+                .datum(data)
                 .attr("fill", "none")
                 .attr("stroke", "steelblue")
                 .attr("stroke-width", this.strokeWidth)
@@ -61,14 +73,79 @@ export default defineComponent({
                 .attr("d", line as any)
 
             svg.selectAll("circle")
-                .data(this.scaledData)
+                .data(data)
                 .enter()
                     .append("circle")
                     .style("fill", "steelblue")
                     .attr("cx", ([x, _]) => x)
                     .attr("cy", ([_, y]) => y)
                     .attr("r", this.strokeWidth)
+
+            const axisVertical = d3.axisLeft(yScale)
+                    .ticks(this.yTicksCount)
+                    .tickSize(this.width - (this.margin.left + this.margin.right))
+                    .tickFormat(this.tickFormat)
+            svg.append("g")
+                    .attr("transform", `translate(${this.width - this.margin.right}, 0)`)
+                    .call(axisVertical)
+                    .call(g => g.select(".domain")
+                            .remove())
+                    .call(g => g.selectAll(".tick line")
+                            .attr("stroke-opacity", "0.33")
+                            .attr("stroke-dasharray", "2,2"))
+                    .call(g => g.selectAll(".tick:not(:first-of-type) text")
+                           .attr("x", 0)
+                           .attr("dy", 12))
+                    .call(g => g.selectAll(".tick:first-of-type text")
+                           .attr("x", 0)
+                           .attr("dy", -2))
+
+            const tooltip = svg.append("g")
+            const xData = data.map(item => item[0])
+            const calloutMethod = this.callout
+
+            svg.on("touchend mouseleave", () => tooltip.call(calloutMethod, null))
+            svg.on("touchmove mousemove", function(event) {
+                const index = d3.bisectCenter(xData, d3.pointer(event, this)[0])
+                const [xValue, yValue] = data[index]
+
+            tooltip
+                .attr("transform", `translate(${xValue},${yValue})`)
+                .call(calloutMethod, `yolo lo`)
+            })
+
         },
+        callout(g: any, value: any) {
+            if (!value) return g.style("display", "none")
+
+            g
+                .style("display", null)
+                .style("pointer-events", "none")
+                .style("font", "10px sans-serif")
+
+            const path = g.selectAll("path")
+                .data([null])
+                .join("path")
+                    .attr("fill", "white")
+                    .attr("stroke", "black")
+
+            const text = g.selectAll("text")
+                .data([null])
+                .join("text")
+                .call((text: any) => text
+                    .selectAll("tspan")
+                    .data((value + "").split(/\n/))
+                    .join("tspan")
+                        .attr("x", 0)
+                        .attr("y", (_: any, i: any) => `${i * 1.1}em`)
+                        .style("font-weight", (_: any, i: any) => i ? null : "bold")
+                        .text((d: any) => d))
+
+            const {x, y, width: w, height: h} = text.node().getBBox()
+
+            text.attr("transform", `translate(${-w / 2},${15 - y})`)
+            path.attr("d", `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`)
+        }
     },
     created() {
         this.resizeObserver = new ResizeObserver(debounce(this.updateSize, "100ms"))
@@ -84,5 +161,5 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .svg-wrapper
-    max-height: 30px
+    max-height: 60px
 </style>

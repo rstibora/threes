@@ -80,9 +80,7 @@ export default defineComponent({
                 // want to have the most recent review period at the end of the chart.
                 output.push([idx, totalEffortPerReview[totalEffortPerReview.length - (idx + 1)]])
             }
-            // Reverse so that the array ordering is aligned with the chart (this reverse
-            // does not affect the chart).
-            return output.reverse()
+            return output
         }
     },
     data: function() {
