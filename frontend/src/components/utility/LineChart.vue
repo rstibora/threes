@@ -28,7 +28,7 @@ export default defineComponent({
 
             strokeWidth: STROKE_WIDTH,
             margin: { top: STROKE_WIDTH, left: 5, bottom: STROKE_WIDTH + 20, right: 5 },
-            ticksUnit: "hours",
+            ticksUnit: "minutes",
             yTicksCount: 1
         }
     },
@@ -101,17 +101,18 @@ export default defineComponent({
                            .attr("dy", -2))
 
             const tooltip = svg.append("g")
-            const xData = data.map(item => item[0])
+            const xDataScaled = data.map(item => item[0])
+            const yData = this.data.map(item => item[1])
             const calloutMethod = this.callout
 
             svg.on("touchend mouseleave", () => tooltip.call(calloutMethod, null))
             svg.on("touchmove mousemove", function(event) {
-                const index = d3.bisectCenter(xData, d3.pointer(event, this)[0])
+                const index = d3.bisectCenter(xDataScaled, d3.pointer(event, this)[0])
                 const [xValue, yValue] = data[index]
 
             tooltip
                 .attr("transform", `translate(${xValue},${yValue})`)
-                .call(calloutMethod, `yolo lo`)
+                .call(calloutMethod, `${yData[index]} minutes`)
             })
 
         },
