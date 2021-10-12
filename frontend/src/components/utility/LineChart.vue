@@ -11,6 +11,8 @@ import { debounce } from "vue-debounce"
 
 
 const STROKE_WIDTH = 3
+const MAIN_COLOR = "steelblue"
+const SECONDARY_COLOR = "lightsteelblue"
 
 
 export default defineComponent({
@@ -27,24 +29,12 @@ export default defineComponent({
             resizeObserver: undefined as ResizeObserver | undefined,
 
             strokeWidth: STROKE_WIDTH,
-            margin: { top: STROKE_WIDTH, left: 5, bottom: STROKE_WIDTH + 20, right: 5 },
+            margin: { top: STROKE_WIDTH, left: 5, bottom: STROKE_WIDTH + 40, right: 5 },
             ticksUnit: "minutes",
             yTicksCount: 1
         }
     },
     computed: {
-        scales(): [d3.ScaleLinear<number, number>, d3.ScaleLinear<number, number>] {
-            const [xMin, xMax] = d3.extent(this.data, item => item[0])
-            const [yMin, yMax] = d3.extent(this.data, item => item[1])
-            if (xMin === undefined || xMax === undefined || yMin === undefined || yMax === undefined) {
-                throw Error("Min or max is undefined.")
-            }
-            const yScale = d3.scaleLinear().domain([yMin, yMax])
-                .range([this.height - this.margin.bottom, this.margin.top]).nice(this.yTicksCount)
-            const xScale = d3.scaleLinear().domain([xMin, xMax])
-                .range([this.margin.left , this.width - this.margin.right])
-            return [xScale, yScale]
-        },
 
     },
     methods: {
@@ -56,17 +46,37 @@ export default defineComponent({
             this.width = entry.contentRect.width
             this.height = entry.contentRect.height
 
-            const [xScale, yScale] = this.scales
+            const [xMin, xMax] = d3.extent(this.data, item => item[0])
+            const [yMin, yMax] = d3.extent(this.data, item => item[1])
+            if (xMin === undefined || xMax === undefined || yMin === undefined || yMax === undefined) {
+                throw Error("Min or max is undefined.")
+            }
+            const yScale = d3.scaleLinear().domain([yMin, yMax])
+                .range([this.height - this.margin.bottom, this.margin.top]).nice(this.yTicksCount)
+            const xScale = d3.scaleLinear().domain([xMin, xMax])
+                .range([this.margin.left , this.width - this.margin.right])
             const data = this.data.map(([x, y]) => [xScale(x), yScale(y)])
 
             const svg = d3.select("#svg")
             svg.selectChildren().remove()
 
             const line = d3.line().curve(d3.curveLinear)
+            const area = d3.area()
+                .x(d => d[0])
+                .y0(yScale.range()[0])
+                .y1(d => d[1])
+
+            svg.append("path")
+                .datum(data)
+                .attr("fill", SECONDARY_COLOR)
+                .attr("stroke-linejoin", "round")
+                .attr("stroke-linecap", "round")
+                .attr("d", area as any)
+
             svg.append("path")
                 .datum(data)
                 .attr("fill", "none")
-                .attr("stroke", "steelblue")
+                .attr("stroke", MAIN_COLOR)
                 .attr("stroke-width", this.strokeWidth)
                 .attr("stroke-linejoin", "round")
                 .attr("stroke-linecap", "round")
@@ -76,7 +86,7 @@ export default defineComponent({
                 .data(data)
                 .enter()
                     .append("circle")
-                    .style("fill", "steelblue")
+                    .style("fill", MAIN_COLOR)
                     .attr("cx", ([x, _]) => x)
                     .attr("cy", ([_, y]) => y)
                     .attr("r", this.strokeWidth)
@@ -162,5 +172,5 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .svg-wrapper
-    max-height: 60px
+    max-height: 120px
 </style>
