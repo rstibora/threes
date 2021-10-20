@@ -16,6 +16,8 @@ import { TasksModule, State as TasksState, Store as TasksStore } from "src/state
 // TODO: typing of the store sucks, maybe can be improved as seen here: https://gist.github.com/soerenmartius/ad62ad59b991c99983a4e495bf6acb04,
 // but it might not be worth it. Perhaps wait for vuex 5.
 
+export type TaskAndEfforts = Array<[Task, MapById<Effort>]>
+
 export type State = {
     efforts: EffortsState,
     reviews: ReviewsState,
@@ -64,7 +66,7 @@ export default createStore({
             }
             return efforts
         },
-        tasksAndEffortsForInterval: (state, getters) => (interval: Interval, ignoreTasks?: MapById<Task>): Array<[Task, MapById<Effort>]> => {
+        tasksAndEffortsForInterval: (state, getters) => (interval: Interval, ignoreTasks?: MapById<Task>): TaskAndEfforts => {
             /**
              * Returns tasks that have an effort in the given interval. Also returns efforts per task for the interval.
              */

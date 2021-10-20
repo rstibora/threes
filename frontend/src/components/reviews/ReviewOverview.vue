@@ -5,7 +5,7 @@
 
     <h2>Task Effort</h2>
 
-    <line-chart :data="totalReviewEffortChartData"/>
+    <stacked-area-chart :configuration="chartConfiguration"/>
 
     <div class="chart">
     </div>
@@ -33,13 +33,15 @@ import { mapGetters } from "vuex"
 import { MapById } from "src/utils/types"
 
 import TaskPill from "src/components/tasks/TaskPill.vue"
-import LineChart from "src/components/utility/LineChart.vue"
+import StackedAreaChart from "src/components/utility/StackedAreaChart.vue"
+import { StackedAreaChartConfiguration, Stack } from "src/components/utility/stackedAreaChart"
 
 import { Effort } from "src/network/models/effort"
 import { Review, NewReview, ReviewIdentification } from "src/network/models/review"
 import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
 import { Task } from "src/network/models/task"
 
+import { TaskAndEfforts } from "src/state/store"
 import { Actions } from "src/state/storeAccess"
 
 
@@ -61,26 +63,37 @@ export default defineComponent({
             }
             return new NewReview(this.reviewIdentification.configurationId as number, this.reviewIdentification.index as number, [])
         },
-        totalReviewEffortChartData(): Array<[number, number]> {
+        chartConfiguration(): StackedAreaChartConfiguration {
             const dataPointsCount = 8
-            let totalEffortPerReview = new Array<number>()
-            for (let reviewIndex = this.review.index; reviewIndex > this.review.index - dataPointsCount; reviewIndex--) {
-                totalEffortPerReview.push(0)
-                const taskAndEfforts: Array<[Task, MapById<Effort>]> = this.tasksAndEffortsForInterval(
-                    this.configuration.getReviewInterval(reviewIndex))
-                for (const [_, efforts] of taskAndEfforts) {
-                    for (const [_, effort] of efforts) {
-                        totalEffortPerReview[totalEffortPerReview.length - 1] += effort.duration
+            const reviewIndices = Array.from(Array(dataPointsCount), (_, i) => this.review.index - i)
+            const perTaskPerReviewEffort = new Map<number, Map<number, number>>()
+            for (const reviewIndex of reviewIndices) {
+                const reviewInterval = this.configuration.getReviewInterval(reviewIndex)
+                const tasksAndEffortsForInterval: TaskAndEfforts = this.tasksAndEffortsForInterval(reviewInterval)
+
+                for (const [task, efforts] of tasksAndEffortsForInterval) {
+                    let taskEffort = 0
+                    for (const effort of efforts.values()) {
+                        taskEffort += effort.duration
                     }
+                    if (!perTaskPerReviewEffort.has(task.id)) {
+                        perTaskPerReviewEffort.set(task.id, new Map<number, number>(reviewIndices.map(index => [index, 0])))
+                    }
+                    (perTaskPerReviewEffort.get(task.id) as Map<number, number>).set(reviewIndex, taskEffort)
                 }
             }
-            let output = new Array<[number, number]>()
-            for (let idx = 0; idx < totalEffortPerReview.length; idx++) {
-                // Chart displays the data according the x coordinate, not array index, and we
-                // want to have the most recent review period at the end of the chart.
-                output.push([idx, totalEffortPerReview[totalEffortPerReview.length - (idx + 1)]])
+
+            const stacks = new Array<Stack>()
+            for (const [taskId, efforts] of perTaskPerReviewEffort) {
+                const singleStackData = new Array<number>()
+                for (const reviewIndex of [...efforts.keys()].sort()) {
+                    singleStackData.push(efforts.get(reviewIndex) as number)
+                }
+                stacks.push({ data: singleStackData,
+                              color: "lightsteelblue",
+                              name: (this.$store.state.tasks.tasks.get(taskId) as Task).name })
             }
-            return output
+            return new StackedAreaChartConfiguration(stacks)
         }
     },
     data: function() {
@@ -100,7 +113,7 @@ export default defineComponent({
         },
     },
     components: {
-        LineChart,
+        StackedAreaChart,
         TaskPill,
     }
 })
