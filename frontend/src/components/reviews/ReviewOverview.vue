@@ -5,7 +5,8 @@
 
     <h2>Task Effort</h2>
 
-    <stacked-area-chart :configuration="chartConfiguration"/>
+    <!-- <stacked-area-chart :configuration="chartConfiguration"/> -->
+    <pie-chart :configuration="pieChartConfiguration"/>
 
     <div class="chart">
     </div>
@@ -27,6 +28,7 @@
 </template>
 
 <script lang="ts">
+import * as d3 from "d3"
 import { defineComponent, PropType } from "vue"
 import { mapGetters } from "vuex"
 
@@ -35,6 +37,8 @@ import { MapById } from "src/utils/types"
 import TaskPill from "src/components/tasks/TaskPill.vue"
 import StackedAreaChart from "src/components/utility/StackedAreaChart.vue"
 import { StackedAreaChartConfiguration, Stack } from "src/components/utility/stackedAreaChart"
+import PieChart from "src/components/utility/PieChart.vue"
+import { PieArea, PieChartConfiguration } from "src/components/utility/PieChart"
 
 import { Effort } from "src/network/models/effort"
 import { Review, NewReview, ReviewIdentification } from "src/network/models/review"
@@ -62,6 +66,22 @@ export default defineComponent({
                 return this.$store.state.reviews.reviews.get(this.reviewId) as Review
             }
             return new NewReview(this.reviewIdentification.configurationId as number, this.reviewIdentification.index as number, [])
+        },
+        pieChartConfiguration(): PieChartConfiguration {
+            const totalEffortPerTask: Array<[Task, number]> = new Array()
+            for (const [task, efforts] of this.tasksAndEffortsForInterval(this.configuration.getReviewInterval(this.review.index)) as TaskAndEfforts) {
+                let totalEffort = 0
+                for (const effort of efforts.values()) {
+                    totalEffort += effort.duration
+                }
+                totalEffortPerTask.push([task, totalEffort])
+            }
+            totalEffortPerTask.sort((a, b) => a[1] - b[1]).reverse()
+            const areas: Array<PieArea> = new Array()
+            for (const [task, totalEffort] of totalEffortPerTask) {
+                areas.push({ name: task.name, value: totalEffort, colour: d3.schemePastel1[task.id % 9]})
+            }
+            return { areas }
         },
         chartConfiguration(): StackedAreaChartConfiguration {
             const dataPointsCount = 8
@@ -113,6 +133,7 @@ export default defineComponent({
         },
     },
     components: {
+        PieChart,
         StackedAreaChart,
         TaskPill,
     }

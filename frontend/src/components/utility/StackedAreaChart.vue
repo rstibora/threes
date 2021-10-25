@@ -65,6 +65,7 @@ export default defineComponent({
                 .y1(d => yScale(d[1]))
 
             const svg = d3.select("#svg")
+            svg.selectChildren().remove()
 
             svg.append("g")
                 .selectAll("path")
