@@ -1,9 +1,10 @@
 <template>
-<div class="card">
+<compact-header>
     <h1>Tasks</h1>
     <input type="text" v-model="searchTerm" placeholder="Your seach query...">
-    <br>
+</compact-header>
 
+<div class="card">
     <span v-if="searchResult.size === 0">No task found.</span>
     <ul v-else>
         <li v-for="task of searchResult" :key="task.id" class="task-pill-wrapper">
@@ -30,6 +31,7 @@ import { defineComponent, PropType } from "vue"
 import { Task } from "src/network/models/task"
 
 import TaskPill from "src/components/tasks/TaskPill.vue"
+import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
 
 import { TaskListConfiguration } from "src/components/tasks/taskList"
 
@@ -74,7 +76,8 @@ export default defineComponent({
         this.selectedTasks = this.configuration.action.getPreselected()
     },
     components: {
-        TaskPill
+        CompactHeader,
+        TaskPill,
     }
 })
 </script>
