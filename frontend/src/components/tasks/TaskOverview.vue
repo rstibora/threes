@@ -22,7 +22,7 @@ import { Actions } from "src/state/storeAccess"
 import { State } from "src/state/store"
 
 import EffortPill from "src/components/effort/EffortPill.vue"
-import EditableText from "src/components/utility/EditableText.vue"
+import EditableText from "src/components/buildingBlocks/EditableText.vue"
 
 
 function freshNewTask(): NewTask {

@@ -9,7 +9,7 @@ import * as d3 from "d3"
 import { defineComponent, PropType } from "vue"
 import { debounce } from "vue-debounce"
 
-import { PieArea, PieChartConfiguration } from "src/components/utility/PieChart"
+import { PieArea, PieChartConfiguration } from "src/components/buildingBlocks/visualization/PieChart"
 import { PieArcDatum } from "d3"
 
 

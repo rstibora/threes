@@ -14,7 +14,7 @@ import { defineComponent } from "vue"
 
 import { Actions } from "src/state/storeAccess"
 
-import EditableText from "src/components/utility/EditableText.vue"
+import EditableText from "src/components/buildingBlocks/EditableText.vue"
 
 import { Effort, NewEffort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"

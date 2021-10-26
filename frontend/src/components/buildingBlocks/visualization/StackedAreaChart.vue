@@ -9,7 +9,7 @@ import * as d3 from "d3"
 import { defineComponent, PropType } from "vue"
 import { debounce } from "vue-debounce"
 
-import { StackedAreaChartConfiguration } from "src/components/utility/stackedAreaChart"
+import { StackedAreaChartConfiguration } from "src/components/buildingBlocks/visualization/stackedAreaChart"
 
 
 const STROKE_WIDTH = 3
