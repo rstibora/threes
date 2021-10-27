@@ -1,4 +1,7 @@
 <template>
+<compact-header>
+    <h1>Dashboard</h1>
+</compact-header>
 <div class="review-widgets-container">
     <review-widget class="review" v-for="[id, configuration] in activeReviewPeriodConfigurations" :key="id" :configuration="configuration"/>
 </div>
@@ -7,10 +10,11 @@
 <script lang="ts">
 import { defineComponent } from "vue"
 
-import { Actions } from "src/state/storeAccess"
-
+import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
 import ReviewWidget from "src/components/reviews/ReviewWidget.vue"
 import TaskCard from "src/components/tasks/TaskCard.vue"
+
+import { Actions } from "src/state/storeAccess"
 
 import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
 
@@ -30,6 +34,7 @@ export default defineComponent({
         },
     },
     components: {
+        CompactHeader,
         ReviewWidget,
         TaskCard,
     },

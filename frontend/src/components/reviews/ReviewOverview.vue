@@ -1,8 +1,10 @@
 <template>
-<div class="card">
+<compact-header>
     <h1>{{ configuration.getReviewName(review.index) }}</h1>
     <p>{{ configuration.getReviewInterval(review.index).start.toLocaleString() }} - {{ configuration.getReviewInterval(review.index).end.toLocaleString() }}</p>
+</compact-header>
 
+<div class="card">
     <h2>Task Effort</h2>
 
     <!-- <stacked-area-chart :configuration="chartConfiguration"/> -->
@@ -32,6 +34,7 @@ import * as d3 from "d3"
 import { defineComponent, PropType } from "vue"
 import { mapGetters } from "vuex"
 
+import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
 import TaskPill from "src/components/tasks/TaskPill.vue"
 import StackedAreaChart from "src/components/buildingBlocks/visualization/StackedAreaChart.vue"
 import { StackedAreaChartConfiguration, Stack } from "src/components/buildingBlocks/visualization/stackedAreaChart"
@@ -130,6 +133,7 @@ export default defineComponent({
         },
     },
     components: {
+        CompactHeader,
         PieChart,
         StackedAreaChart,
         TaskPill,

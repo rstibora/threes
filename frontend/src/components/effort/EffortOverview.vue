@@ -1,4 +1,5 @@
 <template>
+<compact-header/>
 <div class="card">
     <h1>Effort for {{ task.name }}</h1>
     <p><editable-text v-model="effort.description"/></p>
@@ -12,9 +13,10 @@
 import { DateTime } from "luxon"
 import { defineComponent } from "vue"
 
-import { Actions } from "src/state/storeAccess"
-
+import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
 import EditableText from "src/components/buildingBlocks/EditableText.vue"
+
+import { Actions } from "src/state/storeAccess"
 
 import { Effort, NewEffort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
@@ -56,6 +58,7 @@ export default defineComponent({
         }
     },
     components: {
+        CompactHeader,
         EditableText,
     },
     created: function() {

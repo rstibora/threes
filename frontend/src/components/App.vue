@@ -31,7 +31,6 @@ import { Mutations } from "src/state/storeAccess"
 import { State } from "src/state/store"
 
 import Dashboard from "./Dashboard.vue"
-import Tasks from "./Tasks.vue"
 
 export default defineComponent({
     computed: {
@@ -57,7 +56,6 @@ export default defineComponent({
     },
     components: {
         Dashboard,
-        Tasks,
     }
 })
 </script>
@@ -98,6 +96,9 @@ export default defineComponent({
     width: 100%
     position: fixed
     bottom: 0
+
+    background-color: white
+    box-shadow: 0px 0px 5px gray
 
 @media (max-width: constants.$breakpoint-mobile)
     .side-navbar

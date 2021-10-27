@@ -1,4 +1,6 @@
 <template>
+<compact-header>
+</compact-header>
 <div class="card">
     <h1><editable-text v-model="editedTask.name" @update:modelValue="updateOrCreateTask()"/></h1>
     <p><editable-text v-model="editedTask.description" @update:modelValue="updateOrCreateTask()"/></p>
@@ -15,14 +17,15 @@
 import { defineComponent } from "vue"
 import { mapState } from "vuex"
 
+import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
+import EffortPill from "src/components/effort/EffortPill.vue"
+import EditableText from "src/components/buildingBlocks/EditableText.vue"
+
 import { Effort } from "src/network/models/effort"
 import { NewTask, Task } from "src/network/models/task"
 
 import { Actions } from "src/state/storeAccess"
 import { State } from "src/state/store"
-
-import EffortPill from "src/components/effort/EffortPill.vue"
-import EditableText from "src/components/buildingBlocks/EditableText.vue"
 
 
 function freshNewTask(): NewTask {
@@ -82,6 +85,7 @@ export default defineComponent({
         },
     },
     components: {
+        CompactHeader,
         EditableText,
         EffortPill,
     },

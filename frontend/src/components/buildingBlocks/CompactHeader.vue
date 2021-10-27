@@ -19,5 +19,6 @@ export default defineComponent({})
     width: 100%
     margin-bottom: 10px
 
+    background-color: white
     box-shadow: 0px 0px 5px gray
 </style>
