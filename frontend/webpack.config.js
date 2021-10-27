@@ -87,5 +87,4 @@ export default {
 
     // Likely has an impact on the build time.
     devtool: "eval-source-map",
-    watch: true,
 };

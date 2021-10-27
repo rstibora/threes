@@ -5,7 +5,7 @@
   "main": "src/main.ts",
   "scripts": {
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest",
-    "build": "webpack"
+    "build": "webpack watch"
   },
   "type": "module",
   "author": "Radek Stibora",
