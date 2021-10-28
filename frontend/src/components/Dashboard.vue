@@ -1,6 +1,9 @@
 <template>
 <compact-header>
     <h1>Dashboard</h1>
+    <template v-slot:subheader>
+        {{ subheaderString }}
+    </template>
 </compact-header>
 <div class="review-widgets-container">
     <review-widget class="review" v-for="[id, configuration] in activeReviewPeriodConfigurations" :key="id" :configuration="configuration"/>
@@ -9,6 +12,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
+import { DateTime } from "luxon"
 
 import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
 import ReviewWidget from "src/components/reviews/ReviewWidget.vue"
@@ -32,6 +36,10 @@ export default defineComponent({
             }
             return filtered
         },
+        subheaderString(): string {
+            // TODO: What happens at midnight? Nothing.
+            return DateTime.now().toLocaleString()
+        }
     },
     components: {
         CompactHeader,

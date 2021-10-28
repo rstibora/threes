@@ -1,9 +1,9 @@
 <template>
 <div class="compact-header" ref="topPart">
-    <slot/>
+    <slot name="default"/>
 </div>
 <div class="disappearing" ref="bottomPart" :style="bottomPartStyle">
-    Some Stuff
+    <slot name="subheader"></slot>
 </div>
 </template>
 
