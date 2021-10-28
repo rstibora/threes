@@ -2,7 +2,6 @@ import path from "path"
 import { fileURLToPath } from "url"
 
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin"
-import WebpackCleanPlugin from "webpack-clean-plugin"
 import { WebpackManifestPlugin } from "webpack-manifest-plugin"
 
 import { VueLoaderPlugin } from "vue-loader"
@@ -19,6 +18,7 @@ export default {
         filename: "[name].[contenthash].js",
         path: path.resolve("/media/ramdisk", 'dist'),
         publicPath: "",
+        clean: true,
     },
     resolve: {
         alias: {
@@ -74,7 +74,6 @@ export default {
     plugins: [
         new VueLoaderPlugin(),
         new WebpackManifestPlugin(),
-        new WebpackCleanPlugin({ root: path.join(__dirname, 'dist') }),
         new ForkTsCheckerWebpackPlugin({ typescript: { 
             configFile: "./build-tsconfig.json",
             extensions: { vue: {
