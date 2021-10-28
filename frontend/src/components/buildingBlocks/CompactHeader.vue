@@ -1,6 +1,9 @@
 <template>
-<div class="compact-header">
+<div class="compact-header" ref="topPart">
     <slot/>
+</div>
+<div class="disappearing" ref="bottomPart" :style="bottomPartStyle">
+    Some Stuff
 </div>
 </template>
 
@@ -8,17 +11,39 @@
 import { defineComponent } from "vue"
 
 
-export default defineComponent({})
+export default defineComponent({
+    data: function() {
+        return {
+            bottomPartStyle: {}
+        }
+    },
+    mounted() {
+        // @ts-ignore
+        const bottomPartHeight = this.$refs.bottomPart.clientHeight
+        // TODO: computes with integere precision.
+        // @ts-ignore
+        this.bottomPartStyle["top"] = `${56 - bottomPartHeight}px`
+    }
+})
 </script>
 
 <style lang="sass" scoped>
 .compact-header
     position: sticky
     top: 0px
-    min-height: 56px
+    height: 56px
     width: 100%
-    margin-bottom: 10px
+
+    z-index: 2
 
     background-color: white
+
+.disappearing
+    position: sticky
+    background-color: white
+    margin-bottom: 10px
+
     box-shadow: 0px 0px 5px gray
+    clip-path: inset(0px 0px -15px 0px)
+    z-index: 1
 </style>
