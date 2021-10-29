@@ -1,9 +1,14 @@
 <template>
-<div class="compact-header" ref="topPart">
-    <slot name="default"/>
+<div class="compact-header" ref="headerPart" :style="headerStyle">
+    <!-- Can't bind class to <slot>... -->
+    <div class="slot-content">
+        <slot name="default"/>
+    </div>
 </div>
-<div class="disappearing" ref="bottomPart" :style="bottomPartStyle">
-    <slot name="subheader"></slot>
+<div class="disappearing" ref="subheaderPart" :style="subheaderStyle">
+    <div class="slot-content">
+        <slot name="subheader"></slot>
+    </div>
 </div>
 </template>
 
@@ -14,21 +19,38 @@ import { defineComponent } from "vue"
 export default defineComponent({
     data: function() {
         return {
-            bottomPartStyle: {}
+            headerStyle: {},
+            subheaderStyle: {},
         }
     },
     mounted() {
         // @ts-ignore
-        const bottomPartHeight = this.$refs.bottomPart.clientHeight
+        const bottomPartHeight = this.$refs.subheaderPart.clientHeight
         // TODO: computes with integere precision.
         // @ts-ignore
-        this.bottomPartStyle["top"] = `${56 - bottomPartHeight}px`
+        this.subheaderStyle["top"] = `${56 - bottomPartHeight}px`
+        // @ts-ignore
+        if (this.$slots.subheader === undefined) {
+            // @ts-ignore
+            const bottomPartStyle = window.getComputedStyle(this.$refs.subheaderPart)
+            // @ts-ignore
+            this.headerStyle["box-shadow"] = bottomPartStyle.getPropertyValue("box-shadow")
+            // @ts-ignore
+            this.headerStyle["clip-path"] = bottomPartStyle.getPropertyValue("clip-path")
+        }
     }
 })
 </script>
 
 <style lang="sass" scoped>
+@use "src/styles/utils"
+
+.slot-content
+    margin-left: 20px
+
 .compact-header
+    @include utils.centered-cross-axis
+
     position: sticky
     top: 0px
     height: 56px
