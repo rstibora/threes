@@ -1,11 +1,13 @@
 <template>
-<div class="compact-header" ref="headerPart" :style="headerStyle">
-    <!-- Can't bind class to <slot>... -->
+<div class="header vertical-alignment" ref="headerPart" :style="headerStyle">
+    <button v-if="hasBackButton" @click="$router.go(-1)" class="header-left-control">
+        <h1>&lt;</h1>
+    </button>
     <div class="slot-content">
         <slot name="default"/>
     </div>
 </div>
-<div class="disappearing" ref="subheaderPart" :style="subheaderStyle">
+<div class="subheader vertical-alignment" ref="subheaderPart" :style="subheaderStyle">
     <div class="slot-content">
         <slot name="subheader"></slot>
     </div>
@@ -17,6 +19,12 @@ import { defineComponent } from "vue"
 
 
 export default defineComponent({
+    props: {
+        hasBackButton: {
+            type: Boolean,
+            default: false
+        }
+    },
     data: function() {
         return {
             headerStyle: {},
@@ -45,12 +53,18 @@ export default defineComponent({
 <style lang="sass" scoped>
 @use "src/styles/utils"
 
+.vertical-alignment
+    display: grid
+    grid-template-columns: 38px auto
+    align-items: center
+
+.header-left-control
+    grid-column: 1
+
 .slot-content
-    margin-left: 20px
+    grid-column: 2
 
-.compact-header
-    @include utils.centered-cross-axis
-
+.header
     position: sticky
     top: 0px
     height: 56px
@@ -60,7 +74,7 @@ export default defineComponent({
 
     background-color: white
 
-.disappearing
+.subheader
     position: sticky
     background-color: white
     margin-bottom: 10px
