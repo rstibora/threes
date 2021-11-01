@@ -27,23 +27,18 @@ export default defineComponent({
     },
     data: function() {
         return {
-            headerStyle: {},
-            subheaderStyle: {},
+            headerStyle: {} as Record<string, string>,
+            subheaderStyle: {} as Record<string, string>,
         }
     },
     mounted() {
-        // @ts-ignore
-        const bottomPartHeight = this.$refs.subheaderPart.clientHeight
+        const subheaderElement = this.$refs.subheaderPart as Element
+        const bottomPartHeight = subheaderElement.clientHeight
         // TODO: computes with integere precision.
-        // @ts-ignore
         this.subheaderStyle["top"] = `${56 - bottomPartHeight}px`
-        // @ts-ignore
         if (this.$slots.subheader === undefined) {
-            // @ts-ignore
-            const bottomPartStyle = window.getComputedStyle(this.$refs.subheaderPart)
-            // @ts-ignore
+            const bottomPartStyle = window.getComputedStyle(subheaderElement)
             this.headerStyle["box-shadow"] = bottomPartStyle.getPropertyValue("box-shadow")
-            // @ts-ignore
             this.headerStyle["clip-path"] = bottomPartStyle.getPropertyValue("clip-path")
         }
     }
