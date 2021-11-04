@@ -62,6 +62,7 @@ export default defineComponent({
 
 <style lang="sass">
 @use "src/styles/reset"
+@use "src/styles/classes"
 
 #app
     display: flex

@@ -2,10 +2,10 @@
     <compact-header :hasBackButton="true">
         Edit Task
     </compact-header>
-    <input v-model="editedTask.name"/>
-    <input v-model="editedTask.description"/>
+    <input v-model="editedTask.name" minlength="1" class="full-width-input"/>
+    <input v-model="editedTask.description" class="full-width-input"/>
 
-    <button class="confirm-button">{{ confirmButtonText }}</button>
+    <button class="success-button">{{ confirmButtonText }}</button>
 </template>
 
 <script lang="ts">
@@ -42,3 +42,12 @@ export default defineComponent({
     }
 })
 </script>
+
+<style lang="sass" scoped>
+.success-button
+    width: 100%
+
+.full-width-input
+    display: block
+    width: 100%
+</style>
