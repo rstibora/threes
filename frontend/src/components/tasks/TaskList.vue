@@ -1,6 +1,6 @@
 <template>
 <compact-header>
-    <h1>Tasks</h1>
+    Tasks
     <input type="text" v-model="searchTerm" placeholder="Your seach query...">
 </compact-header>
 

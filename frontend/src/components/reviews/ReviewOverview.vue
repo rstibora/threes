@@ -1,6 +1,6 @@
 <template>
 <compact-header :hasBackButton="true">
-    <h1>{{ configuration.getReviewName(review.index) }}</h1>
+    {{ configuration.getReviewName(review.index) }}
     <template v-slot:subheader>
         <p>{{ configuration.getReviewInterval(review.index).start.toLocaleString() }} - {{ configuration.getReviewInterval(review.index).end.toLocaleString() }}</p>
     </template>

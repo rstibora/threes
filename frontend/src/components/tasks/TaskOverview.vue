@@ -1,8 +1,8 @@
 <template>
-<compact-header>
+<compact-header :hasBackButton="true" :optionsButtons="new Map([['Edit task', () => $router.push({ name: 'editTask', params: { taskId: taskId }})]])">
+    {{ editedTask.name }}
 </compact-header>
 <div class="card">
-    <h1><editable-text v-model="editedTask.name" @update:modelValue="updateOrCreateTask()"/></h1>
     <p><editable-text v-model="editedTask.description" @update:modelValue="updateOrCreateTask()"/></p>
     <ul v-if="taskEfforts.length > 0">
         <li v-for="effort of taskEfforts" :key="effort.id">

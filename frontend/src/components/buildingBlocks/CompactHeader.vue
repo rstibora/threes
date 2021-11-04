@@ -4,31 +4,46 @@
         <h1>&lt;</h1>
     </button>
     <div class="slot-content">
-        <slot name="default"/>
+        <h1><slot name="default"/></h1>
     </div>
+    <button v-if="optionsButtons.size > 0" class="header-options-control" @click.stop="optionsModalDisplayed=true">
+        <h1>:</h1>
+    </button>
 </div>
 <div class="subheader vertical-alignment" ref="subheaderPart" :style="subheaderStyle">
     <div class="slot-content">
         <slot name="subheader"></slot>
     </div>
 </div>
+
+<div class="modal" v-show="optionsModalDisplayed" v-clicked-outside="() => optionsModalDisplayed = false">
+    <button v-for="[name, action] of optionsButtons" :key="name" @click="action">
+        {{ name }}
+    </button>
+</div>
 </template>
 
+
 <script lang="ts">
-import { defineComponent } from "vue"
+import { defineComponent, PropType } from "vue"
 
 
 export default defineComponent({
     props: {
         hasBackButton: {
             type: Boolean,
-            default: false
+            default: false,
+        },
+        optionsButtons: {
+            type: Object as PropType<Map<string, () => void>>,
+            default: new Map()
         }
     },
     data: function() {
         return {
             headerStyle: {} as Record<string, string>,
             subheaderStyle: {} as Record<string, string>,
+            optionsModalDisplayed: false,
         }
     },
     mounted() {
@@ -50,7 +65,7 @@ export default defineComponent({
 
 .vertical-alignment
     display: grid
-    grid-template-columns: 38px auto
+    grid-template-columns: 38px auto 38px
     align-items: center
 
 .header-left-control
@@ -58,6 +73,9 @@ export default defineComponent({
 
 .slot-content
     grid-column: 2
+
+.header-options-control
+    grid-column: 3
 
 .header
     position: sticky
@@ -77,4 +95,16 @@ export default defineComponent({
     box-shadow: 0px 0px 5px gray
     clip-path: inset(0px 0px -15px 0px)
     z-index: 1
+
+.modal
+    position: fixed
+    top: 30px
+    right: 20px
+    z-index: 10
+
+    background-color: white
+    box-shadow: 0px 0px 5px gray
+
+.modal button
+    margin: 10px
 </style>

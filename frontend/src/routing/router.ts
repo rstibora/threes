@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecor
 import store from "src/state/store"
 
 import Dashboard from "src/components/Dashboard.vue"
+import EditTask from "src/components/tasks/EditTask.vue"
 import EffortOverview from "src/components/effort/EffortOverview.vue"
 import ReviewOverview from "src/components/reviews/ReviewOverview.vue"
 import { TrackTasksAction } from "src/components/reviews/trackTasksAction"
@@ -28,7 +29,9 @@ const routes: Array<RouteRecordRaw> = [
       props: (route) => ({ configuration: parseTaskListConfiguration(route) }) },
     { path: "/tasks/:taskId", component: TaskOverview, name: "task",
       props: (route) => ({ taskId: parseInt(route.params.taskId as string) }) },
-    { path: "/tasks/new", component: TaskOverview, name: "newTask"},
+    { path: "/tasks/:taskId/edit", component: EditTask, name: "editTask",
+      props: (route) => ({ taskId: parseInt(route.params.taskId as string )})},
+    { path: "/tasks/new", component: EditTask, name: "newTask"},
     // TODO: the path does not feel right, perhaps it should be similar to /reviews/ logic instead.
     { path: "/tasks/:taskId/effort/:effortId?", component: EffortOverview, name: "effort",
       props: (route) => ({ taskId: parseInt(route.params.taskId as string),

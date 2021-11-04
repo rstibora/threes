@@ -1,6 +1,6 @@
 <template>
 <compact-header>
-    <h1>Dashboard</h1>
+    Dashboard
     <template v-slot:subheader>
         {{ subheaderString }}
     </template>

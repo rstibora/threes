@@ -11,7 +11,6 @@ import Porch from "./components/Porch.vue"
 const app = createApp(Porch)
 app.use(router)
 app.use(store)
-// TODO: no longer needed?
 app.directive("clicked-outside", clickedOutside)
 app.mixin({ methods: {
     relativeDateTime(datetime: DateTime): string {
