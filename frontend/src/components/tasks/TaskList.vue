@@ -66,7 +66,7 @@ export default defineComponent({
                 return
             }
             await this.configuration.action.performAction(this.selectedTasks)
-            this.$router.go(-1)
+            this.$router.back()
         },
     },
     created: function() {

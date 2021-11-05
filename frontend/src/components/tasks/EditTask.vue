@@ -5,7 +5,7 @@
     <input v-model="editedTask.name" minlength="1" class="full-width-input"/>
     <input v-model="editedTask.description" class="full-width-input"/>
 
-    <button class="success-button">{{ confirmButtonText }}</button>
+    <button @click="confirmButtonAction" class="success-button">{{ confirmButtonText }}</button>
 </template>
 
 <script lang="ts">
@@ -13,6 +13,7 @@ import { defineComponent } from "vue"
 
 import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
 
+import { Actions } from "src/state/storeAccess"
 import { NewTask, Task } from "src/network/models/task"
 
 
@@ -29,13 +30,20 @@ export default defineComponent({
     },
     computed: {
         confirmButtonText(): string {
-            return this.taskId !== undefined ? "Save" : "Create"
+            return this.editedTask instanceof Task ? "Save" : "Create"
         },
+    },
+    methods: {
+        async confirmButtonAction(): Promise<void> {
+            const action = this.editedTask instanceof Task ? Actions.UPDATE_TASKS : Actions.CREATE_TASK
+            const task = await this.$store.dispatch(action, { task: this.editedTask })
+            this.$router.push({ name: "task", params: { taskId: task.id }})
+        }
     },
     components: {
         CompactHeader,
     },
-    created() {
+    created(): void {
         if (this.taskId !== undefined) {
             this.editedTask = this.$store.state.tasks.tasks.get(this.taskId) as Task
         }

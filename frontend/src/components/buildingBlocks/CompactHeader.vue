@@ -1,6 +1,6 @@
 <template>
 <div class="header vertical-alignment" ref="headerPart" :style="headerStyle">
-    <button v-if="hasBackButton" @click="$router.go(-1)" class="header-left-control">
+    <button v-if="hasBackButton" @click="$router.back()" class="header-left-control">
         <h1>&lt;</h1>
     </button>
     <div class="slot-content">
@@ -106,5 +106,6 @@ export default defineComponent({
     box-shadow: 0px 0px 5px gray
 
 .modal button
+    display: block
     margin: 10px
 </style>

@@ -48,13 +48,13 @@ export default defineComponent({
             } else {
                 await this.$store.dispatch(Actions.UPDATE_EFFORT, payload)
             }
-            this.$router.go(-1)
+            this.$router.back()
         },
         async destroy(): Promise<void> {
             if (this.effort instanceof Effort) {
                 await this.$store.dispatch(Actions.DESTROY_EFFORT, { effort: this.effort })
             }
-            this.$router.go(-1)
+            this.$router.back()
         }
     },
     components: {

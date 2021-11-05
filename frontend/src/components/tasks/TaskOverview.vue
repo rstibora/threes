@@ -1,5 +1,7 @@
 <template>
-<compact-header :hasBackButton="true" :optionsButtons="new Map([['Edit task', () => $router.push({ name: 'editTask', params: { taskId: taskId }})]])">
+<compact-header :hasBackButton="true"
+                :optionsButtons="new Map([['Edit task', () => $router.push({ name: 'editTask', params: { taskId: taskId }})],
+                                          ['Delete task', optionDeleteTask]])">
     {{ editedTask.name }}
 </compact-header>
 <div class="card">
@@ -9,7 +11,7 @@
             <effort-pill :effort="effort"/>
         </li>
     </ul>
-    <button v-if="!editedTaskIsNewTask" @click="routerPushEffort()">New Effort</button>
+    <button @click="routerPushEffort()">New Effort</button>
 </div>
 </template>
 
@@ -22,34 +24,28 @@ import EffortPill from "src/components/effort/EffortPill.vue"
 import EditableText from "src/components/buildingBlocks/EditableText.vue"
 
 import { Effort } from "src/network/models/effort"
-import { NewTask, Task } from "src/network/models/task"
+import { Task } from "src/network/models/task"
 
 import { Actions } from "src/state/storeAccess"
 import { State } from "src/state/store"
 
 
-function freshNewTask(): NewTask {
-    return new NewTask("New Task", "Description of the new task.")
-}
-
 export default defineComponent({
     props: {
         taskId: {
             type: Number,
+            required: true
         }
     },
     data: function() {
         return {
-            editedTask: freshNewTask() as Task | NewTask,
+            // TODO: rename to 'task'.
+            editedTask: undefined as unknown as Task,
         }
     },
     computed: {
         taskEfforts(): Array<Effort> {
             let filteredEfforts = new Array<Effort>()
-            if (!(this.editedTask instanceof Task)) {
-                return filteredEfforts
-            }
-
             for (const effort of this.$store.state.efforts.efforts.values()) {
                 if (effort.taskId == this.editedTask.id) {
                     filteredEfforts.push(effort)
@@ -57,32 +53,30 @@ export default defineComponent({
             }
             return filteredEfforts
         },
-        editedTaskIsNewTask(): boolean {
-            return !(this.editedTask instanceof Task)
-        },
         ...mapState({ tasks: state => (state as State).tasks.tasks }),
     },
     methods: {
-        async updateOrCreateTask() {
-            if (this.taskId === undefined) {
-                const newTask = await this.$store.dispatch(Actions.CREATE_TASK, {task: this.editedTask })
-                this.$router.push({ name: "task", params: { taskId: newTask.id }})
-                this.editedTask = freshNewTask()
-            } else {
-                await this.$store.dispatch(Actions.UPDATE_TASKS, {task: this.editedTask})
-                this.editedTask = this.tasks.get(this.taskId) as Task
-            }
+        async updateOrCreateTask(): Promise<void> {
+            await this.$store.dispatch(Actions.UPDATE_TASKS, {task: this.editedTask})
+            this.editedTask = this.tasks.get(this.taskId) as Task
         },
-        routerPushEffort(effortId: number | undefined = undefined) {
-            if (this.editedTask instanceof Task) {
-                const params = { taskId: this.editedTask.id }
-                if (effortId !== undefined) {
-                    // TODO: ugly.
-                    (params as any).effortId = effortId
-                }
-                this.$router.push({name: "effort", params })
+        routerPushEffort(effortId: number | undefined = undefined): void {
+            const params = { taskId: this.editedTask.id }
+            if (effortId !== undefined) {
+                // TODO: ugly.
+                (params as any).effortId = effortId
             }
+            this.$router.push({name: "effort", params })
         },
+        async optionDeleteTask(): Promise<void> {
+            await this.$store.dispatch(Actions.DESTROY_TASK, { task: this.editedTask })
+            // TODO: Don't use string as route names (use enum instead).
+            if (this.$router.getRoutes().at(-1) !== undefined && this.$router.getRoutes().at(-1)?.name === "editTask") {
+                // TODO: Should be handled better, editTask is still in history for the deleted task...
+                this.$router.push({ name: "tasks" })
+            }
+            this.$router.back()
+        }
     },
     components: {
         CompactHeader,
@@ -90,9 +84,7 @@ export default defineComponent({
         EffortPill,
     },
     created: function() {
-        if (this.taskId !== undefined) {
-            this.editedTask = this.tasks.get(this.taskId) as Task
-        }
+        this.editedTask = this.tasks.get(this.taskId) as Task
     }
 })
 </script>
