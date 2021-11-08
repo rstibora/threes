@@ -70,10 +70,6 @@ export default defineComponent({
         },
         async optionDeleteTask(): Promise<void> {
             await this.$store.dispatch(Actions.DESTROY_TASK, { task: this.task })
-            if (this.$router.getRoutes().at(-1) !== undefined && this.$router.getRoutes().at(-1)?.name === Routes.EDIT_TASK) {
-                // TODO: Should be handled better, editTask is still in history for the deleted task...
-                this.$router.push({ name: Routes.TASKS })
-            }
             this.$router.back()
         }
     },

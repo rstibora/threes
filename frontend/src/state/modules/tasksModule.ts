@@ -18,6 +18,11 @@ export const TasksModule: Module<State, any> = {
     state: () => ({
         tasks: new Map<number, Task>(),
     }),
+    getters: {
+        taskExists: (state: State) => (taskId: number): boolean => {
+            return state.tasks.has(taskId)
+        },
+    },
     mutations: {
         [Mutations.UPDATE_TASKS] ( state, payload: { tasks: MapById<Task | undefined> }) {
             updateOrDeleteInMap(state.tasks, payload.tasks)

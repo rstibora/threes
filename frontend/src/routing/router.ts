@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecordRaw, } from "vue-router"
+import { createRouter, createWebHashHistory, RouteLocation, RouteLocationNormalized, RouteRecordRaw, } from "vue-router"
 import store from "src/state/store"
 
 import Dashboard from "src/components/Dashboard.vue"
@@ -40,9 +40,16 @@ const routes: Array<RouteRecordRaw> = [
     { path: "/tasks", component: TaskList, name: Routes.TASKS,
       props: (route) => ({ configuration: parseTaskListConfiguration(route) }) },
     { path: "/tasks/:taskId", component: TaskOverview, name: Routes.TASK,
-      props: (route) => ({ taskId: parseInt(route.params.taskId as string) }) },
+      props: (route) => ({ taskId: parseInt(route.params.taskId as string) }),
+      beforeEnter: (to, _) => { return store.getters.taskExists(parseInt(to.params.taskId as string))}},
     { path: "/tasks/:taskId/edit", component: EditTask, name: Routes.EDIT_TASK,
-      props: (route) => ({ taskId: parseInt(route.params.taskId as string )})},
+      props: (route) => ({ taskId: parseInt(route.params.taskId as string )}),
+      beforeEnter: (to, _) => {
+        if (!store.getters.taskExists(parseInt(to.params.taskId as string))) {
+          return { name: Routes.TASKS }
+        }
+        return true
+      }},
     { path: "/tasks/new", component: EditTask, name: Routes.NEW_TASK},
     // TODO: the path does not feel right, perhaps it should be similar to /reviews/ logic instead.
     { path: "/tasks/:taskId/effort/:effortId?", component: EffortOverview, name: Routes.EFFORT,
