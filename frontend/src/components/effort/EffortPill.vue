@@ -1,7 +1,7 @@
 <template>
     <div> <!-- To avoid leaing style from the parent component -->
     <div class="pill">
-        <router-link :to="({ name: Routes.EFFORT, params: { taskId: effort.taskId, effortId: effort.id} })" class="grid">
+        <router-link :to="({ name: RouteNames.EFFORT, params: { taskId: effort.taskId, effortId: effort.id} })" class="grid">
             <div class="duration"> {{ effort.duration }} minutes</div>
             <div class="date">{{ relativeDateTime(effort.starts) }} </div>
             <div class="description"> {{ effort.description }} </div>

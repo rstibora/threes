@@ -11,6 +11,9 @@ import TaskList from "src/components/tasks/TaskList.vue"
 import { TaskListConfiguration } from "src/components/tasks/taskList"
 import TaskOverview from "src/components/tasks/TaskOverview.vue"
 
+import { RouteNames } from "src/routing/routeNames"
+import { taskExists } from "src/routing/guards"
+
 
 function parseTaskListConfiguration(route: RouteLocationNormalized): TaskListConfiguration | undefined {
     if (route.query?.action === "selectForReview") {
@@ -22,44 +25,27 @@ function parseTaskListConfiguration(route: RouteLocationNormalized): TaskListCon
 }
 
 
-export enum Routes {
-    DASHBOARD = "DASHBOARD",
-    EDIT_TASK = "EDIT_TASK",
-    EFFORT = "EFFORT",
-    NEW_REVIEW = "NEW_REVIEW",
-    NEW_TASK = "NEW_TASK",
-    REVIEW = "REVIEW",
-    TASK = "TASK",
-    TASKS = "TASKS",
-}
-
-
 const routes: Array<RouteRecordRaw> = [
-    { path: "/dashboard", component: Dashboard, name: Routes.DASHBOARD, alias: "/" },
+    { path: "/dashboard", component: Dashboard, name: RouteNames.DASHBOARD, alias: "/" },
 
-    { path: "/tasks", component: TaskList, name: Routes.TASKS,
+    { path: "/tasks", component: TaskList, name: RouteNames.TASKS,
       props: (route) => ({ configuration: parseTaskListConfiguration(route) }) },
-    { path: "/tasks/:taskId", component: TaskOverview, name: Routes.TASK,
+    { path: "/tasks/:taskId", component: TaskOverview, name: RouteNames.TASK,
       props: (route) => ({ taskId: parseInt(route.params.taskId as string) }),
-      beforeEnter: (to, _) => { return store.getters.taskExists(parseInt(to.params.taskId as string))}},
-    { path: "/tasks/:taskId/edit", component: EditTask, name: Routes.EDIT_TASK,
+      beforeEnter: taskExists},
+    { path: "/tasks/:taskId/edit", component: EditTask, name: RouteNames.EDIT_TASK,
       props: (route) => ({ taskId: parseInt(route.params.taskId as string )}),
-      beforeEnter: (to, _) => {
-        if (!store.getters.taskExists(parseInt(to.params.taskId as string))) {
-          return { name: Routes.TASKS }
-        }
-        return true
-      }},
-    { path: "/tasks/new", component: EditTask, name: Routes.NEW_TASK},
+      beforeEnter: taskExists},
+    { path: "/tasks/new", component: EditTask, name: RouteNames.NEW_TASK},
     // TODO: the path does not feel right, perhaps it should be similar to /reviews/ logic instead.
-    { path: "/tasks/:taskId/effort/:effortId?", component: EffortOverview, name: Routes.EFFORT,
+    { path: "/tasks/:taskId/effort/:effortId?", component: EffortOverview, name: RouteNames.EFFORT,
       props: (route) => ({ taskId: parseInt(route.params.taskId as string),
                            effortId: route.params.effortId === undefined ? undefined : parseInt(route.params.effortId as string) })},
 
-    { path: "/reviews/:configurationId/:reviewIndex", component: ReviewOverview, name: Routes.NEW_REVIEW,
+    { path: "/reviews/:configurationId/:reviewIndex", component: ReviewOverview, name: RouteNames.NEW_REVIEW,
       props: (route) => ({ reviewIdentification: { configurationId: parseInt(route.params.configurationId as string),
                                                    index: parseInt(route.params.reviewIndex as string) } as NewReviewIdentification })},
-    { path: "/reviews/:reviewId", component: ReviewOverview, name: Routes.REVIEW,
+    { path: "/reviews/:reviewId", component: ReviewOverview, name: RouteNames.REVIEW,
       props: (route) => ({ reviewIdentification: { id: parseInt(route.params.reviewId as string) } as ExistingReviewIdentification})}
 ]
 

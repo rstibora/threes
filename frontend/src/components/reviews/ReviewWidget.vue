@@ -8,9 +8,9 @@
             <div>
                 <router-link :to="(
                     selectedReviewBundle.review.id === undefined ?
-                    { name: Routes.NEW_REVIEW, params: { configurationId: selectedReviewBundle.review.configurationId,
+                    { name: RouteNames.NEW_REVIEW, params: { configurationId: selectedReviewBundle.review.configurationId,
                                                    reviewIndex: selectedReviewIndex }} :
-                    { name: Routes.REVIEW, params: { reviewId: selectedReviewBundle.review.id }})">
+                    { name: RouteNames.REVIEW, params: { reviewId: selectedReviewBundle.review.id }})">
                     <strong>{{ selectedReviewBundle.reviewName }}</strong>
                 </router-link>
                 <br>{{ selectedReviewBundle.interval.start.toLocaleString() }} - {{ selectedReviewBundle.interval.end.toLocaleString() }}

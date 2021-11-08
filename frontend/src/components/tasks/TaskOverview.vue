@@ -1,6 +1,6 @@
 <template>
 <compact-header :hasBackButton="true"
-                :optionsButtons="new Map([['Edit task', () => $router.push({ name: Routes.EDIT_TASK, params: { taskId: taskId }})],
+                :optionsButtons="new Map([['Edit task', () => $router.push({ name: RouteNames.EDIT_TASK, params: { taskId: taskId }})],
                                           ['Delete task', optionDeleteTask]])">
     {{ task.name }}
 </compact-header>
@@ -26,7 +26,7 @@ import EditableText from "src/components/buildingBlocks/EditableText.vue"
 import { Effort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
 
-import { Routes } from "src/routing/router"
+import { RouteNames } from "src/routing/routeNames"
 import { Actions } from "src/state/storeAccess"
 import { State } from "src/state/store"
 
@@ -66,7 +66,7 @@ export default defineComponent({
                 // TODO: ugly.
                 (params as any).effortId = effortId
             }
-            this.$router.push({name: Routes.EFFORT, params })
+            this.$router.push({name: RouteNames.EFFORT, params })
         },
         async optionDeleteTask(): Promise<void> {
             await this.$store.dispatch(Actions.DESTROY_TASK, { task: this.task })
