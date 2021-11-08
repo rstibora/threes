@@ -21,7 +21,7 @@
             {{ configuration.action.actionName }}
         </button>
     </div>
-    <button v-else @click="this.$router.push({ name: 'newTask' })">Create a new task</button>
+    <button v-else @click="this.$router.push({ name: Routes.NEW_TASK })">Create a new task</button>
 </div>
 </template>
 

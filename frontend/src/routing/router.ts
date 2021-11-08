@@ -22,25 +22,37 @@ function parseTaskListConfiguration(route: RouteLocationNormalized): TaskListCon
 }
 
 
-const routes: Array<RouteRecordRaw> = [
-    { path: "/dashboard", component: Dashboard, name: "dashboard", alias: "/" },
+export enum Routes {
+    DASHBOARD = "DASHBOARD",
+    EDIT_TASK = "EDIT_TASK",
+    EFFORT = "EFFORT",
+    NEW_REVIEW = "NEW_REVIEW",
+    NEW_TASK = "NEW_TASK",
+    REVIEW = "REVIEW",
+    TASK = "TASK",
+    TASKS = "TASKS",
+}
 
-    { path: "/tasks", component: TaskList, name: "tasks",
+
+const routes: Array<RouteRecordRaw> = [
+    { path: "/dashboard", component: Dashboard, name: Routes.DASHBOARD, alias: "/" },
+
+    { path: "/tasks", component: TaskList, name: Routes.TASKS,
       props: (route) => ({ configuration: parseTaskListConfiguration(route) }) },
-    { path: "/tasks/:taskId", component: TaskOverview, name: "task",
+    { path: "/tasks/:taskId", component: TaskOverview, name: Routes.TASK,
       props: (route) => ({ taskId: parseInt(route.params.taskId as string) }) },
-    { path: "/tasks/:taskId/edit", component: EditTask, name: "editTask",
+    { path: "/tasks/:taskId/edit", component: EditTask, name: Routes.EDIT_TASK,
       props: (route) => ({ taskId: parseInt(route.params.taskId as string )})},
-    { path: "/tasks/new", component: EditTask, name: "newTask"},
+    { path: "/tasks/new", component: EditTask, name: Routes.NEW_TASK},
     // TODO: the path does not feel right, perhaps it should be similar to /reviews/ logic instead.
-    { path: "/tasks/:taskId/effort/:effortId?", component: EffortOverview, name: "effort",
+    { path: "/tasks/:taskId/effort/:effortId?", component: EffortOverview, name: Routes.EFFORT,
       props: (route) => ({ taskId: parseInt(route.params.taskId as string),
                            effortId: route.params.effortId === undefined ? undefined : parseInt(route.params.effortId as string) })},
 
-    { path: "/reviews/:configurationId/:reviewIndex", component: ReviewOverview, name: "newReview",
+    { path: "/reviews/:configurationId/:reviewIndex", component: ReviewOverview, name: Routes.NEW_REVIEW,
       props: (route) => ({ reviewIdentification: { configurationId: parseInt(route.params.configurationId as string),
                                                    index: parseInt(route.params.reviewIndex as string) } as NewReviewIdentification })},
-    { path: "/reviews/:reviewId", component: ReviewOverview, name: "review",
+    { path: "/reviews/:reviewId", component: ReviewOverview, name: Routes.REVIEW,
       props: (route) => ({ reviewIdentification: { id: parseInt(route.params.reviewId as string) } as ExistingReviewIdentification})}
 ]
 

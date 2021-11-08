@@ -47,6 +47,7 @@ import { Review, NewReview, ReviewIdentification } from "src/network/models/revi
 import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
 import { Task } from "src/network/models/task"
 
+import { Routes } from "src/routing/router"
 import { TaskAndEfforts } from "src/state/store"
 import { Actions } from "src/state/storeAccess"
 
@@ -129,9 +130,9 @@ export default defineComponent({
             if (this.reviewIdentification.id === undefined) {
                 const createdReview: Review = await this.$store.dispatch(Actions.CREATE_REVIEW, { review: this.review as NewReview })
                 this.reviewId = createdReview.id
-                this.$router.replace({ name: "review", params: { reviewId: createdReview.id }})
+                this.$router.replace({ name: Routes.REVIEW, params: { reviewId: createdReview.id }})
             }
-            this.$router.push({ name: "tasks", query: { action: "selectForReview", reviewId: (this.review as Review).id }})
+            this.$router.push({ name: Routes.TASKS, query: { action: "selectForReview", reviewId: (this.review as Review).id }})
         },
     },
     components: {

@@ -1,7 +1,7 @@
 import { DateTime } from "luxon"
 import { createApp } from "vue"
 
-import router from "src/routing/router"
+import router, { Routes } from "src/routing/router"
 import store from "src/state/store"
 import { clickedOutside } from "src/utils/directives"
 import { relativeDateTime } from "./utils/relativeDateTime"
@@ -17,4 +17,7 @@ app.mixin({ methods: {
         return relativeDateTime(datetime)
     }
 }})
+
+app.config.globalProperties.Routes = Routes
+
 app.mount("#app")

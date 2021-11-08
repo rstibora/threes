@@ -1,7 +1,7 @@
 <template>
 <aside class="side-navbar">
-    <router-link :to="{ name: 'dashboard' }" class="button"><i data-feather="home"/></router-link>
-    <router-link :to="{ name: 'tasks' }" class="button"><i data-feather="file-text"/></router-link>
+    <router-link :to="{ name: Routes.DASHBOARD }" class="button"><i data-feather="home"/></router-link>
+    <router-link :to="{ name: Routes.TASKS }" class="button"><i data-feather="file-text"/></router-link>
     <a @click="logout()" class="button">{{ session !== undefined ? session.userEmail.substr(0, 1) : "X" }}</a>
 </aside>
 <div class="content-wrapper">
@@ -14,8 +14,8 @@
     </div>
 </div>
 <nav class="bottom-navbar">
-    <router-link :to="{ name: 'dashboard' }" class="button"><i data-feather="home"/></router-link>
-    <router-link :to="{ name: 'tasks' }" class="button"><i data-feather="file-text"/></router-link>
+    <router-link :to="{ name: Routes.DASHBOARD }" class="button"><i data-feather="home"/></router-link>
+    <router-link :to="{ name: Routes.TASKS }" class="button"><i data-feather="file-text"/></router-link>
 </nav>
 </template>
 
