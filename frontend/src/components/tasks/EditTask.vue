@@ -1,6 +1,6 @@
 <template>
     <compact-header :hasBackButton="true">
-        Edit Task
+        {{ headerText }}
     </compact-header>
     <input v-model="editedTask.name" minlength="1" class="full-width-input"/>
     <input v-model="editedTask.description" class="full-width-input"/>
@@ -30,6 +30,9 @@ export default defineComponent({
         }
     },
     computed: {
+        headerText(): string {
+            return this.editedTask instanceof Task ? "Edit Task" : "Create Task"
+        },
         confirmButtonText(): string {
             return this.editedTask instanceof Task ? "Save" : "Create"
         },

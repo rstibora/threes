@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, RouteLocation, RouteLocationNormali
 import store from "src/state/store"
 
 import Dashboard from "src/components/Dashboard.vue"
+import EditEffort from "src/components/effort/EditEffort.vue"
 import EditTask from "src/components/tasks/EditTask.vue"
 import EffortOverview from "src/components/effort/EffortOverview.vue"
 import ReviewOverview from "src/components/reviews/ReviewOverview.vue"
@@ -34,11 +35,15 @@ const routes: Array<RouteRecordRaw> = [
       props: (route) => ({ taskId: parseInt(route.params.taskId as string) }),
       beforeEnter: taskExists},
     { path: "/tasks/:taskId/edit", component: EditTask, name: RouteNames.EDIT_TASK,
-      props: (route) => ({ taskId: parseInt(route.params.taskId as string )}),
+      props: (route) => ({ taskId: parseInt(route.params.taskId as string) }),
       beforeEnter: taskExists},
     { path: "/tasks/new", component: EditTask, name: RouteNames.NEW_TASK},
-    // TODO: the path does not feel right, perhaps it should be similar to /reviews/ logic instead.
-    { path: "/tasks/:taskId/effort/:effortId?", component: EffortOverview, name: RouteNames.EFFORT,
+    { path: "/efforts/:taskId/:effortId", component: EffortOverview, name: RouteNames.EFFORT,
+      props: (route) => ({ taskId: parseInt(route.params.taskId as string),
+                           effortId: parseInt(route.params.effortId as string) })},
+    { path: "/efforts/:taskId/new", component: EditEffort, name: RouteNames.NEW_EFFORT,
+      props: (route) => ({ taskId: parseInt(route.params.taskId as string) })},
+    { path: "/efforts/:taskId/:effortId/edit", component: EditEffort, name: RouteNames.EDIT_EFFORT,
       props: (route) => ({ taskId: parseInt(route.params.taskId as string),
                            effortId: route.params.effortId === undefined ? undefined : parseInt(route.params.effortId as string) })},
 

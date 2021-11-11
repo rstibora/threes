@@ -1,11 +1,11 @@
 <template>
-<compact-header/>
+<compact-header :hasBackButton="true" :optionsButtons="new Map([['Edit Effort', () => $router.push({ name: RouteNames.EDIT_EFFORT, params: { taskId, effortId }})],
+                                                                ['Delete Effort', optionDeleteEffort]])">
+    Effort for {{ task.name }}
+</compact-header>
 <div class="card">
-    <h1>Effort for {{ task.name }}</h1>
     <p><editable-text v-model="effort.description"/></p>
-    <p>Duration: <input type="number" min="0" v-model.number="effort.duration"> minutes</p>
-    <button @click="saveChanges">Save</button>
-    <button v-if="effort.id !== undefined" @click="destroy">Delete</button>
+    <p>Duration: {{ effort.duration }} minutes</p>
 </div>
 </template>
 
@@ -24,10 +24,13 @@ import { Task } from "src/network/models/task"
 
 export default defineComponent({
     props: {
-        effortId: Number,
         taskId: {
             type: Number,
             required: true,
+        },
+        effortId: {
+            type: Number,
+            required: true
         },
     },
     data: function() {
@@ -41,30 +44,16 @@ export default defineComponent({
         },
     },
     methods: {
-        async saveChanges(): Promise<void> {
-            const payload = { effort: this.effort }
-            if (!(this.effort instanceof Effort)) {
-                await this.$store.dispatch(Actions.CREATE_EFFORT, payload)
-            } else {
-                await this.$store.dispatch(Actions.UPDATE_EFFORT, payload)
-            }
-            this.$router.back()
+        async optionDeleteEffort(): Promise<void> {
+            await this.$store.dispatch(Actions.DESTROY_TASK, { effort: this.effort })
         },
-        async destroy(): Promise<void> {
-            if (this.effort instanceof Effort) {
-                await this.$store.dispatch(Actions.DESTROY_EFFORT, { effort: this.effort })
-            }
-            this.$router.back()
-        }
     },
     components: {
         CompactHeader,
         EditableText,
     },
     created: function() {
-        if (this.effortId !== undefined) {
-            this.effort = this.$store.state.efforts.efforts.get(this.effortId) as Effort
-        }
+        this.effort = this.$store.state.efforts.efforts.get(this.effortId) as Effort
     }
 })
 </script>

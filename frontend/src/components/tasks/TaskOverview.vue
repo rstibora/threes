@@ -11,7 +11,7 @@
             <effort-pill :effort="effort"/>
         </li>
     </ul>
-    <button @click="routerPushEffort()">New Effort</button>
+    <button @click="$router.push({name: RouteNames.NEW_EFFORT, params: { taskId: task.id }})">New Effort</button>
 </div>
 </template>
 
@@ -59,14 +59,6 @@ export default defineComponent({
         async updateOrCreateTask(): Promise<void> {
             await this.$store.dispatch(Actions.UPDATE_TASKS, {task: this.task})
             this.task = this.tasks.get(this.taskId) as Task
-        },
-        routerPushEffort(effortId: number | undefined = undefined): void {
-            const params = { taskId: this.task.id }
-            if (effortId !== undefined) {
-                // TODO: ugly.
-                (params as any).effortId = effortId
-            }
-            this.$router.push({name: RouteNames.EFFORT, params })
         },
         async optionDeleteTask(): Promise<void> {
             await this.$store.dispatch(Actions.DESTROY_TASK, { task: this.task })

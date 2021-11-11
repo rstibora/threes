@@ -2,7 +2,7 @@
     <div class="pill">
         <router-link :to="({ name: RouteNames.TASK, params: { taskId: task.id }})" class="grid">
             <div class="left-part">{{ task.name }}: {{ totalEffort }}</div>
-            <router-link :to="({ name: RouteNames.EFFORT, params: { taskId: task.id }})" class="right-part">+</router-link>
+            <router-link :to="({ name: RouteNames.NEW_EFFORT, params: { taskId: task.id }})" class="right-part">+</router-link>
         </router-link>
         <ul v-if="configuration?.listEfforts">
             <effort-pill v-for="effort of efforts.values()" :key="effort.id" :effort="effort"/>
