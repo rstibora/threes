@@ -1,17 +1,17 @@
 <template>
 <compact-header :hasBackButton="true"
-                :optionsButtons="new Map([['Edit task', () => $router.push({ name: RouteNames.EDIT_TASK, params: { taskId: taskId }})],
+                :optionsButtons="new Map([['Edit task', () => $router.replace({ name: RouteNames.EDIT_TASK, params: { taskId: taskId }})],
                                           ['Delete task', optionDeleteTask]])">
     {{ task.name }}
 </compact-header>
 <div class="card">
-    <p><editable-text v-model="task.description" @update:modelValue="updateOrCreateTask()"/></p>
+    <p>{{ task.description }}</p>
     <ul v-if="taskEfforts.length > 0">
         <li v-for="effort of taskEfforts" :key="effort.id">
             <effort-pill :effort="effort"/>
         </li>
     </ul>
-    <button @click="$router.push({name: RouteNames.NEW_EFFORT, params: { taskId: task.id }})">New Effort</button>
+    <button @click="$router.replace({name: RouteNames.NEW_EFFORT, params: { taskId: task.id }})">New Effort</button>
 </div>
 </template>
 
@@ -26,7 +26,6 @@ import EditableText from "src/components/buildingBlocks/EditableText.vue"
 import { Effort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
 
-import { RouteNames } from "src/routing/routeNames"
 import { Actions } from "src/state/storeAccess"
 import { State } from "src/state/store"
 
@@ -56,10 +55,6 @@ export default defineComponent({
         ...mapState({ tasks: state => (state as State).tasks.tasks }),
     },
     methods: {
-        async updateOrCreateTask(): Promise<void> {
-            await this.$store.dispatch(Actions.UPDATE_TASKS, {task: this.task})
-            this.task = this.tasks.get(this.taskId) as Task
-        },
         async optionDeleteTask(): Promise<void> {
             await this.$store.dispatch(Actions.DESTROY_TASK, { task: this.task })
             this.$router.back()

@@ -47,7 +47,7 @@ export const TasksModule: Module<State, any> = {
             commit(Mutations.UPDATE_TASKS, { tasks: new Map([[payload.task.id, payload.task]]) })
             return payload.task
         },
-        async [Actions.DESTROY_TASK] ({ dispatch, commit }, payload: { task: Task}): Promise<boolean> {
+        async [Actions.DESTROY_TASK] ({ dispatch, commit }, payload: { task: Task }): Promise<boolean> {
             // TODO: handle failure cases.
             const response: Response = await dispatch(
                 Actions.FETCH_RESOURCE, { method: "DELETE",

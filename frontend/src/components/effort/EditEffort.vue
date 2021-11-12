@@ -47,7 +47,7 @@ export default defineComponent({
         async confirmButtonAction(): Promise<void> {
             const action = this.editedEffort instanceof Effort ? Actions.UPDATE_EFFORT : Actions.CREATE_EFFORT
             const effort = await this.$store.dispatch(action, { effort: this.editedEffort }) as Effort
-            this.$router.push({ name: RouteNames.EFFORT, params: { taskId: this.taskId, effortId: effort.id }})
+            this.$router.replace({ name: RouteNames.EFFORT, params: { taskId: this.taskId, effortId: effort.id }})
         },
     },
     created(): void {

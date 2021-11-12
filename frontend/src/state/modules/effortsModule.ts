@@ -24,6 +24,11 @@ export const EffortsModule: Module<State, any> = {
     state: () => ({
         efforts: new Map<number, Effort>(),
     }),
+    getters: {
+        effortExists: (state: State) => (effortId: number): boolean => {
+            return state.efforts.has(effortId)
+        },
+    },
     mutations,
     actions: {
         async [Actions.CREATE_EFFORT] ({ dispatch, commit }, payload: { effort: NewEffort }): Promise<Effort> {

@@ -1,5 +1,5 @@
 <template>
-<compact-header :hasBackButton="true" :optionsButtons="new Map([['Edit Effort', () => $router.push({ name: RouteNames.EDIT_EFFORT, params: { taskId, effortId }})],
+<compact-header :hasBackButton="true" :optionsButtons="new Map([['Edit Effort', () => $router.replace({ name: RouteNames.EDIT_EFFORT, params: { taskId, effortId }})],
                                                                 ['Delete Effort', optionDeleteEffort]])">
     Effort for {{ task.name }}
 </compact-header>
@@ -45,7 +45,8 @@ export default defineComponent({
     },
     methods: {
         async optionDeleteEffort(): Promise<void> {
-            await this.$store.dispatch(Actions.DESTROY_TASK, { effort: this.effort })
+            await this.$store.dispatch(Actions.DESTROY_EFFORT, { effort: this.effort })
+            this.$router.back()
         },
     },
     components: {

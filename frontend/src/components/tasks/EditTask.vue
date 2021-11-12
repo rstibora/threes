@@ -41,7 +41,7 @@ export default defineComponent({
         async confirmButtonAction(): Promise<void> {
             const action = this.editedTask instanceof Task ? Actions.UPDATE_TASKS : Actions.CREATE_TASK
             const task = await this.$store.dispatch(action, { task: this.editedTask })
-            this.$router.push({ name: RouteNames.TASK, params: { taskId: task.id }})
+            this.$router.replace({ name: RouteNames.TASK, params: { taskId: task.id }})
         }
     },
     components: {

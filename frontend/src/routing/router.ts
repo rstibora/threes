@@ -13,7 +13,7 @@ import { TaskListConfiguration } from "src/components/tasks/taskList"
 import TaskOverview from "src/components/tasks/TaskOverview.vue"
 
 import { RouteNames } from "src/routing/routeNames"
-import { taskExists } from "src/routing/guards"
+import { effortExists, taskExists } from "src/routing/guards"
 
 
 function parseTaskListConfiguration(route: RouteLocationNormalized): TaskListConfiguration | undefined {
@@ -38,14 +38,18 @@ const routes: Array<RouteRecordRaw> = [
       props: (route) => ({ taskId: parseInt(route.params.taskId as string) }),
       beforeEnter: taskExists},
     { path: "/tasks/new", component: EditTask, name: RouteNames.NEW_TASK},
+
     { path: "/efforts/:taskId/:effortId", component: EffortOverview, name: RouteNames.EFFORT,
       props: (route) => ({ taskId: parseInt(route.params.taskId as string),
-                           effortId: parseInt(route.params.effortId as string) })},
+                           effortId: parseInt(route.params.effortId as string) }),
+      beforeEnter: [taskExists, effortExists]},
     { path: "/efforts/:taskId/new", component: EditEffort, name: RouteNames.NEW_EFFORT,
-      props: (route) => ({ taskId: parseInt(route.params.taskId as string) })},
+      props: (route) => ({ taskId: parseInt(route.params.taskId as string) }),
+      beforeEnter: [taskExists]},
     { path: "/efforts/:taskId/:effortId/edit", component: EditEffort, name: RouteNames.EDIT_EFFORT,
       props: (route) => ({ taskId: parseInt(route.params.taskId as string),
-                           effortId: route.params.effortId === undefined ? undefined : parseInt(route.params.effortId as string) })},
+                           effortId: route.params.effortId === undefined ? undefined : parseInt(route.params.effortId as string) }),
+      beforeEnter: [taskExists, effortExists]},
 
     { path: "/reviews/:configurationId/:reviewIndex", component: ReviewOverview, name: RouteNames.NEW_REVIEW,
       props: (route) => ({ reviewIdentification: { configurationId: parseInt(route.params.configurationId as string),
