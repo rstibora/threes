@@ -34,7 +34,6 @@ import { mapGetters, mapState } from "vuex"
 
 import TaskPill from "src/components/tasks/TaskPill.vue"
 
-import { Actions } from "src/state/storeAccess"
 import { State } from "src/state/store"
 
 import { Session } from "src/state/session"
@@ -63,13 +62,11 @@ export default defineComponent({
             required: true,
         }
     },
-
     data: function() {
         return {
             selectedReviewIndex: this.configuration.getReviewIndex(DateTime.now())
         }
     },
-
     computed: {
         ...mapState({
             efforts: state => (state as State).efforts.efforts,
@@ -105,20 +102,14 @@ export default defineComponent({
             }
         },
     },
-
     methods: {
         changeSelectedReviewIndexBy(step: number) {
             this.selectedReviewIndex = this.selectedReviewIndex + step
         }
     },
-
     components: {
         TaskPill,
     },
-
-    created: async function() {
-        this.$store.dispatch(Actions.FETCH_EFFORTS)
-    }
 })
 </script>
 

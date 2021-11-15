@@ -1,10 +1,11 @@
-import { createRouter, createWebHashHistory, RouteLocation, RouteLocationNormalized, RouteRecordRaw, } from "vue-router"
+import { createRouter, createWebHistory, RouteLocationNormalized, RouteRecordRaw, } from "vue-router"
 import store from "src/state/store"
 
 import Dashboard from "src/components/Dashboard.vue"
 import EditEffort from "src/components/effort/EditEffort.vue"
 import EditTask from "src/components/tasks/EditTask.vue"
 import EffortOverview from "src/components/effort/EffortOverview.vue"
+import NotFound from "src/components/NotFound.vue"
 import ReviewOverview from "src/components/reviews/ReviewOverview.vue"
 import { TrackTasksAction } from "src/components/reviews/trackTasksAction"
 import { ExistingReviewIdentification, NewReviewIdentification } from "src/network/models/review"
@@ -13,7 +14,7 @@ import { TaskListConfiguration } from "src/components/tasks/taskList"
 import TaskOverview from "src/components/tasks/TaskOverview.vue"
 
 import { RouteNames } from "src/routing/routeNames"
-import { effortExists, taskExists } from "src/routing/guards"
+import { effortExists, fetchAllData, taskExists } from "src/routing/guards"
 
 
 function parseTaskListConfiguration(route: RouteLocationNormalized): TaskListConfiguration | undefined {
@@ -55,10 +56,16 @@ const routes: Array<RouteRecordRaw> = [
       props: (route) => ({ reviewIdentification: { configurationId: parseInt(route.params.configurationId as string),
                                                    index: parseInt(route.params.reviewIndex as string) } as NewReviewIdentification })},
     { path: "/reviews/:reviewId", component: ReviewOverview, name: RouteNames.REVIEW,
-      props: (route) => ({ reviewIdentification: { id: parseInt(route.params.reviewId as string) } as ExistingReviewIdentification})}
+      props: (route) => ({ reviewIdentification: { id: parseInt(route.params.reviewId as string) } as ExistingReviewIdentification})},
+
+    { path: "/:pathMatch(.*)", component: NotFound }
 ]
 
-export default createRouter({
-  history: createWebHashHistory(),
+const router = createRouter({
+  history: createWebHistory("/app/"),
   routes,
 })
+
+router.beforeEach(fetchAllData)
+
+export default router

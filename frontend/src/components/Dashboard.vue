@@ -46,12 +46,6 @@ export default defineComponent({
         ReviewWidget,
         TaskCard,
     },
-    created: async function() {
-        await this.$store.dispatch(Actions.FETCH_TASKS)
-        await this.$store.dispatch(Actions.FETCH_REVIEW_CONFIGURATIONS)
-        await this.$store.dispatch(Actions.FETCH_USER_REVIEW_CONFIGURATIONS)
-        await this.$store.dispatch(Actions.FETCH_REVIEWS)
-    }
 })
 </script>
 

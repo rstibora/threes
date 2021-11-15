@@ -1,8 +1,8 @@
-from django.urls import path
+from django.urls import re_path
 
 from . import views
 
 
 urlpatterns = [
-    path("app/", views.AppView.as_view(), name="app")
+    re_path(r"app/.*", views.AppView.as_view(), name="app")
 ]
