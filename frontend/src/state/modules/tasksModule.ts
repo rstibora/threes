@@ -24,7 +24,7 @@ export const TasksModule: Module<State, any> = {
         },
     },
     mutations: {
-        [Mutations.UPDATE_TASKS] ( state, payload: { tasks: MapById<Task | undefined> }) {
+        [Mutations.UPDATE_TASKS] (state, payload: { tasks: MapById<Task | undefined> }) {
             updateOrDeleteInMap(state.tasks, payload.tasks)
         }
     },
