@@ -1,6 +1,7 @@
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate
+from django.conf import settings
 
 from rest_framework import permissions, viewsets
 
@@ -29,7 +30,7 @@ def signup(request):
     else:
         form = EmailUserCreationForm()
 
-    return render(request, "core/signup.html", {"form": form})
+    return render(request, "core/signup.html", {"form": form, "debug": settings.DEBUG})
 
 
 def signin(request):
@@ -48,7 +49,7 @@ def signin(request):
     else:
         form = EmailUserLoginForm()
 
-    return render(request, "core/signin.html", {"form": form})
+    return render(request, "core/signin.html", {"form": form, "debug": settings.DEBUG})
 
 
 def logout(request):

@@ -14,6 +14,10 @@
             ],
             "django": true,
             "justMyCode": false,
+            "env": {
+                "DJANGO_DEBUG": "true",
+                "POSTGRES_THREES_PASSWORD": "threes",
+            }
         }
     ]
 }

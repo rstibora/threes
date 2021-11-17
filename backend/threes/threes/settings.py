@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,13 +20,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
+env_debug = os.environ.get("DJANGO_DEBUG")
+if env_debug is None or env_debug not in ["true", "false"]:
+    raise Exception("Environment variable 'DJANGO_DEBUG' has to be defined"
+                    " and set to 'true' or 'false'.")
+DEBUG = env_debug == "true"
+
+env_secret_key = os.environ.get("DJANGO_SECRET_KEY")
+if env_secret_key is None and not DEBUG:
+    raise Exception("Environment variable 'DJANGO_SECRET_KEY' has to be defined"
+                    " in production environment.")
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'b2h%554u$nq9e71mwrvk)&j1h6(zd*02%d6f@h)#u%6vqo3lf8'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if env_secret_key is not None:
+    SECRET_KEY = env_secret_key
 
 ALLOWED_HOSTS = []
+if not DEBUG:
+    ALLOWED_HOSTS = [".localhost", "127.0.0.1", "[::1]"]
 
 
 # Application definition
@@ -87,7 +99,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'threes',
-        'USER': 'radek',
+        'USER': 'threes',
+        # Production server uses peer authentication (so the password field has no effect there).
+        'PASSWORD': os.environ.get("POSTGRES_THREES_PASSWORD"),
         'OPTIONS': {
             'client_encoding': 'UTF-8',
         }

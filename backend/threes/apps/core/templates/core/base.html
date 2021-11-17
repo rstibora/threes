@@ -10,6 +10,11 @@
 
 <body>
     {% csrf_token %}
+    {% if debug != False %}
+        <div style="height:50px; background-color:red; width:100%; text-align:center">
+            <strong>Running in DEBUG mode.</strong>
+        </div>
+    {% endif %}
     <div class="section">
         <div class="container">
             <div class="columns is-centered">
