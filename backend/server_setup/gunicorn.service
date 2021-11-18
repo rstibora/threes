@@ -1,0 +1,17 @@
+[Unit]
+Description=Threes gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=threes
+Group=www-data
+WorkingDirectory=/home/threes/threes/backend/threes
+ExecStart=/home/threes/.local/bin/pipenv run gunicorn \
+            --access-logfile - \
+            --workers 1 \
+            --bind unix:/run/gunicorn.sock \
+            threes.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
