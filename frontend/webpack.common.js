@@ -81,9 +81,4 @@ export default {
                 compiler: "@vue/compiler-sfc",}
         }}}),
     ],
-
-    mode: "development",
-
-    // Likely has an impact on the build time.
-    devtool: "eval-source-map",
 };

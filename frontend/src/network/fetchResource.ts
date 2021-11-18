@@ -1,6 +1,4 @@
 
-const HOST = "http://127.0.0.1:8000"
-
 export async function fetchResource(method: string, resource: string, data?: any, access_token?: string): Promise<Response> {
     const csrf_token = document.querySelector('[name=csrfmiddlewaretoken]')?.getAttribute("value")
     if (csrf_token == null) {
@@ -19,5 +17,5 @@ export async function fetchResource(method: string, resource: string, data?: any
     if (data != null) {
         fetch_args.body = JSON.stringify(data)
     }
-    return fetch(HOST + resource, fetch_args)
+    return fetch(`http://${process.env.HOST}:${process.env.PORT}${resource}`, fetch_args)
 }
