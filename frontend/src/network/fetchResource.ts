@@ -17,5 +17,6 @@ export async function fetchResource(method: string, resource: string, data?: any
     if (data != null) {
         fetch_args.body = JSON.stringify(data)
     }
-    return fetch(`http://${process.env.HOST}:${process.env.PORT}${resource}`, fetch_args)
+    return fetch(`http://${process.env.HOST}${process.env.PORT === undefined ? "" : ":"}
+                 ${process.env.PORT}${resource}`, fetch_args)
 }
