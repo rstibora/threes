@@ -14,4 +14,7 @@
 eval $(ssh-agent)
 ssh-add
 
+# Workaround for https://github.com/npm/npm/issues/9111.
+mkdir ../frontend/.git
 npm --prefix ../frontend version patch
+rm -rf ../frontend/.git
