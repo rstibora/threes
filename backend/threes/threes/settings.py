@@ -36,6 +36,9 @@ if env_secret_key is not None:
     SECRET_KEY = env_secret_key
 
 ALLOWED_HOSTS = []
+env_django_host = os.environ.get("DJANGO_HOST")
+if env_django_host is not None:
+    ALLOWED_HOSTS = [str(env_django_host)]
 if not DEBUG:
     ALLOWED_HOSTS = [".localhost", "127.0.0.1", "[::1]"]
 
