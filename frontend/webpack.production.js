@@ -7,9 +7,6 @@ import common from "./webpack.common.js"
 
 export default merge(common, {
     mode: "production",
-    output: {
-        path: path.resolve(".", "dist"),
-    },
     plugins: [
         new DotenvWebpackPlugin({ path: "./configuration/production.env"})
     ]

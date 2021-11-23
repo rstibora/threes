@@ -157,16 +157,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "static_root"
 
-STATICFILES_DIRS = []
-# Choose one of the two. Ramdisk is used during the development and is served directly. Frontend
-# dist folder is used in production build via collectstatic.
-ramdisk_dist = BASE_DIR / "media/ramdisk/dist"
-frontend_dist = BASE_DIR / "../../frontend/dist"
-if ((ramdisk_dist.exists() and frontend_dist.exists())
-        or (not ramdisk_dist.exists() and not frontend_dist.exists())):
-    raise Exception(f"One (only one) of the two ({ramdisk_dist},"
-                    f" {frontend_dist}) staticfilesdirs must exist.")
-STATICFILES_DIRS = [directory for directory in (ramdisk_dist, frontend_dist) if directory.exists()]
+STATICFILES_DIRS = [Path("/media/ramdisk/dist")]
 
 SESSION_COOKIE_HTTPONLY = True
 
