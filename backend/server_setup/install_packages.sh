@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 sudo apt update
 # Install PostgreSQL 13 (by hand, not handled here).
 # Also make sure Python 3.9 with pip (for 3.9) and dev headers (python-dev) is installed.

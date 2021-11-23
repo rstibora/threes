@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Creates a new database called 'threes' and a new user with the same name.
+set -e
 
 read -p "Password for 'threes' database user account: " password
 

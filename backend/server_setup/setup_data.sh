@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 export DJANGO_DEBUG=true
 cd "${0%/*}"/..
 pipenv run python ./threes/manage.py migrate

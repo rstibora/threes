@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 echo "Copying gunicorn socket and service units to /etc/systemd/system..."
 sudo cp ./gunicorn.service /etc/systemd/system/
 sudo cp ./gunicorn.socket /etc/systemd/system/
@@ -18,3 +20,6 @@ sudo cp ./threes /etc/nginx/sites-available/
 sudo ln -s /etc/nginx/sites-available/threes /etc/nginx/sites-enabled
 sudo systemctl restart nginx
 sudo ufw allow 'Nginx Full'
+
+# Requied for CI scripts.
+echo "$USER ALL=NOPASSWD:/usr/bin/systemctl restart gunicorn" | (sudo su -c 'EDITOR="tee" visudo -f /etc/sudoers.d/threes')
