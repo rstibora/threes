@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest",
     "build": "webpack --watch --config ./webpack.development.js",
-    "preversion": "npm test",
+    "preversion": "../ci/preversion.sh",
     "version": "webpack --config ./webpack.production.js",
     "postversion": "../ci/postversion.sh"
   },
