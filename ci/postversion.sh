@@ -19,7 +19,7 @@ git reset origin/master --hard
 echo "Restarting gunicorn..."
 sudo systemctl restart gunicorn
 exit
-EOF 
+EOF
 
 rm -rf ../backend/static_root
 rm -rf ../frontend/dist

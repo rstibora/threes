@@ -30,20 +30,15 @@ env_secret_key = os.environ.get("DJANGO_SECRET_KEY")
 if env_secret_key is None and not DEBUG:
     raise Exception("Environment variable 'DJANGO_SECRET_KEY' has to be defined"
                     " in production environment.")
-# SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = 'b2h%554u$nq9e71mwrvk)&j1h6(zd*02%d6f@h)#u%6vqo3lf8'
 if env_secret_key is not None:
     SECRET_KEY = env_secret_key
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [".localhost", "127.0.0.1", "[::1]"]
 env_django_host = os.environ.get("DJANGO_HOST")
 if env_django_host is not None:
-    ALLOWED_HOSTS = [str(env_django_host)]
-if not DEBUG:
-    ALLOWED_HOSTS = [".localhost", "127.0.0.1", "[::1]"]
-
-
-# Application definition
+    ALLOWED_HOSTS.append(str(env_django_host))
 
 INSTALLED_APPS = [
     'django.contrib.admin',
