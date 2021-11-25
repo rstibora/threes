@@ -10,9 +10,13 @@ echo "Starting the the socket..."
 sudo systemctl start gunicorn.socket
 sudo systemctl enable gunicorn.socket
 
-echo "Set environment variables:"
-# [Service]
-# Environment="SECRET=123"
+echo "Setting environment overrides..."
+overrides_file=/etc/systemd/system/gunicorn.service.d/override.conf
+echo "[Service]" >> $overrides_file
+echo 'Environment="DJANGO_DEBUG="' >> $overrides_file
+echo 'Environment="DJANGO_HOST="' >> $overrides_file
+echo 'Environment="DJANGO_SECRET_KEY="' >> $overrides_file
+echo 'Environment="DJANGO_IS_PRODUCTION="' >> $overrides_file
 sudo systemctl edit gunicorn.service
 
 echo "Setting up nginx..."

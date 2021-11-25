@@ -20,11 +20,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-env_debug = os.environ.get("DJANGO_DEBUG")
-if env_debug is None or env_debug not in ["true", "false"]:
-    raise Exception("Environment variable 'DJANGO_DEBUG' has to be defined"
-                    " and set to 'true' or 'false'.")
-DEBUG = env_debug == "true"
+DEBUG = False
+if (env_debug := os.environ.get("DJANGO_DEBUG")) and env_debug == "true":
+    DEBUG = True
+
+is_production = False
+if (env_is_production := os.environ.get("DJANGO_IS_PRODUCTION")) and env_is_production == "true":
+    is_production = True
 
 env_secret_key = os.environ.get("DJANGO_SECRET_KEY")
 if env_secret_key is None and not DEBUG:
@@ -152,7 +154,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "static_root"
 
-STATICFILES_DIRS = [Path("/media/ramdisk/dist")]
+STATICFILES_DIRS = []
+if DEBUG:
+    if is_production:
+        STATICFILES_DIRS.append(Path("/home/threes/threes/static"))
+    else:
+        STATICFILES_DIRS.append(Path("/media/ramdisk/dist"))
 
 SESSION_COOKIE_HTTPONLY = True
 

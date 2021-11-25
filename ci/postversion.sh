@@ -6,7 +6,7 @@ export DJANGO_DEBUG=true
 
 pipenv run python ../backend/threes/manage.py collectstatic
 
-rsync -e "ssh -t -i $HOME/.ssh/id_rsa" -rP ../backend/threes/static_root threes@164.90.218.235:/home/threes/threes/backend/
+rsync -e "ssh -t -i $HOME/.ssh/id_rsa" -rP ../backend/threes/static_root/ threes@164.90.218.235:/home/threes/threes/static/
 
 git push && git push --tags
 
@@ -22,4 +22,3 @@ exit
 EOF
 
 rm -rf ../backend/static_root
-rm -rf ../frontend/dist
