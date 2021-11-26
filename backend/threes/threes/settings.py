@@ -155,11 +155,12 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "static_root"
 
 STATICFILES_DIRS = []
-if DEBUG:
-    if is_production:
-        STATICFILES_DIRS.append(Path("/home/threes/threes/static"))
-    else:
-        STATICFILES_DIRS.append(Path("/media/ramdisk/dist"))
+if is_production:
+    # manifest.json of webpack_loader is loaded from this folder, so it must be defined in
+    # non DEBUG setting as well.
+    STATICFILES_DIRS.append(Path("/home/threes/threes/static"))
+else:
+    STATICFILES_DIRS.append(Path("/media/ramdisk/dist"))
 
 SESSION_COOKIE_HTTPONLY = True
 
@@ -169,4 +170,25 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",  # Present due to API web view.
     ),
     "DEFAULT_PAGINATION_CLASS": None,
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": "/var/log/threes/django.log",
+            "maxBytes": 1024 ** 2,
+            "backupCount": 3,
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
 }

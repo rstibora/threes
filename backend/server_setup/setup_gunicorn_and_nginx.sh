@@ -6,6 +6,11 @@ echo "Copying gunicorn socket and service units to /etc/systemd/system..."
 sudo cp ./gunicorn.service /etc/systemd/system/
 sudo cp ./gunicorn.socket /etc/systemd/system/
 
+echo "Preparing /var/log/threes..."
+sudo mkdir /var/log/threes
+sudo chown threes /var/log/threes
+sudo chmod 700 /var/log/threes
+
 echo "Starting the the socket..."
 sudo systemctl start gunicorn.socket
 sudo systemctl enable gunicorn.socket
