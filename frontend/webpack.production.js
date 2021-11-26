@@ -1,5 +1,4 @@
 import DotenvWebpackPlugin from "dotenv-webpack"
-import path from "path"
 import { merge } from "webpack-merge"
 
 import common from "./webpack.common.js"
