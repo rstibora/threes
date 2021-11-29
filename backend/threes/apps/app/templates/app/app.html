@@ -6,6 +6,15 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% if git_hash %}
+      <meta name="git-hash" content="{{ git_hash }}">
+      <meta name="git-tag" content="{{ git_tag }}">
+      <meta name="git-date" content="{{ git_date }}">
+      <meta name="git-is-clean" content="{{ git_is_clean }}">
+    {% else %}
+      <meta name="git_hash" content="undefined">
+    {% endif %}
     <title>Threes</title>
   </head>
 
