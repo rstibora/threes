@@ -4,9 +4,11 @@ set -e
 export PIPENV_PIPFILE=../backend/Pipfile
 export DJANGO_DEBUG=true
 
+rm -rf ../backend/threes/static_root
 pipenv run python ../backend/threes/manage.py collectstatic
 
 rsync -e "ssh -t -i $HOME/.ssh/id_rsa" -rP --delete ../backend/threes/static_root/ threes@164.90.218.235:/home/threes/threes/static/
+rm -rf ../backend/threes/static_root
 
 git push && git push --tags
 
@@ -20,5 +22,3 @@ echo "Restarting gunicorn..."
 sudo systemctl restart gunicorn
 exit
 EOF
-
-rm -rf ../backend/static_root
