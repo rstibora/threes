@@ -2,9 +2,12 @@ import path from "path"
 import { fileURLToPath } from "url"
 
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin"
+import webpack from "webpack"
 import { WebpackManifestPlugin } from "webpack-manifest-plugin"
 
 import { VueLoaderPlugin } from "vue-loader"
+
+import { getGitInfo } from "./build/version.js"
 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -74,6 +77,9 @@ export default {
     plugins: [
         new VueLoaderPlugin(),
         new WebpackManifestPlugin(),
+        new webpack.DefinePlugin({
+            GIT_INFO: JSON.stringify(getGitInfo())
+        }),
         new ForkTsCheckerWebpackPlugin({ typescript: { 
             configFile: "./build-tsconfig.json",
             extensions: { vue: {

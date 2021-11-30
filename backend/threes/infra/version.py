@@ -11,7 +11,7 @@ def git_tag() -> Optional[str]:
     does not have a tag.
     """
     try:
-        return = subprocess.run(
+        return subprocess.run(
             ["git", "-C", f"{settings.BASE_DIR}", "tag", "--points-at", "HEAD"],
             stdout=subprocess.PIPE, check=True, text=True).stdout
     except Exception as e:
@@ -51,7 +51,7 @@ def git_is_clean() -> Optional[bool]:
     """
     try:
         changes = subprocess.run(
-            ["git", "-C", f"{settings.BASE_DIR}", "status", "--untracked-files", "no",
+            ["git", "-C", f"{settings.BASE_DIR}", "status", "--untracked-files=no",
              "--porcelain"],
             stdout=subprocess.PIPE, check=True, text=True).stdout
         return not changes

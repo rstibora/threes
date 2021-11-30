@@ -32,7 +32,7 @@ Run()
     ./postversion.sh
 }
 
-while getopts "h" option; do
+while getopts "hp" option; do
    case $option in
       h) # display Help
          Help

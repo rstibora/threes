@@ -33,8 +33,37 @@ import { State } from "src/state/store"
 import Dashboard from "./Dashboard.vue"
 
 export default defineComponent({
+    components: {
+        Dashboard,
+    },
     computed: {
         ...mapState({ session: state => (state as State).session.session })
+    },
+    mounted() {
+        // Bring in the feather-icons.
+        feather.replace()
+
+        for (const meta of Array.from(document.getElementsByTagName("meta"))) {
+            const name = meta.getAttribute("name")
+            if (name === "git-hash") {
+                console.info(`Git hash: ${meta.getAttribute("content")}`)
+                if (meta.getAttribute("content") !== GIT_INFO.hash) {
+                    console.error("Frontend and backend git do not match.")
+                }
+            } else if (name === "git-tag") {
+                console.info(`Git tag: ${meta.getAttribute("content")}`)
+                if (meta.getAttribute("content") !== GIT_INFO.tag) {
+                    console.error("Frontend and backend git tag do not match.")
+                }
+            } else if (name === "git-is-clean") {
+                if (meta.getAttribute("content") !== "True") {
+                    console.error("Backend git was not clean during build.")
+                }
+            }
+        }
+        if (GIT_INFO.isClean !== true) {
+            console.error("Frontend git was not clean during build.")
+        }
     },
     methods: {
         async logout() {
@@ -50,13 +79,6 @@ export default defineComponent({
             }
         }
     },
-    mounted() {
-        // Bring in the feather-icons.
-        feather.replace()
-    },
-    components: {
-        Dashboard,
-    }
 })
 </script>
 

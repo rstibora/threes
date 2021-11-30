@@ -14,6 +14,7 @@ import { fetchResource } from "src/network/fetchResource"
 import App from "src/components/App.vue"
 
 export default defineComponent({
+    components: { App },
     async created() {
         const response = await fetchResource("POST", "/api/token/refresh/")
         if (response.ok) {
@@ -23,6 +24,5 @@ export default defineComponent({
             window.location.replace("/signin/")
         }
     },
-    components: { App }
 })
 </script>
