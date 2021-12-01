@@ -46,22 +46,23 @@ export default defineComponent({
         for (const meta of Array.from(document.getElementsByTagName("meta"))) {
             const name = meta.getAttribute("name")
             if (name === "git-hash") {
-                console.info(`Git hash: ${meta.getAttribute("content")}`)
+                console.info(`Git hash backend: ${meta.getAttribute("content")}, frontend: ${GIT_INFO.hash}.`)
                 if (meta.getAttribute("content") !== GIT_INFO.hash) {
-                    console.error("Frontend and backend git do not match.")
+                    console.error("Frontend and backend git hashes do not match.")
                 }
             } else if (name === "git-tag") {
-                console.info(`Git tag: ${meta.getAttribute("content")}`)
+                console.info(`Git tag backend: ${meta.getAttribute("content")}, frontend: ${GIT_INFO.tag}`)
                 if (meta.getAttribute("content") !== GIT_INFO.tag) {
-                    console.error("Frontend and backend git tag do not match.")
+                    console.error("Frontend and backend git tags do not match.")
                 }
             } else if (name === "git-is-clean") {
+                console.info(`Git clean backend: ${meta.getAttribute("content") === "True"}, frontend: ${GIT_INFO.isClean}`)
                 if (meta.getAttribute("content") !== "True") {
                     console.error("Backend git was not clean during build.")
                 }
             }
         }
-        if (GIT_INFO.isClean !== true) {
+        if (!GIT_INFO.isClean) {
             console.error("Frontend git was not clean during build.")
         }
     },

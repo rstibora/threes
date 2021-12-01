@@ -13,7 +13,7 @@ def git_tag() -> Optional[str]:
     try:
         return subprocess.run(
             ["git", "-C", f"{settings.BASE_DIR}", "tag", "--points-at", "HEAD"],
-            stdout=subprocess.PIPE, check=True, text=True).stdout
+            stdout=subprocess.PIPE, check=True, text=True).stdout.strip()
     except Exception as e:
         getLogger(__name__).error(e)
         return None
