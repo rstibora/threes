@@ -1,48 +1,54 @@
 <template>
-<compact-header :hasBackButton="true"
-                :optionsButtons="new Map([['Edit task', () => $router.replace({ name: RouteNames.EDIT_TASK, params: { taskId: taskId }})],
-                                          ['Delete task', optionDeleteTask]])">
-    {{ task.name }}
-</compact-header>
-<div class="card">
-    <p>{{ task.description }}</p>
-    <ul v-if="taskEfforts.length > 0">
-        <li v-for="effort of taskEfforts" :key="effort.id">
-            <effort-pill :effort="effort"/>
-        </li>
-    </ul>
-    <button @click="$router.replace({name: RouteNames.NEW_EFFORT, params: { taskId: task.id }})">New Effort</button>
-</div>
+    <compact-header
+        :has-back-button="true"
+        :options-buttons="new Map([['Edit task', () => $router.replace({ name: RouteNames.EDIT_TASK, params: { taskId: taskId }})],
+                                   ['Delete task', optionDeleteTask]])"
+    >
+        {{ task.name }}
+    </compact-header>
+    <div class="card">
+        <p>{{ task.description }}</p>
+        <ul v-if="taskEfforts.length > 0">
+            <li
+                v-for="effort of taskEfforts"
+                :key="effort.id"
+            >
+                <effort-pill :effort="effort" />
+            </li>
+        </ul>
+        <button @click="$router.replace({name: RouteNames.NEW_EFFORT, params: { taskId: task.id }})">
+            New Effort
+        </button>
+    </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import { mapState } from "vuex"
 
 import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
 import EffortPill from "src/components/effort/EffortPill.vue"
-import EditableText from "src/components/buildingBlocks/EditableText.vue"
 
 import { Effort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
 
 import { Actions } from "src/state/storeAccess"
-import { State } from "src/state/store"
 
 
 export default defineComponent({
+    components: {
+        CompactHeader,
+        EffortPill,
+    },
     props: {
         taskId: {
             type: Number,
             required: true
         }
     },
-    data: function() {
-        return {
-            task: undefined as unknown as Task,
-        }
-    },
     computed: {
+        task(): Task {
+            return this.$store.state.tasks.tasks.get(this.taskId) as Task
+        },
         taskEfforts(): Array<Effort> {
             let filteredEfforts = new Array<Effort>()
             for (const effort of this.$store.state.efforts.efforts.values()) {
@@ -52,7 +58,6 @@ export default defineComponent({
             }
             return filteredEfforts
         },
-        ...mapState({ tasks: state => (state as State).tasks.tasks }),
     },
     methods: {
         async optionDeleteTask(): Promise<void> {
@@ -60,14 +65,6 @@ export default defineComponent({
             this.$router.back()
         }
     },
-    components: {
-        CompactHeader,
-        EditableText,
-        EffortPill,
-    },
-    created: function() {
-        this.task = this.tasks.get(this.taskId) as Task
-    }
 })
 </script>
 
