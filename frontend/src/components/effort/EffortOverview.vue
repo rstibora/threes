@@ -1,28 +1,32 @@
 <template>
-<compact-header :hasBackButton="true" :optionsButtons="new Map([['Edit Effort', () => $router.replace({ name: RouteNames.EDIT_EFFORT, params: { taskId, effortId }})],
-                                                                ['Delete Effort', optionDeleteEffort]])">
+<compact-header
+    :has-back-button="true"
+    :options-buttons="new Map([['Edit Effort', () => $router.replace({ name: RouteNames.EDIT_EFFORT, params: { taskId, effortId }})],
+                               ['Delete Effort', optionDeleteEffort]])"
+>
     Effort for {{ task.name }}
 </compact-header>
 <div class="card">
-    <p><editable-text v-model="effort.description"/></p>
+    <p>{{ effort.description }}</p>
     <p>Duration: {{ effort.duration }} minutes</p>
 </div>
 </template>
 
 <script lang="ts">
-import { DateTime } from "luxon"
 import { defineComponent } from "vue"
 
 import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
-import EditableText from "src/components/buildingBlocks/EditableText.vue"
 
 import { Actions } from "src/state/storeAccess"
 
-import { Effort, NewEffort } from "src/network/models/effort"
+import { Effort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
 
 
 export default defineComponent({
+    components: {
+        CompactHeader,
+    },
     props: {
         taskId: {
             type: Number,
@@ -33,12 +37,10 @@ export default defineComponent({
             required: true
         },
     },
-    data: function() {
-        return {
-            effort: new NewEffort(this.taskId, 15, "") as Effort | NewEffort
-        }
-    },
     computed: {
+        effort(): Effort {
+            return this.$store.state.efforts.efforts.get(this.effortId) as Effort
+        },
         task(): Task {
             return this.$store.state.tasks.tasks.get(this.taskId) as Task
         },
@@ -49,13 +51,6 @@ export default defineComponent({
             this.$router.back()
         },
     },
-    components: {
-        CompactHeader,
-        EditableText,
-    },
-    created: function() {
-        this.effort = this.$store.state.efforts.efforts.get(this.effortId) as Effort
-    }
 })
 </script>
 
