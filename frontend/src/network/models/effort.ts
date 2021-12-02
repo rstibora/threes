@@ -16,9 +16,9 @@ export class NewEffort {
     readonly interval: Interval
     readonly description: string
 
-    constructor(taskId: number, starts: DateTime, duration: number, description: string) {
+    constructor(taskId: number, duration: number, description: string, starts?: DateTime) {
         this.taskId = taskId
-        this.starts = starts
+        this.starts = starts !== undefined ? starts : DateTime.now().minus(Duration.fromObject({minutes: duration}))
         this.duration = duration
         this.description = description
         this.interval = Interval.fromDateTimes(
@@ -38,8 +38,8 @@ export class NewEffort {
 export class Effort extends NewEffort {
     id: number
 
-    constructor(id: number, taskId: number, starts: DateTime, duration: number, description: string) {
-        super(taskId, starts, duration, description)
+    constructor(id: number, taskId: number, duration: number, description: string, starts: DateTime) {
+        super(taskId, duration, description,  starts)
         this.id = id
     }
 
@@ -51,7 +51,7 @@ export class Effort extends NewEffort {
         if (serialized.id === undefined) {
             throw Error(`Can't deserialize ${serialized} with undefined id.`)
         }
-        return new Effort(serialized.id, serialized.task, DateTime.fromISO(serialized.starts),
-                          serialized.duration, serialized.description)
+        return new Effort(serialized.id, serialized.task, serialized.duration,
+                          serialized.description, DateTime.fromISO(serialized.starts))
     }
 }

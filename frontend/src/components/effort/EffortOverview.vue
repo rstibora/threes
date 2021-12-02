@@ -35,7 +35,7 @@ export default defineComponent({
     },
     data: function() {
         return {
-            effort: new NewEffort(this.taskId, DateTime.now(), 15, "") as Effort | NewEffort
+            effort: new NewEffort(this.taskId, 15, "") as Effort | NewEffort
         }
     },
     computed: {

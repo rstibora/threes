@@ -39,7 +39,7 @@ function getEditedEffort(effortOrTaskId: Effort | number): Effort | NewEffort {
     if (effortOrTaskId instanceof Effort) {
         return effortOrTaskId
     }
-    return new NewEffort(effortOrTaskId, DateTime.now(), 0, "")
+    return new NewEffort(effortOrTaskId, 0, "")
 }
 
 export default defineComponent({

@@ -13,6 +13,11 @@ module.exports = {
         'plugin:vue/vue3-recommended',
     ],
     rules: {
-        "vue/html-indent": "off"
-    }
+        "vue/html-indent": "off",
+        // "vue/html-self-closing": ["error", {
+            // "html": {
+                // "component": "any",
+            // }
+        // } 
+    },
 };
