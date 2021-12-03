@@ -4,7 +4,7 @@
   "description": "Web frontend for the Threes application.",
   "main": "src/main.ts",
   "scripts": {
-    "test": "node --experimental-vm-modules ./node_modules/.bin/jest",
+    "test": "node --experimental-vm-modules --unhandled-rejections=strict ./node_modules/.bin/jest",
     "build": "webpack --watch --config ./webpack.development.js",
     "productionBuild": "webpack --config ./webpack.production.js"
   },
@@ -32,6 +32,8 @@
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "@vue/compiler-sfc": "^3.2.20",
+    "@vue/test-utils": "^2.0.0-rc.17",
+    "@vue/vue3-jest": "^27.0.0-alpha.4",
     "css-loader": "^6.5.0",
     "dotenv-webpack": "^7.0.3",
     "eslint": "^8.2.0",

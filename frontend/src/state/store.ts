@@ -30,6 +30,58 @@ export type Store = EffortsStore<Pick<State, "efforts">>
                     & SessionStore<Pick<State, "session">>
                     & TasksStore<Pick<State, "tasks">>
 
+export const getters = {
+    plannedTasks: (state: State) => (review: Review | NewReview): MapById<Task> => {
+        /**
+         * Returns tasks planned for the given review.
+         */
+        const plannedTasks = new Map()
+        for (const task of state.tasks.tasks.values()) {
+            if (review.plannedTasksIds.includes(task.id)) {
+                plannedTasks.set(task.id, task)
+            }
+        }
+        return plannedTasks
+    },
+    effortsPerTask: (state: State) => (task: Task, interval?: Interval): MapById<Effort> => {
+        /**
+         * Returns all efforts for the given task, possibly limited to the given interval.
+         */
+        const efforts = new Map()
+        for (const effort of state.efforts.efforts.values()) {
+            if (effort.taskId !== task.id) {
+                continue
+            }
+            if (interval !== undefined && interval.intersection(effort.interval) == null) {
+                continue
+            }
+            efforts.set(effort.id, effort)
+        }
+        return efforts
+    },
+    tasksAndEffortsForInterval: (state: State, getters) => (interval: Interval, ignoreTasks?: MapById<Task>): TaskAndEfforts => {
+        /**
+         * Returns tasks that have an effort in the given interval. Also returns efforts per task for the interval.
+         */
+        const taskIdsToConsider = new Set(state.tasks.tasks.keys())
+        if (ignoreTasks !== undefined) {
+            for (const ignoreTaskId of ignoreTasks.keys()) {
+                taskIdsToConsider.delete(ignoreTaskId)
+            }
+        }
+
+        const tasksAndEfforts: [Task, MapById<Effort>][] = []
+        for (const taskId of taskIdsToConsider) {
+            const taskEfforts = getters.effortsPerTask(state.tasks.tasks.get(taskId), interval)
+            if (taskEfforts.size === 0) {
+                continue
+            }
+            tasksAndEfforts.push([state.tasks.tasks.get(taskId) as Task, taskEfforts])
+        }
+        return tasksAndEfforts
+    }
+}
+
 export default createStore({
     modules: {
         efforts: EffortsModule,
@@ -37,55 +89,5 @@ export default createStore({
         session: SessionModule,
         tasks: TasksModule,
     },
-    getters: {
-        plannedTasks: (state: State) => (review: Review | NewReview): MapById<Task> => {
-          /**
-           * Returns tasks planned for the given review.
-           */
-            let plannedTasks = new Map()
-            for (const task of state.tasks.tasks.values()) {
-                if (review.plannedTasksIds.includes(task.id)) {
-                    plannedTasks.set(task.id, task)
-                }
-            }
-            return plannedTasks
-        },
-        effortsPerTask: (state: State) => (task: Task, interval?: Interval): MapById<Effort> => {
-            /**
-             * Returns all efforts for the given task, possibly limited to the given interval.
-             */
-            let efforts = new Map()
-            for (const effort of state.efforts.efforts.values()) {
-                if (effort.taskId !== task.id) {
-                    continue
-                }
-                if (interval !== undefined && interval.intersection(effort.interval) == null) {
-                    continue
-                }
-                efforts.set(effort.id, effort)
-            }
-            return efforts
-        },
-        tasksAndEffortsForInterval: (state, getters) => (interval: Interval, ignoreTasks?: MapById<Task>): TaskAndEfforts => {
-            /**
-             * Returns tasks that have an effort in the given interval. Also returns efforts per task for the interval.
-             */
-            let taskIdsToConsider = new Set(state.tasks.tasks.keys())
-            if (ignoreTasks !== undefined) {
-                for (const ignoreTaskId of ignoreTasks.keys()) {
-                    taskIdsToConsider.delete(ignoreTaskId)
-                }
-            }
-
-            let tasksAndEfforts = new Array()
-            for (const taskId of taskIdsToConsider) {
-                const taskEfforts = getters.effortsPerTask(state.tasks.tasks.get(taskId), interval)
-                if (taskEfforts.size === 0) {
-                    continue
-                }
-                tasksAndEfforts.push([state.tasks.tasks.get(taskId), taskEfforts])
-            }
-            return tasksAndEfforts
-        }
-    }
+    getters
 })

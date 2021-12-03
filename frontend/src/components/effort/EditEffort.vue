@@ -17,6 +17,7 @@
 
     <button
         class="success-button"
+        data-test="confirmButton"
         @click="confirmButtonAction"
     >
         {{ confirmButtonText }}

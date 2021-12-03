@@ -14,20 +14,26 @@ export type State = {
 
 export type Store<S = State> = VuexStore<S>
 
+export const state = () => ({
+    tasks: new Map<number, Task>(),
+})
+
+export const getters = {
+    taskExists: (state: State) => (taskId: number): boolean => {
+        return state.tasks.has(taskId)
+    },
+}
+
+export const mutations = {
+    [Mutations.UPDATE_TASKS] (state, payload: { tasks: MapById<Task | undefined> }) {
+        updateOrDeleteInMap(state.tasks, payload.tasks)
+    }
+}
+
 export const TasksModule: Module<State, any> = {
-    state: () => ({
-        tasks: new Map<number, Task>(),
-    }),
-    getters: {
-        taskExists: (state: State) => (taskId: number): boolean => {
-            return state.tasks.has(taskId)
-        },
-    },
-    mutations: {
-        [Mutations.UPDATE_TASKS] (state, payload: { tasks: MapById<Task | undefined> }) {
-            updateOrDeleteInMap(state.tasks, payload.tasks)
-        }
-    },
+    state,
+    getters,
+    mutations,
     actions: {
         async [Actions.CREATE_TASK] ({ dispatch, commit }, payload: { task: NewTask }): Promise<Task> {
             // TODO: handle failure cases.
@@ -60,7 +66,7 @@ export const TasksModule: Module<State, any> = {
             const response: Response = await dispatch(
                 Actions.FETCH_RESOURCE, { method: "GET", apiPath: "/api/tasks" })
             const tasksSerialized: Array<TaskSerialized> = await response.json()
-            let tasks = new Map()
+            const tasks = new Map()
             for (const taskSerialized of tasksSerialized) {
                 const task = Task.deserialize(taskSerialized)
                 tasks.set(task.id, task)

@@ -14,6 +14,16 @@ export type State = {
 
 export type Store<S = State> = VuexStore<S>
 
+export const state = () => ({
+    efforts: new Map<number, Effort>(),
+})
+
+export const getters = {
+    effortExists: (state: State) => (effortId: number): boolean => {
+        return state.efforts.has(effortId)
+    },
+}
+
 export const mutations = {
     [Mutations.UPDATE_EFFORTS] (state: State, payload: { efforts: MapById<Effort | undefined> }) {
         updateOrDeleteInMap(state.efforts, payload.efforts)
@@ -21,14 +31,8 @@ export const mutations = {
 }
 
 export const EffortsModule: Module<State, any> = {
-    state: () => ({
-        efforts: new Map<number, Effort>(),
-    }),
-    getters: {
-        effortExists: (state: State) => (effortId: number): boolean => {
-            return state.efforts.has(effortId)
-        },
-    },
+    state,
+    getters,
     mutations,
     actions: {
         async [Actions.CREATE_EFFORT] ({ dispatch, commit }, payload: { effort: NewEffort }): Promise<Effort> {
