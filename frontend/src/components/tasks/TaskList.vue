@@ -1,27 +1,54 @@
 <template>
 <compact-header>
-    Tasks
-    <input type="text" v-model="searchTerm" placeholder="Your seach query...">
+    <div class="flex-wrapper">
+        Tasks
+        <input
+            v-model="searchTerm"
+            type="text"
+            placeholder="Your seach query..."
+        >
+    </div>
 </compact-header>
 
 <div class="card">
     <span v-if="searchResult.size === 0">No task found.</span>
     <ul v-else>
-        <li v-for="task of searchResult" :key="task.id" class="task-pill-wrapper">
-            <task-pill :task="task" :efforts="new Map()" class="flex-grow-1"/>
+        <li
+            v-for="task of searchResult"
+            :key="task.id"
+            class="task-pill-wrapper"
+        >
+            <task-pill
+                :task="task"
+                :efforts="new Map()"
+                class="flex-grow-1"
+            />
 
             <div v-if="configuration?.action !== undefined">
-                <input type="checkbox" id="task.id" v-model="selectedTasks" :value="task.id"/>
+                <input
+                    id="task.id"
+                    v-model="selectedTasks"
+                    :value="task.id"
+                    type="checkbox"
+                >
             </div>
         </li>
     </ul>
 
     <div v-if="configuration?.action !== undefined">
-        <button class="action-button" @click="performAction">
+        <button
+            class="action-button"
+            @click="performAction"
+        >
             {{ configuration.action.actionName }}
         </button>
     </div>
-    <button v-else @click="this.$router.push({ name: RouteNames.NEW_TASK })">Create a new task</button>
+    <button
+        v-else
+        @click="$router.push({ name: RouteNames.NEW_TASK })"
+    >
+        Create a new task
+    </button>
 </div>
 </template>
 
@@ -37,9 +64,14 @@ import { TaskListConfiguration } from "src/components/tasks/taskList"
 
 
 export default defineComponent({
+    components: {
+        CompactHeader,
+        TaskPill,
+    },
     props: {
         configuration: {
             type: Object as PropType<TaskListConfiguration>,
+            default: () => ({ action: undefined})
         }
     },
     data: function() {
@@ -52,13 +84,19 @@ export default defineComponent({
         searchResult(): Array<Task> {
             let result = new Array<Task>()
             const regexp = new RegExp(`.*${this.searchTerm}.*`, "i")
-            for (const [id, task] of this.$store.state.tasks.tasks) {
+            for (const task of this.$store.state.tasks.tasks.values()) {
                 if (regexp.test(task.name)) {
                     result.push(task)
                 }
             }
             return result
         }
+    },
+    created: function() {
+        if (this.configuration?.action === undefined) {
+            return
+        }
+        this.selectedTasks = this.configuration.action.getPreselected()
     },
     methods: {
         async performAction() {
@@ -69,16 +107,6 @@ export default defineComponent({
             this.$router.back()
         },
     },
-    created: function() {
-        if (this.configuration?.action === undefined) {
-            return
-        }
-        this.selectedTasks = this.configuration.action.getPreselected()
-    },
-    components: {
-        CompactHeader,
-        TaskPill,
-    }
 })
 </script>
 
@@ -88,11 +116,15 @@ export default defineComponent({
 
 $margin: constants.$margin-small
 
+.flex-wrapper
+    display: flex
 .card
     @include visual.rounded
     margin: $margin
     padding: .5em
     background-color: constants.$colour-background
+input
+    width: 100%
 .action-button
     width: 100%
 .task-pill-wrapper

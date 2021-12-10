@@ -59,7 +59,7 @@ export const getters = {
         }
         return efforts
     },
-    tasksAndEffortsForInterval: (state: State, getters) => (interval: Interval, ignoreTasks?: MapById<Task>): TaskAndEfforts => {
+    tasksAndEffortsForInterval: (state: State, getters: any) => (interval: Interval, ignoreTasks?: MapById<Task>): TaskAndEfforts => {
         /**
          * Returns tasks that have an effort in the given interval. Also returns efforts per task for the interval.
          */

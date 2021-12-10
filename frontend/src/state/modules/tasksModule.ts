@@ -25,7 +25,7 @@ export const getters = {
 }
 
 export const mutations = {
-    [Mutations.UPDATE_TASKS] (state, payload: { tasks: MapById<Task | undefined> }) {
+    [Mutations.UPDATE_TASKS] (state: State, payload: { tasks: MapById<Task | undefined> }) {
         updateOrDeleteInMap(state.tasks, payload.tasks)
     }
 }

@@ -118,6 +118,7 @@ export default defineComponent({
     justify-content: space-around
     flex-direction: row
     width: 100%
+    height: constants.$bottom-navbar-height
     position: fixed
     bottom: 0
 
@@ -130,6 +131,9 @@ export default defineComponent({
 
     .bottom-navbar
         display: flex
+
+    .content-wrapper
+        padding-bottom: constants.$bottom-navbar-height
 
 .content-wrapper
     display: flex
