@@ -60,7 +60,6 @@ export default defineComponent({
         }
     },
     computed: {
-        // TODO: add tests for this.
         // Shifted back by the duration, so that it really is the time when the effort started.
         effortStartsShifted(): DateTime {
             if (this.effortId !== undefined) {
