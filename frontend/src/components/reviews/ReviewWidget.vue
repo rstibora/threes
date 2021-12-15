@@ -1,29 +1,47 @@
 <template>
     <div class="card">
         <nav class="navbar">
-            <button :disabled="!changeReviewButtonsEnabled.previous"  @click="changeSelectedReviewIndexBy(-1)" class="round">
+            <button
+                :disabled="!changeReviewButtonsEnabled.previous"
+                class="round"
+                @click="changeSelectedReviewIndexBy(-1)"
+            >
                 &lt;
             </button>
 
             <div>
-                <router-link :to="(
-                    selectedReviewBundle.review.id === undefined ?
-                    { name: RouteNames.NEW_REVIEW, params: { configurationId: selectedReviewBundle.review.configurationId,
-                                                   reviewIndex: selectedReviewIndex }} :
-                    { name: RouteNames.REVIEW, params: { reviewId: selectedReviewBundle.review.id }})">
+                <router-link
+                    :to="(
+                        selectedReviewBundle.review.id === undefined ?
+                        { name: RouteNames.NEW_REVIEW, params: { configurationId: selectedReviewBundle.review.configurationId,
+                                                                 reviewIndex: selectedReviewIndex }} :
+                        { name: RouteNames.REVIEW, params: { reviewId: selectedReviewBundle.review.id }})"
+                    >
                     <strong>{{ selectedReviewBundle.reviewName }}</strong>
                 </router-link>
-                <br>{{ selectedReviewBundle.interval.start.toLocaleString() }} - {{ selectedReviewBundle.interval.end.toLocaleString() }}
+                <br>{{ reviewIntervalString }}
             </div>
 
-            <button :disabled="!changeReviewButtonsEnabled.next" @click="changeSelectedReviewIndexBy(1)" class="round">
+            <button
+                :disabled="!changeReviewButtonsEnabled.next"
+                class="round"
+                @click="changeSelectedReviewIndexBy(1)"
+            >
                 &gt;
             </button>
         </nav>
-        <task-pill v-for="task of plannedTasks(selectedReviewBundle.review).values()" :key="task.id" :task="task"
-                   :efforts="effortsPerTask(task, selectedReviewBundle.interval)"/>
-        <task-pill v-for="[task, efforts] of tasksAndEffortsForInterval(selectedReviewBundle.interval, plannedTasks(selectedReviewBundle.review))" :key="task.id" :task="task"
-                   :efforts="efforts"/>
+        <task-pill
+            v-for="task of plannedTasks(selectedReviewBundle.review).values()"
+            :key="task.id"
+            :task="task"
+            :efforts="effortsPerTask(task, selectedReviewBundle.interval)"
+        />
+        <task-pill
+            v-for="[task, efforts] of tasksAndEffortsForInterval(selectedReviewBundle.interval, plannedTasks(selectedReviewBundle.review))"
+            :key="task.id" 
+            :task="task"
+            :efforts="efforts"
+        />
     </div>
 </template>
 
@@ -35,6 +53,7 @@ import { mapGetters, mapState } from "vuex"
 import TaskPill from "src/components/tasks/TaskPill.vue"
 
 import { State } from "src/state/store"
+import { displayIntervalEnd } from "src/utils/dateTime"
 
 import { Session } from "src/state/session"
 import { Review, NewReview } from "src/network/models/review"
@@ -92,6 +111,11 @@ export default defineComponent({
             return { review,
                      interval: this.configuration.getReviewInterval(review.index),
                      reviewName: this.configuration.getReviewName(review.index) } 
+        },
+        reviewIntervalString(): string {
+            const start = this.selectedReviewBundle.interval.start.toLocaleString()
+            const end = displayIntervalEnd(this.selectedReviewBundle.interval.end).toLocaleString()
+            return `${start} - ${end}`
         },
         changeReviewButtonsEnabled(): ChangeReviewButtonsEnabled {
             const session = this.session as Session

@@ -1,4 +1,4 @@
-import { DateTime, DurationObjectUnits } from "luxon"
+import { DateTime, Duration, DurationObjectUnits } from "luxon"
 
 
 export function relativeDateTime(datetime: DateTime): string {
@@ -9,4 +9,8 @@ export function relativeDateTime(datetime: DateTime): string {
     const relativeFormatter = new Intl.RelativeTimeFormat('en', { numeric: "auto" });
     const unit = units.find((unit) => diff.get(unit) !== 0) || units[units.length - 1]
     return relativeFormatter.format(Math.trunc(diff.as(unit)), unit as Intl.RelativeTimeFormatUnit)
+}
+
+export function displayIntervalEnd(datetime: DateTime): DateTime {
+    return datetime.minus(Duration.fromObject({ seconds: 1 }))
 }

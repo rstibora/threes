@@ -49,7 +49,7 @@ export class ReviewConfiguration {
          * Calculates interval (datetime from, to) for the review with this configuration and the given index.
          */
         const starts = this.epoch_start.plus(this.getDuration().mapUnits(durationUnit => durationUnit * index))
-        const ends = starts.plus(this.getDuration()).minus(Duration.fromObject({ days: 1 }))
+        const ends = starts.plus(this.getDuration())
         return Interval.fromDateTimes(starts, ends)
     }
 

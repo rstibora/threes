@@ -5,7 +5,7 @@ import { RouteNames } from "src/routing/routeNames"
 import router from "src/routing/router"
 import store from "src/state/store"
 import { clickedOutside } from "src/utils/directives"
-import { relativeDateTime } from "./utils/relativeDateTime"
+import { relativeDateTime } from "src/utils/dateTime"
 
 import Porch from "./components/Porch.vue"
 

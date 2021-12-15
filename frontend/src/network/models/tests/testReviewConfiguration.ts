@@ -7,11 +7,11 @@ import { ConfigurationName, ReviewConfiguration } from "src/network/models/revie
 @suite class ReviewPeriodConfigurationTests {
     // The week with index 0 is the first complete week of the epoch.
     @params({ configurationName: ConfigurationName.WEEKLY, index: 0,
-              expectedInterval: Interval.fromDateTimes(DateTime.fromObject({ year: 1970, month: 1, day: 5}),
-                                                       DateTime.fromObject({ year: 1970, month: 1, day: 11}))})
+              expectedInterval: Interval.fromDateTimes(DateTime.fromObject({ year: 1970, month: 1, day: 5, hour: 0}),
+                                                       DateTime.fromObject({ year: 1970, month: 1, day: 12, hour: 0}))})
     @params({ configurationName: ConfigurationName.MONTHLY, index: 1,
-              expectedInterval: Interval.fromDateTimes(DateTime.fromObject({ year: 1970, month: 2, day: 1}),
-                                                       DateTime.fromObject({ year: 1970, month: 2, day: 28}))})
+              expectedInterval: Interval.fromDateTimes(DateTime.fromObject({ year: 1970, month: 2, day: 1, hour: 0}),
+                                                       DateTime.fromObject({ year: 1970, month: 3, day: 1, hour: 0}))})
     testgetReviewInterval({ configurationName, index, expectedInterval }) {
         const configuration = new ReviewConfiguration(0, configurationName)
         const interval = configuration.getReviewInterval(index)

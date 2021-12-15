@@ -2,7 +2,7 @@
   <compact-header :has-back-button="true">
     {{ configuration.getReviewName(review.index) }}
     <template #subheader>
-      <p>{{ configuration.getReviewInterval(review.index).start.toLocaleString() }} - {{ configuration.getReviewInterval(review.index).end.toLocaleString() }}</p>
+      <p>{{ reviewIntervalString }}</p>
     </template>
   </compact-header>
 
@@ -59,10 +59,10 @@ import { PieArea, PieChartConfiguration } from "src/components/buildingBlocks/vi
 import { Review, NewReview, ReviewIdentification } from "src/network/models/review"
 import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
 import { Task } from "src/network/models/task"
-
 import { RouteNames } from "src/routing/routeNames"
 import { TaskAndEfforts } from "src/state/store"
 import { Actions } from "src/state/storeAccess"
+import { displayIntervalEnd } from "src/utils/dateTime"
 
 
 export default defineComponent({
@@ -92,6 +92,11 @@ export default defineComponent({
         return this.$store.state.reviews.reviews.get(this.reviewId) as Review
       }
       return new NewReview(this.reviewIdentification.configurationId as number, this.reviewIdentification.index as number, [])
+    },
+    reviewIntervalString(): string {
+      const start = this.configuration.getReviewInterval(this.review.index).start
+      const end = displayIntervalEnd(this.configuration.getReviewInterval(this.review.index).end
+      return `${start.toLocaleString()} - ${end.toLocaleString()}`
     },
     pieChartConfiguration(): PieChartConfiguration {
       const totalEffortPerTask: Array<[Task, number]> = []
