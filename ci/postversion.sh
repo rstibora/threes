@@ -18,6 +18,9 @@ ssh -i $HOME/.ssh/id_rsa threes@164.90.218.235 <<EOF
 cd /home/threes/threes
 git fetch --tags
 git reset origin/master --hard
+cd backend
+pipenv shell
+python threes/manage.py migrate
 echo "Restarting gunicorn..."
 sudo systemctl restart gunicorn
 exit

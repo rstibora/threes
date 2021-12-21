@@ -8,14 +8,33 @@
     <div class="content">
         <router-view v-slot="{ Component, route }">
             <keep-alive>
-                <component :is="Component" :key="route.path"/>
+                <component
+                    :is="Component"
+                    :key="route.path"
+                />
             </keep-alive>
         </router-view>
     </div>
 </div>
 <nav class="bottom-navbar">
-    <router-link :to="{ name: RouteNames.DASHBOARD }" class="button"><i data-feather="home"/></router-link>
-    <router-link :to="{ name: RouteNames.TASKS }" class="button"><i data-feather="file-text"/></router-link>
+    <router-link
+        :to="{ name: RouteNames.DASHBOARD }"
+        class="button"
+    >
+        <i data-feather="home" />
+    </router-link>
+    <router-link
+        :to="{ name: RouteNames.TASKS }"
+        class="button"
+    >
+        <i data-feather="file-text" />
+    </router-link>
+    <router-link
+        :to="{ name: RouteNames.EFFORT_SESSION }"
+        class="button"
+    >
+        <i data-feather="disc" />
+    </router-link>
 </nav>
 </template>
 

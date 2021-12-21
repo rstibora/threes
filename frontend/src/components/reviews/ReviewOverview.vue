@@ -95,7 +95,7 @@ export default defineComponent({
     },
     reviewIntervalString(): string {
       const start = this.configuration.getReviewInterval(this.review.index).start
-      const end = displayIntervalEnd(this.configuration.getReviewInterval(this.review.index).end
+      const end = displayIntervalEnd(this.configuration.getReviewInterval(this.review.index).end)
       return `${start.toLocaleString()} - ${end.toLocaleString()}`
     },
     pieChartConfiguration(): PieChartConfiguration {

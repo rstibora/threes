@@ -3,6 +3,7 @@ export enum RouteNames {
     EDIT_EFFORT = "EDIT_EFFORT",
     EDIT_TASK = "EDIT_TASK",
     EFFORT = "EFFORT",
+    EFFORT_SESSION = "EFFORT_SESSION",
     NEW_EFFORT = "NEW_EFFORT",
     NEW_REVIEW = "NEW_REVIEW",
     NEW_TASK = "NEW_TASK",

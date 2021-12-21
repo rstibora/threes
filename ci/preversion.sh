@@ -13,3 +13,5 @@ if [ -n "$changes" ]; then
     echo "Git repository on the production server is not clean."
     exit 1
 fi
+
+# TODO: makemigrations
