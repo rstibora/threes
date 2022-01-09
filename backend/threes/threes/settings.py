@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = int(os.environ.get("DEBUG", default=0))
 SECRET_KEY = os.environ.get("SECRET_KEY")
 DEPLOYMENT = os.environ.get("DEPLOYMENT")
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="localhost").split(" ")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -137,7 +137,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / "static_root"
+STATIC_ROOT = BASE_DIR / "static"
 
 # manifest.json of webpack_loader is loaded from this folder, so it must be defined in
 # non DEBUG setting as well.

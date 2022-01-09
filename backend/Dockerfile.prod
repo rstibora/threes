@@ -10,10 +10,16 @@ RUN apt install -y netcat
 RUN pip install pipenv
 
 WORKDIR /usr/src/app
-COPY ./backend/Pipfile.lock .
-COPY ./backend/Pipfile .
+COPY Pipfile .
+COPY Pipfile.lock .
+RUN pipenv install
 RUN pipenv lock -r > requirements.txt
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir ../wheels -r requirements.txt
+COPY . .
+
+RUN mkdir -p /var/log/threes
+RUN mkdir /static
+RUN pipenv run python ./threes/manage.py collectstatic
 
 
 FROM python:3.9
@@ -35,11 +41,13 @@ WORKDIR ${APP_HOME}
 COPY --from=builder /usr/src/wheels/ /wheels
 RUN pip install --no-cache /wheels/*
 
+COPY --from=builder /static /static
+
 COPY ./entrypoint.sh .
 RUN sed -i 's/\r$//g' ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 
-COPY ./backend/threes/ $APP_HOME
+COPY ./threes/ $APP_HOME
 RUN chown -R threes:threes $APP_HOME
 RUN chown -R threes:threes /var/log/threes
 
