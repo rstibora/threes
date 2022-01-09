@@ -19,7 +19,7 @@ export default {
     },
     output: {
         filename: "[name].[contenthash].js",
-        path: path.resolve("/media/ramdisk", 'dist'),
+        path: path.resolve("/output"),
         publicPath: "",
         clean: true,
     },
@@ -43,7 +43,7 @@ export default {
                     configFile: "build-tsconfig.json",
                 },
             },
-            { 
+            {
                 test: /\.vue$/,
                 exclude: /node_modules/,
                 loader: "vue-loader",

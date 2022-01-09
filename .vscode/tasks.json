@@ -26,6 +26,15 @@
 			"problemMatcher": [],
 			"label": "npm: test - frontend",
 			"detail": "ts-mocha --paths -p tests/tsconfig.json tests/**/test*.ts"
+		},
+		{
+			"type": "npm",
+			"script": "build",
+			"path": "frontend/",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build - frontend",
+			"detail": "webpack --watch --config ./webpack.development.js"
 		}
 	]
 }

@@ -20,27 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-DEBUG = False
-if (env_debug := os.environ.get("DJANGO_DEBUG")) and env_debug == "true":
-    DEBUG = True
-
-is_production = False
-if (env_is_production := os.environ.get("DJANGO_IS_PRODUCTION")) and env_is_production == "true":
-    is_production = True
-
-env_secret_key = os.environ.get("DJANGO_SECRET_KEY")
-if env_secret_key is None and not DEBUG:
-    raise Exception("Environment variable 'DJANGO_SECRET_KEY' has to be defined"
-                    " in production environment.")
-
-SECRET_KEY = 'b2h%554u$nq9e71mwrvk)&j1h6(zd*02%d6f@h)#u%6vqo3lf8'
-if env_secret_key is not None:
-    SECRET_KEY = env_secret_key
-
-ALLOWED_HOSTS = [".localhost", "127.0.0.1", "[::1]"]
-env_django_host = os.environ.get("DJANGO_HOST")
-if env_django_host is not None:
-    ALLOWED_HOSTS.append(str(env_django_host))
+DEBUG = int(os.environ.get("DEBUG", default=0))
+SECRET_KEY = os.environ.get("SECRET_KEY")
+DEPLOYMENT = os.environ.get("DEPLOYMENT")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -100,8 +83,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'threes',
         'USER': 'threes',
-        # Production server uses peer authentication (so the password field has no effect there).
-        'PASSWORD': os.environ.get("POSTGRES_THREES_PASSWORD"),
+
+        "PASSWORD": os.environ.get("THREES_DB_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
         'OPTIONS': {
             'client_encoding': 'UTF-8',
         }
@@ -154,13 +139,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "static_root"
 
-STATICFILES_DIRS = []
-if is_production:
-    # manifest.json of webpack_loader is loaded from this folder, so it must be defined in
-    # non DEBUG setting as well.
-    STATICFILES_DIRS.append(Path("/home/threes/threes/static"))
-else:
-    STATICFILES_DIRS.append(Path("/media/ramdisk/dist"))
+# manifest.json of webpack_loader is loaded from this folder, so it must be defined in
+# non DEBUG setting as well.
+STATICFILES_DIRS = [Path("/static")]
 
 SESSION_COOKIE_HTTPONLY = True
 
