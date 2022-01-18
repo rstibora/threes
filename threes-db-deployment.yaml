@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: threes-db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: threes-db
+  template:
+    metadata:
+      labels:
+        app: threes-db
+    spec:
+      volumes:
+        - name: postgres-db-data
+          persistentVolumeClaim:
+            claimName: threes-db-pv-claim
+      containers:
+        - name: threes-db
+          image: rstibora/threes-db:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: threes
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: threes-db-secret
+                  key: db-postgres-password
+            - name: THREES_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: threes-db-secret
+                  key: db-threes-password
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-db-data
