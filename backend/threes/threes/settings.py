@@ -20,9 +20,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-DEBUG = int(os.environ.get("DEBUG", default=0))
-SECRET_KEY = os.environ.get("SECRET_KEY")
-DEPLOYMENT = os.environ.get("DEPLOYMENT")
+DEBUG = int(os.environ.get("DJANGO_DEBUG", default=0))
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="localhost").split(" ")
 
 INSTALLED_APPS = [
@@ -137,11 +136,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / "static"
+STATIC_ROOT = "/static"
 
 # manifest.json of webpack_loader is loaded from this folder, so it must be defined in
 # non DEBUG setting as well.
-STATICFILES_DIRS = [Path("/static")]
+STATICFILES_DIRS = [Path("/static_frontend")]
 
 SESSION_COOKIE_HTTPONLY = True
 

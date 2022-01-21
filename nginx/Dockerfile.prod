@@ -1,0 +1,6 @@
+# syntax=docker/dockerfile:1
+FROM nginx
+
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=threes-frontend:latest /output /etc/nginx/html/static
+COPY --from=threes-backend:latest /static /etc/nginx/html/static

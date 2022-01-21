@@ -16,6 +16,8 @@ spec:
         - name: postgres-db-data
           persistentVolumeClaim:
             claimName: threes-db-pv-claim
+      imagePullSecrets:
+        - name: private-dockerhub
       containers:
         - name: threes-db
           image: rstibora/threes-db:latest
