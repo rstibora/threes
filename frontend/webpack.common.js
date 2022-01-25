@@ -7,9 +7,6 @@ import { WebpackManifestPlugin } from "webpack-manifest-plugin"
 
 import { VueLoaderPlugin } from "vue-loader"
 
-import { getGitInfo } from "./build/version.js"
-
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 
@@ -78,7 +75,8 @@ export default {
         new VueLoaderPlugin(),
         new WebpackManifestPlugin(),
         new webpack.DefinePlugin({
-            GIT_INFO: JSON.stringify(getGitInfo())
+            GIT_INFO: JSON.stringify({hash: process.env.GIT_HASH,
+                                      tag: process.env.GIT_TAG})
         }),
         new ForkTsCheckerWebpackPlugin({ typescript: { 
             configFile: "./build-tsconfig.json",

@@ -20,13 +20,13 @@ spec:
         - name: private-dockerhub
       containers:
         - name: threes-db
-          image: rstibora/threes-db:latest
+          image: rstibora/threes-db:version-0.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432
           env:
             - name: POSTGRES_USER
-              value: threes
+              value: postgres
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: threes-static-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: threes-static
+  template:
+    metadata:
+      labels:
+        app: threes-static
+    spec:
+      containers:
+        - name: threes-static
+          image: rstibora/threes-static:version-0.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80

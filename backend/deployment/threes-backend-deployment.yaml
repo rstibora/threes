@@ -16,13 +16,18 @@ spec:
         - name: private-dockerhub
       containers:
         - name: threes-backend
-          image: rstibora/threes-backend:latest
+          image: rstibora/threes-backend:version-0.0.1
           command: ["gunicorn"]
           args: ["threes.wsgi:application", "--bind", "0.0.0.0:8000"]
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
           env:
+            - name: THREES_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: threes-backend-secret
+                  key: db-threes-password
             - name: DJANGO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -38,3 +43,7 @@ spec:
                 configMapKeyRef:
                   name: threes-configmap
                   key: django-allowed-hosts
+            - name: POSTGRES_HOST
+              value: threes-db-service
+            - name: POSTGRES_PORT
+              value: "5432"

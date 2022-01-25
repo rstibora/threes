@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: threes-configmap
 data:
-  django-debug: "1"
+  django-debug: "0"
   django-allowed-hosts: "127.0.0.1 [::1]"
