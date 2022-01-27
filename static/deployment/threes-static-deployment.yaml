@@ -12,9 +12,11 @@ spec:
       labels:
         app: threes-static
     spec:
+      imagePullSecrets:
+        - name: private-dockerhub
       containers:
         - name: threes-static
-          image: rstibora/threes-static:version-0.0.1
+          image: rstibora/threes-static:0.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

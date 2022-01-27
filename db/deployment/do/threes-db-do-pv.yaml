@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadta:
+  name: threes-db-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: do-block-storage
+  csi:
+    driver: dobs.csi.digitalocean.com
+    fsType: ext4
+    volumeHandle: 
