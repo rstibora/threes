@@ -7,5 +7,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
-  storageClassName: {{ .Values.dbStorageClass }}
+      storage: 5Gi
+  storageClassName: {{ eq .Values.environment "digitalocean" | ternary "do-block-storage" "" }}

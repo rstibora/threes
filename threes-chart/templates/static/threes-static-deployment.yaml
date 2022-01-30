@@ -17,6 +17,6 @@ spec:
       containers:
         - name: threes-static
           image: rstibora/threes-static:{{ .Chart.Version }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           ports:
             - containerPort: 80

@@ -19,7 +19,7 @@ spec:
         image: rstibora/threes-backend:{{ .Chart.Version }}
         command: ["gunicorn"]
         args: ["threes.wsgi:application", "--bind", "0.0.0.0:8000"]
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         ports:
         - containerPort: 8000
         env:

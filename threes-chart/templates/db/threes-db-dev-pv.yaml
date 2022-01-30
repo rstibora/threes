@@ -1,11 +1,13 @@
+{{ if eq .Values.environment "desktop" }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: threes-db-pv
 spec:
   capacity:
-    storage: 2Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
     path: "/home/radek/projects/threes/.data"
+{{ end }}

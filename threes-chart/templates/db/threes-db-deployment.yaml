@@ -21,7 +21,7 @@ spec:
       containers:
         - name: threes-db
           image: rstibora/threes-db:{{ .Chart.Version }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           ports:
             - containerPort: 5432
           env:
