@@ -20,7 +20,7 @@ spec:
         - name: private-dockerhub
       containers:
         - name: threes-db
-          image: rstibora/threes-db:0.0.1
+          image: rstibora/threes-db:{{ .Chart.Version }}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432

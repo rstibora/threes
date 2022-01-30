@@ -16,7 +16,7 @@ spec:
         - name: private-dockerhub
       containers:
         - name: threes-static
-          image: rstibora/threes-static:0.0.1
+          image: rstibora/threes-static:{{ .Chart.Version }}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

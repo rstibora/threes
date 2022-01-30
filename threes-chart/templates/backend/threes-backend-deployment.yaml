@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: threes-backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: threes-backend
+  template:
+    metadata:
+      labels:
+        app: threes-backend
+    spec:
+      imagePullSecrets:
+      - name: private-dockerhub
+      containers:
+      - name: threes-backend
+        image: rstibora/threes-backend:{{ .Chart.Version }}
+        command: ["gunicorn"]
+        args: ["threes.wsgi:application", "--bind", "0.0.0.0:8000"]
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        env:
+        - name: THREES_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: threes-backend-secret
+              key: db-threes-password
+        - name: DJANGO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: threes-backend-secret
+              key: django-secret-key
+        - name: DJANGO_DEBUG
+          valueFrom:
+            configMapKeyRef:
+              name: threes-configmap
+              key: django-debug
+        - name: DJANGO_ALLOWED_HOSTS
+          valueFrom:
+            configMapKeyRef:
+              name: threes-configmap
+              key: django-allowed-hosts
+        - name: POSTGRES_HOST
+          value: threes-db-service
+        - name: POSTGRES_PORT
+          value: "5432"
