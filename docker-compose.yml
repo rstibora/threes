@@ -14,11 +14,11 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python ./threes/manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     volumes:
-      - ./backend/threes/:/code
+      - ./:/code
       - type: bind
         source: /mnt/ramdisk
         target: /static_frontend
@@ -28,21 +28,22 @@ services:
       - DJANGO_SECRET_KEY=foo
       - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
       - THREES_DB_PASSWORD=threes
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=threes-db-service
       - POSTGRES_PORT=5432
     depends_on:
       - threes-db-service
 
   threes-frontend-service:
-    command: npm run build
+    command: bash -c "npm install && npm run build"
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
     volumes:
-      - type: bind
-        source: ./frontend/src
-        target: /code/src
-        read_only: true
+      - ./:/code
+      # - type: bind
+        # source: ./frontend/src
+        # target: /code/src
+        # read_only: true
       - /mnt/ramdisk:/output/
     depends_on:
       - threes-backend-service

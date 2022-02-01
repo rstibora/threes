@@ -5,7 +5,7 @@ ARG image_tag=latest
 
 FROM rstibora/threes-frontend:${image_tag} as frontend-image
 
-FROM python:3.9 as builder
+FROM python:3.10 as builder
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -27,7 +27,7 @@ RUN mkdir -p /var/log/threes
 RUN mkdir /static
 RUN pipenv run python ./threes/manage.py collectstatic
 
-FROM python:3.9
+FROM python:3.10
 
 ENV GIT_HASH=${git_hash}
 ENV GIT_TAG=${git_tag}

@@ -4,7 +4,8 @@ FROM node:17.3
 RUN apt update
 RUN apt install git
 
-WORKDIR /code
-COPY . /code/
+WORKDIR /code/frontend/
+COPY package.json /code/frontend/
+COPY package-lock.json /code/frontend/
 
 RUN npm install
