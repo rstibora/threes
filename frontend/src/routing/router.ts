@@ -5,9 +5,11 @@ import Dashboard from "src/components/Dashboard.vue"
 import EditEffort from "src/components/effort/EditEffort.vue"
 import EditTask from "src/components/tasks/EditTask.vue"
 import EffortOverview from "src/components/effort/EffortOverview.vue"
+import EffortSession from "src/components/effort/EffortSession.vue"
 import NotFound from "src/components/NotFound.vue"
 import ReviewOverview from "src/components/reviews/ReviewOverview.vue"
 import { TrackTasksAction } from "src/components/reviews/trackTasksAction"
+import { SelectForEffortSessionAction } from "src/components/reviews/selectForEffortSessionAction"
 import { ExistingReviewIdentification, NewReviewIdentification } from "src/network/models/review"
 import TaskList from "src/components/tasks/TaskList.vue"
 import { TaskListConfiguration } from "src/components/tasks/taskList"
@@ -18,14 +20,16 @@ import { effortExists, fetchAllData, taskExists } from "src/routing/guards"
 
 
 function parseTaskListConfiguration(route: RouteLocationNormalized): TaskListConfiguration | undefined {
-    if (route.query?.action === "selectForReview") {
-        if (route.query?.reviewId !== undefined) {
-            return { action: new TrackTasksAction(store, parseInt(route.query.reviewId as string)) }
-        }
-    } 
-    return undefined  
+  if (route.query?.action === "selectForReview") {
+    if (route.query?.reviewId !== undefined) {
+      return { action: new TrackTasksAction(store, parseInt(route.query.reviewId as string)) }
+    }
+  } else if (route.query?.action === "selectForEffortSession") {
+    return { action: new SelectForEffortSessionAction(
+      route.query.taskId ? parseInt(route.query.taskId as string) : undefined) }
+  }
+  return undefined  
 }
-
 
 const routes: Array<RouteRecordRaw> = [
     { path: "/dashboard", component: Dashboard, name: RouteNames.DASHBOARD, alias: "/" },
@@ -39,6 +43,9 @@ const routes: Array<RouteRecordRaw> = [
       props: (route) => ({ taskId: parseInt(route.params.taskId as string) }),
       beforeEnter: taskExists},
     { path: "/tasks/new", component: EditTask, name: RouteNames.NEW_TASK},
+    { path: "/tasks/:taskId/effort-session", component: EffortSession, name: RouteNames.EFFORT_SESSION,
+      props: (route) => ({ taskId: parseInt(route.params.taskId as string) }),
+      beforeEnter: taskExists},
 
     { path: "/efforts/:taskId/:effortId", component: EffortOverview, name: RouteNames.EFFORT,
       props: (route) => ({ taskId: parseInt(route.params.taskId as string),

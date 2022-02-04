@@ -35,7 +35,7 @@ import EditEffort from "../EditEffort.vue"
         if (effortId !== undefined) {
             expect(result).toStrictEqual(localThis.effortData.starts)
         } else {
-            expect(result).toStrictEqual(localThis.effortData.starts.minus(Duration.fromObject({ minutes: effortDuration})))
+            expect(result).toStrictEqual(localThis.effortData.starts.minus(Duration.fromObject({ seconds: effortDuration})))
         }
     }
 

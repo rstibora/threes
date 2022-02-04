@@ -18,18 +18,18 @@ export class NewEffort {
 
     constructor(taskId: number, duration: number, description: string, starts?: DateTime) {
         this.taskId = taskId
-        this.starts = starts !== undefined ? starts : DateTime.now().minus(Duration.fromObject({minutes: duration}))
+        this.starts = starts !== undefined ? starts : DateTime.now().minus(Duration.fromObject({ seconds: duration }))
         this.duration = duration
         this.description = description
         this.interval = Interval.fromDateTimes(
-            this.starts, this.starts.plus(Duration.fromObject({ minutes: this.duration})))
+            this.starts, this.starts.plus(Duration.fromObject({ seconds: this.duration })))
     }
 
     serialize(): EffortSerialized {
         return {
             task: this.taskId,
             starts: this.starts.toISO(),
-            duration: this.duration,
+            duration: parseInt(this.duration),
             description: this.description,
         }
     }

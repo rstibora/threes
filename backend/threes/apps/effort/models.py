@@ -11,7 +11,7 @@ class Effort(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="effort_set")
 
     starts = models.DateTimeField()
-    duration = models.IntegerField()  # [minutes]
+    duration = models.IntegerField()  # [seconds]
 
     description = models.CharField(blank=True, default="", max_length=512)
 

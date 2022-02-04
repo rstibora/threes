@@ -65,7 +65,7 @@ export default defineComponent({
             if (this.effortId !== undefined) {
                 return this.effortData.starts
             }
-            return DateTime.now().minus(Duration.fromObject({ minutes: this.effortData.duration }))
+            return DateTime.now().minus(Duration.fromObject({ seconds: this.effortData.duration }))
         },
         task(): Task {
             return this.$store.state.tasks.tasks.get(this.taskId) as Task

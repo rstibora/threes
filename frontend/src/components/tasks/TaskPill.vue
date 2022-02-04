@@ -51,8 +51,8 @@ export default defineComponent({
     methods: {
         effortDescriptionText(effort: Effort | NewEffort): string {
             const description = (effort.description !== ""
-                                 ? `${effort.description} (${effort.duration} minutes)`
-                                 : `${effort.duration} minutes of effort`)
+                                 ? `${effort.description} (${effort.duration} seconds)`
+                                 : `${effort.duration} seconds of effort`)
             return `${effort.starts.toLocaleString()}: ${description}`
         }
     },

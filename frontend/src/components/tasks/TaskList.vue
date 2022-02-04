@@ -26,10 +26,10 @@
 
             <div v-if="configuration?.action !== undefined">
                 <input
-                    id="task.id"
-                    v-model="selectedTasks"
+                    :id="task.id"
+                    v-model="selectedTasksModel"
                     :value="task.id"
-                    type="checkbox"
+                    :type="configuration.allowMultiple ? 'checkbox' : 'radio'"
                 >
             </div>
         </li>
@@ -38,6 +38,7 @@
     <div v-if="configuration?.action !== undefined">
         <button
             class="action-button"
+            :enabled="configuration.action.allowEmpty ? true : selectedTasks.length !== 0"
             @click="performAction"
         >
             {{ configuration.action.actionName }}
@@ -77,10 +78,22 @@ export default defineComponent({
     data: function() {
         return {
             searchTerm: "",
-            selectedTasks: [] as Array<number>,
+            /**
+             * Inner model that has to cover empty selection, radio input and checkbox input.
+             */
+            selectedTasksModel: undefined as Array<number> | number | undefined, 
         }
     },
     computed: {
+        /**
+         * Converts the complex inner model to a simple array only interface.
+         */
+        selectedTasks(): Array<number> {
+            if (this.selectedTasksModel === undefined) {
+                return new Array<number>()
+            }
+            return Array.isArray(this.selectedTasksModel) ? this.selectedTasksModel : [this.selectedTasksModel]
+        },
         searchResult(): Array<Task> {
             let result = new Array<Task>()
             const regexp = new RegExp(`.*${this.searchTerm}.*`, "i")
@@ -96,15 +109,23 @@ export default defineComponent({
         if (this.configuration?.action === undefined) {
             return
         }
-        this.selectedTasks = this.configuration.action.getPreselected()
+        const preselected = this.configuration.action.getPreselected()
+        if (preselected.length === 0) {
+            return
+        }
+        if (!this.configuration.action.allowMultiple) {
+            this.selectedTasksModel = preselected[0]
+        } else {
+            this.selectedTasksModel = preselected
+        }
     },
     methods: {
         async performAction() {
             if (this.configuration?.action === undefined) {
                 return
             }
-            await this.configuration.action.performAction(this.selectedTasks)
-            this.$router.back()
+            await this.configuration.action.performAction(this.selectedTasks, this.$router)
+            this.selectedTasksModel = new Array<number>()
         },
     },
 })

@@ -1,8 +1,29 @@
 <template>
 <aside class="side-navbar">
-    <router-link :to="{ name: RouteNames.DASHBOARD }" class="button"><i data-feather="home"/></router-link>
-    <router-link :to="{ name: RouteNames.TASKS }" class="button"><i data-feather="file-text"/></router-link>
-    <a @click="logout()" class="button">{{ session !== undefined ? session.userEmail.substr(0, 1) : "X" }}</a>
+    <router-link
+        :to="{ name: RouteNames.TASKS, query: { action: 'selectForEffortSession' }}"
+        class="button"
+    >
+        <i data-feather="disc" />
+    </router-link>
+    <router-link
+        :to="{ name: RouteNames.DASHBOARD }"
+        class="button"
+    >
+        <i data-feather="home" />
+    </router-link>
+    <router-link
+        :to="{ name: RouteNames.TASKS }"
+        class="button"
+    >
+        <i data-feather="file-text" />
+    </router-link>
+    <a
+        class="button"
+        @click="logout()"
+    >
+        {{ session !== undefined ? session.userEmail.substr(0, 1) : "X" }}
+    </a>
 </aside>
 <div class="content-wrapper">
     <div class="content">
@@ -10,7 +31,7 @@
             <keep-alive>
                 <component
                     :is="Component"
-                    :key="route.path"
+                    :key="route.fullPath"
                 />
             </keep-alive>
         </router-view>
@@ -24,16 +45,16 @@
         <i data-feather="home" />
     </router-link>
     <router-link
+        :to="{ name: RouteNames.TASKS, query: { action: 'selectForEffortSession' }}"
+        class="button"
+    >
+        <i data-feather="disc" />
+    </router-link>
+    <router-link
         :to="{ name: RouteNames.TASKS }"
         class="button"
     >
         <i data-feather="file-text" />
-    </router-link>
-    <router-link
-        :to="{ name: RouteNames.EFFORT_SESSION }"
-        class="button"
-    >
-        <i data-feather="disc" />
     </router-link>
 </nav>
 </template>
