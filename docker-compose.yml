@@ -34,16 +34,12 @@ services:
       - threes-db-service
 
   threes-frontend-service:
-    command: bash -c "npm install && npm run build"
+    command: bash -c "npm install --also=dev && npm run build"
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
     volumes:
       - ./:/code
-      # - type: bind
-        # source: ./frontend/src
-        # target: /code/src
-        # read_only: true
       - /mnt/ramdisk:/output/
     depends_on:
       - threes-backend-service

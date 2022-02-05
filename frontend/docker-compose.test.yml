@@ -1,0 +1,8 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+    - ./:/code/frontend
+    command: bash -c "npm install --also=dev && npm test"

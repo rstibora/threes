@@ -29,7 +29,7 @@ export class NewEffort {
         return {
             task: this.taskId,
             starts: this.starts.toISO(),
-            duration: parseInt(this.duration),
+            duration: Math.round(this.duration),
             description: this.description,
         }
     }
