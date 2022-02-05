@@ -1,5 +1,7 @@
 import { DateTime } from "luxon"
 
+import { Existing, Serializable } from "src/network/models/basic"
+
 
 export interface TaskSerialized {
     id?: number
@@ -8,7 +10,7 @@ export interface TaskSerialized {
     created: string
 }
 
-export class NewTask {
+export class NewTask implements Serializable<TaskSerialized> {
     name: string
     description: string
     created: DateTime
@@ -28,7 +30,7 @@ export class NewTask {
     }
 }
 
-export class Task extends NewTask {
+export class Task extends NewTask implements Existing<TaskSerialized> {
     id: number
 
     constructor(id: number, name: string, description: string, created: DateTime) {
@@ -39,11 +41,11 @@ export class Task extends NewTask {
     serialize(): TaskSerialized {
         return { id: this.id, ...super.serialize() }
     }
+}
 
-    static deserialize(serialized: TaskSerialized): Task {
-        if (serialized.id === undefined) {
-            throw Error(`Can't deserialize ${serialized} with undefined id.`)
-        }
-        return new Task(serialized.id, serialized.name, serialized.description, DateTime.fromISO(serialized.created))
+export function deserializeTask(serialized: TaskSerialized): Task {
+    if (serialized.id === undefined) {
+        throw Error(`Can't deserialize ${serialized} with undefined id.`)
     }
+    return new Task(serialized.id, serialized.name, serialized.description, DateTime.fromISO(serialized.created))
 }

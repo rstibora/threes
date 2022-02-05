@@ -44,3 +44,10 @@ export class UserReviewConfiguration extends NewUserReviewConfiguration{
         return new UserReviewConfiguration(serialized.id, serialized.user, serialized.configuration, serialized.is_active)
     }
 }
+
+export function deserializeUserReviewConfiguration(serialized: UserReviewConfigurationSerialized): UserReviewConfiguration {
+    if (serialized.id === undefined) {
+        throw Error(`Can't deserialize ${serialized} with undefined id.`)
+    }
+    return new UserReviewConfiguration(serialized.id, serialized.user, serialized.configuration, serialized.is_active)
+}

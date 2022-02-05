@@ -68,7 +68,7 @@ export default {
                     }
                 ]
             }
-        ]
+        ],
     },
 
     plugins: [
@@ -85,4 +85,8 @@ export default {
                 compiler: "@vue/compiler-sfc",}
         }}}),
     ],
+
+    watchOptions: {
+        aggregateTimeout: 5000,
+    }
 };

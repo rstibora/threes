@@ -27,12 +27,10 @@
 </template>
 
 <script lang="ts">
-import { DateTime } from "luxon"
 import { defineComponent, PropType } from "vue"
 
-import { Actions } from "src/state/storeAccess"
-
 import { Effort, NewEffort } from "src/network/models/effort"
+import { useEffortsStore } from "src/state/effortsStore"
 
 
 function getEditedEffort(effortOrTaskId: Effort | number): Effort | NewEffort {
@@ -49,6 +47,10 @@ export default defineComponent({
             required: true
         }
     },
+    setup(props) {
+        const effortsStore = useEffortsStore()
+        return { effortsStore } 
+    },
     emits: ["closed"],
     data: function() {
         return {
@@ -58,10 +60,10 @@ export default defineComponent({
     methods: {
         async updateOrCreateEffort() {
             if (!(this.editedEffort instanceof Effort)) {
-                await this.$store.dispatch(Actions.CREATE_EFFORT, { effort: this.editedEffort })
+                await this.effortsStore.createEffort(this.editedEffort)
                 this.$emit("closed")
             } else {
-                await this.$store.dispatch(Actions.UPDATE_EFFORT, { effort: this.editedEffort })
+                await this.effortsStore.updateEffort(this.editedEffort)
                 this.$emit("closed")
             }
         }

@@ -17,19 +17,21 @@ import { DateTime } from "luxon"
 import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
 import ReviewWidget from "src/components/reviews/ReviewWidget.vue"
 import TaskCard from "src/components/tasks/TaskCard.vue"
-
-import { Actions } from "src/state/storeAccess"
-
 import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
+import { useReviewConfigurationsStore } from "src/state/reviewConfigurationsStore"
 
 
 export default defineComponent({
+    setup (props) {
+        const reviewConfigurationsStore = useReviewConfigurationsStore()
+        return { reviewConfigurationsStore }
+    },
     computed: {
         activeReviewPeriodConfigurations() {
             const filtered = new Map<number, ReviewConfiguration>()
-            for (const [id, userConfiguration] of this.$store.state.reviews.userConfigurations) {
+            for (const [id, userConfiguration] of this.reviewConfigurationsStore.userConfigurations) {
                 if (userConfiguration.isActive) {
-                    const configuration = this.$store.state.reviews.configurations.get(
+                    const configuration = this.reviewConfigurationsStore.configurations.get(
                         userConfiguration.configurationId) as ReviewConfiguration
                     filtered.set(configuration.id, configuration)
                 }

@@ -1,5 +1,7 @@
 import { DateTime, Duration, Interval } from "luxon"
 
+import { Existing, Serializable } from "src/network/models/basic"
+
 
 export interface EffortSerialized {
     id?: number
@@ -9,7 +11,7 @@ export interface EffortSerialized {
     description: string
 }
 
-export class NewEffort {
+export class NewEffort implements Serializable<EffortSerialized> {
     readonly taskId: number
     readonly starts: DateTime
     readonly duration: number
@@ -35,7 +37,7 @@ export class NewEffort {
     }
 }
 
-export class Effort extends NewEffort {
+export class Effort extends NewEffort implements Existing<EffortSerialized> {
     id: number
 
     constructor(id: number, taskId: number, duration: number, description: string, starts: DateTime) {
@@ -46,12 +48,12 @@ export class Effort extends NewEffort {
     serialize(): EffortSerialized {
         return { id: this.id, ...super.serialize() }
     }
+}
 
-    static deserialize(serialized: EffortSerialized): Effort {
-        if (serialized.id === undefined) {
-            throw Error(`Can't deserialize ${serialized} with undefined id.`)
-        }
-        return new Effort(serialized.id, serialized.task, serialized.duration,
-                          serialized.description, DateTime.fromISO(serialized.starts))
+export function deserializeEffort(serialized: EffortSerialized): Effort {
+    if (serialized.id === undefined) {
+        throw Error(`Can't deserialize ${serialized} with undefined id.`)
     }
+    return new Effort(serialized.id, serialized.task, serialized.duration,
+                      serialized.description, DateTime.fromISO(serialized.starts))
 }

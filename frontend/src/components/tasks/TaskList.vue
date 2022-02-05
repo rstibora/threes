@@ -57,6 +57,7 @@
 import { defineComponent, PropType } from "vue"
 
 import { Task } from "src/network/models/task"
+import { useTasksStore } from "src/state/tasksStore"
 
 import TaskPill from "src/components/tasks/TaskPill.vue"
 import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
@@ -74,6 +75,10 @@ export default defineComponent({
             type: Object as PropType<TaskListConfiguration>,
             default: () => ({ action: undefined})
         }
+    },
+    setup(props) {
+        const tasksStore = useTasksStore()
+        return { tasksStore }
     },
     data: function() {
         return {
@@ -97,7 +102,7 @@ export default defineComponent({
         searchResult(): Array<Task> {
             let result = new Array<Task>()
             const regexp = new RegExp(`.*${this.searchTerm}.*`, "i")
-            for (const task of this.$store.state.tasks.tasks.values()) {
+            for (const task of this.tasksStore.tasks.values()) {
                 if (regexp.test(task.name)) {
                     result.push(task)
                 }

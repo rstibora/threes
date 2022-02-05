@@ -22,7 +22,7 @@
         class="button"
         @click="logout()"
     >
-        {{ session !== undefined ? session.userEmail.substr(0, 1) : "X" }}
+        {{ sessionStore.session !== undefined ? sessionStore.session.userEmail.substr(0, 1) : "X" }}
     </a>
 </aside>
 <div class="content-wrapper">
@@ -63,12 +63,10 @@
 // @ts-ignore: development dependency, will be removed later.
 import feather from "feather-icons"
 import { defineComponent } from 'vue'
-import { mapState } from "vuex"
 
 import { fetchResource } from "src/network/fetchResource"
 
-import { Mutations } from "src/state/storeAccess"
-import { State } from "src/state/store"
+import { useSessionStore } from "src/state/sessionStore"
 
 import Dashboard from "./Dashboard.vue"
 
@@ -76,8 +74,9 @@ export default defineComponent({
     components: {
         Dashboard,
     },
-    computed: {
-        ...mapState({ session: state => (state as State).session.session })
+    setup(props) {
+        const sessionStore = useSessionStore()
+        return { sessionStore }
     },
     mounted() {
         // Bring in the feather-icons.
@@ -108,13 +107,13 @@ export default defineComponent({
     },
     methods: {
         async logout() {
-            if (this.session === undefined) {
+            if (this.sessionStore.session === undefined) {
                 return
             }
 
-            const response = await fetchResource("POST", "/logout/", undefined, this.session?.accessJwt)
+            const response = await fetchResource("POST", "/logout/", undefined, this.sessionStore.session?.accessJwt)
             if (response.ok) {
-                this.$store.commit(Mutations.UPDATE_SESSION, { session: undefined })
+                this.sessionStore.session = undefined
                 // TODO: fix.
                 window.location.replace("/signin/")
             }

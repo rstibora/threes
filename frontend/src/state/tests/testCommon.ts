@@ -1,6 +1,6 @@
 import { params, suite } from "@testdeck/jest"
 
-import { updateOrDeleteInMap } from "src/state/modules/moduleUtils"
+import { updateOrDeleteInMap } from "src/state/common"
 
 
 @suite class EffortsModuleTests {

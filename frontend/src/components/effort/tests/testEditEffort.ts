@@ -2,18 +2,15 @@
  * @jest-environment jsdom
  */
 
-
 import { DateTime, Duration } from "luxon"
+import { createTestingPinia } from '@pinia/testing'
 import { params, suite } from "@testdeck/jest"
 import { shallowMount } from "@vue/test-utils"
-import { createStore } from "vuex"
 
 import { Effort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
-import { getters} from "src/state/store"
-import { state as effortsState, getters as effortsGetters, mutations as effortsMutations } from "src/state/modules/effortsModule"
-import { state as tasksState, getters as tasksGetters, mutations as tasksMutations } from "src/state/modules/tasksModule"
-import { Actions, Mutations } from "src/state/storeAccess"
+import { useEffortsStore } from "src/state/effortsStore"
+import { useTasksStore } from "src/state/tasksStore"
 
 import EditEffort from "../EditEffort.vue"
 
@@ -42,35 +39,10 @@ import EditEffort from "../EditEffort.vue"
     @params({ effortId: undefined })
     @params({ effortId: 0 })
     async testConfirmButtonAction({ effortId }) {
-
-        const createEffortAction = jest.fn(() => new Effort(1, 0, 0, "", DateTime.fromSeconds(1638942034)))
-        const updateEffortAction = jest.fn(() => new Effort(1, 0, 0, "", DateTime.fromSeconds(1638942034)))
-
-        const store = createStore({
-            modules: {
-                efforts: {
-                    state: effortsState,
-                    getters: effortsGetters,
-                    mutations: effortsMutations,
-                    actions: {
-                        [Actions.CREATE_EFFORT]: createEffortAction,
-                        [Actions.UPDATE_EFFORT]: updateEffortAction,
-                    }
-                },
-                tasks: {
-                    state: tasksState,
-                    getters: tasksGetters,
-                    mutations: tasksMutations,
-                },
-            },
-            getters
-        })
-        store.commit(Mutations.UPDATE_TASKS, { tasks: new Map([[0, new Task(0, "", "", DateTime.fromSeconds(1638942034))]]) })
-        store.commit(Mutations.UPDATE_EFFORTS, { efforts: new Map([[0, new Effort(0, 0, 0, "", DateTime.fromSeconds(1638942034))]]) })
-
         const wrapper = shallowMount(EditEffort, {
             global: {
-                plugins: [store],
+                plugins: [createTestingPinia({initialState: { efforts: { efforts: new Map([[0, new Effort(0, 0, 0, "", DateTime.fromSeconds(1638942034))]]) },
+                                                              tasks: { tasks: new Map([[0, new Task(0, "", "", DateTime.fromSeconds(1638942034))]]) }}})],
                 mocks: {
                     $router: {
                         replace: jest.fn()
@@ -82,11 +54,20 @@ import EditEffort from "../EditEffort.vue"
                 effortId,
             }
         })
-        expect(await wrapper.get("[data-test='confirmButton']").text()).toBe(effortId === undefined ? "Create" : "Save")
 
+        const effortsStore = useEffortsStore()
+        const createEffortAction = jest.fn(() => effortsStore.efforts.set(1, new Effort(1, 0, 0, "", DateTime.fromSeconds(1638942034))))
+        const updateEffortAction = jest.fn(() => effortsStore.efforts.set(0, new Effort(0, 0, 0, "", DateTime.fromSeconds(1638942034))))
+
+        // @ts-ignore
+        effortsStore.createEffort.mockImplementation(createEffortAction)
+        // @ts-ignore
+        effortsStore.updateEffort.mockImplementation(updateEffortAction)
+
+        expect(wrapper.get("[data-test='confirmButton']").text()).toBe(effortId === undefined ? "Create" : "Save")
         await wrapper.get("[data-test='confirmButton']").trigger("click")
 
-        expect(createEffortAction.mock.calls.length == (effortId === undefined ? 1 : 0))
-        expect(updateEffortAction.mock.calls.length == (effortId === undefined ? 0 : 1))
+        expect(createEffortAction.mock.calls.length).toBe(effortId === undefined ? 1 : 0)
+        expect(updateEffortAction.mock.calls.length).toBe(effortId === undefined ? 0 : 1)
     }
 }

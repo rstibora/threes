@@ -17,10 +17,10 @@ import { defineComponent } from "vue"
 
 import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
 
-import { Actions } from "src/state/storeAccess"
-
 import { Effort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
+import { useEffortsStore } from "src/state/effortsStore"
+import { useTasksStore } from "src/state/tasksStore"
 
 
 export default defineComponent({
@@ -37,17 +37,22 @@ export default defineComponent({
             required: true
         },
     },
+    setup(props) {
+        const effortsStore = useEffortsStore()
+        const tasksStore = useTasksStore()
+        return { effortsStore, tasksStore }
+    },
     computed: {
         effort(): Effort {
-            return this.$store.state.efforts.efforts.get(this.effortId) as Effort
+            return this.effortsStore.efforts.get(this.effortId) as Effort
         },
         task(): Task {
-            return this.$store.state.tasks.tasks.get(this.taskId) as Task
+            return this.tasksStore.getExistingTask(this.taskId)
         },
     },
     methods: {
         async optionDeleteEffort(): Promise<void> {
-            await this.$store.dispatch(Actions.DESTROY_EFFORT, { effort: this.effort })
+            await this.effortsStore.deleteEffort(this.effort)
             this.$router.back()
         },
     },

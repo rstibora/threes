@@ -40,10 +40,6 @@ export class ReviewConfiguration {
         }
     }
 
-    static deserialize(serialized: ReviewConfigurationSerialized): ReviewConfiguration {
-        return new ReviewConfiguration(serialized.id, ConfigurationName[getStringEnumKeyByValue(ConfigurationName, serialized.name)])
-    }
-
     getReviewInterval(index: number): Interval {
         /**
          * Calculates interval (datetime from, to) for the review with this configuration and the given index.
@@ -96,4 +92,11 @@ export class ReviewConfiguration {
             default: { throw Error(`Unknown review configuration ${this.name}`)}
         }
     }
+}
+
+export function deserializeReviewConfiguration(serialized: ReviewConfigurationSerialized): ReviewConfiguration {
+    if (serialized.id === undefined) {
+        throw Error(`Can't deserialize ${serialized} with undefined id.`)
+    }
+    return new ReviewConfiguration(serialized.id, ConfigurationName[getStringEnumKeyByValue(ConfigurationName, serialized.name)])
 }

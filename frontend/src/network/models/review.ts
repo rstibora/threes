@@ -1,3 +1,6 @@
+import { Existing, Serializable } from "src/network/models/basic"
+
+
 export interface ExistingReviewIdentification {
     id: number
     configurationId?: never,
@@ -23,7 +26,7 @@ export interface ReviewSerialized {
     planned_tasks: Array<number>
 }
 
-export class NewReview {
+export class NewReview implements Serializable<ReviewSerialized> {
     configurationId: number
     index: number
     plannedTasksIds: Array<number>
@@ -43,7 +46,7 @@ export class NewReview {
     }
 }
 
-export class Review extends NewReview {
+export class Review extends NewReview implements Existing<ReviewSerialized> {
     id: number
 
     constructor(id: number, configurationId: number, index: number, plannedTasksIds: Array<number>) {
@@ -54,11 +57,11 @@ export class Review extends NewReview {
     serialize(): ReviewSerialized {
         return { id: this.id, ...super.serialize()}
     }
+}
 
-    static deserialize(serialized: ReviewSerialized): Review {
-        if (serialized.id === undefined) {
-            throw Error(`Can't deserialize ${serialized} with undefined id.`)
-        }
-        return new Review(serialized.id, serialized.configuration, serialized.index, serialized.planned_tasks)
+export function deserializeReview(serialized: ReviewSerialized): Review {
+    if (serialized.id === undefined) {
+        throw Error(`Can't deserialize ${serialized} with undefined id.`)
     }
+    return new Review(serialized.id, serialized.configuration, serialized.index, serialized.planned_tasks)
 }

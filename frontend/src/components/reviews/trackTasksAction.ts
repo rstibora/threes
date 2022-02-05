@@ -1,21 +1,17 @@
 import { Router } from "vue-router"
 
-import { Store } from "src/state/store"
-import { Actions } from "src/state/storeAccess"
-
 import { Review } from "src/network/models/review"
+import { useReviewsStore } from "src/state/reviewsStore"
 
 import { SelectedTasksAction } from "src/components/tasks/taskList"
 
 
 export class TrackTasksAction implements SelectedTasksAction {
-    private store: Store
     private reviewId: number
     readonly actionName: string
     readonly allowMultiple: boolean
     readonly allowEmpty: boolean
-    constructor(store: Store, reviewId: number) {
-        this.store = store
+    constructor(reviewId: number) {
         this.reviewId = reviewId
         this.actionName = "Track Selected Tasks"
         this.allowMultiple = true
@@ -23,13 +19,13 @@ export class TrackTasksAction implements SelectedTasksAction {
     }
 
     getPreselected(): Array<number> {
-        return (this.store.state.reviews.reviews.get(this.reviewId) as Review).plannedTasksIds
+        return (useReviewsStore().reviews.get(this.reviewId) as Review).plannedTasksIds
     }
 
     async performAction(selectedTasks: Array<number>, router: Router): Promise<void> {
-        const review = this.store.state.reviews.reviews.get(this.reviewId) as Review
+        const review = useReviewsStore().reviews.get(this.reviewId) as Review
         review.plannedTasksIds = selectedTasks
-        await this.store.dispatch(Actions.UPDATE_REVIEW, { review })
+        await useReviewsStore().updateReview(review)
         router.back()
     }
 }

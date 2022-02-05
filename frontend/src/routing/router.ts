@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory, RouteLocationNormalized, RouteRecordRaw, } from "vue-router"
-import store from "src/state/store"
 
 import Dashboard from "src/components/Dashboard.vue"
 import EditEffort from "src/components/effort/EditEffort.vue"
@@ -22,7 +21,7 @@ import { effortExists, fetchAllData, taskExists } from "src/routing/guards"
 function parseTaskListConfiguration(route: RouteLocationNormalized): TaskListConfiguration | undefined {
   if (route.query?.action === "selectForReview") {
     if (route.query?.reviewId !== undefined) {
-      return { action: new TrackTasksAction(store, parseInt(route.query.reviewId as string)) }
+      return { action: new TrackTasksAction(parseInt(route.query.reviewId as string)) }
     }
   } else if (route.query?.action === "selectForEffortSession") {
     return { action: new SelectForEffortSessionAction(

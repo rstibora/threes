@@ -48,16 +48,19 @@
 <script lang="ts">
 import { DateTime, Interval } from "luxon"
 import { defineComponent, PropType } from "vue"
-import { mapGetters, mapState } from "vuex"
+import { mapState } from "pinia"
 
 import TaskPill from "src/components/tasks/TaskPill.vue"
 
-import { State } from "src/state/store"
 import { displayIntervalEnd } from "src/utils/dateTime"
 
 import { Session } from "src/state/session"
 import { Review, NewReview } from "src/network/models/review"
 import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
+import { useEffortsStore } from "src/state/effortsStore"
+import { useReviewsStore } from "src/state/reviewsStore"
+import { useSessionStore } from "src/state/sessionStore"
+import { useTasksStore } from "src/state/tasksStore"
 
 
 interface ReviewBundle {
@@ -75,6 +78,9 @@ interface ChangeReviewButtonsEnabled {
 }
 
 export default defineComponent({
+    components: {
+        TaskPill,
+    },
     props: {
         configuration: {
             type: Object as PropType<ReviewConfiguration>,
@@ -87,13 +93,10 @@ export default defineComponent({
         }
     },
     computed: {
-        ...mapState({
-            efforts: state => (state as State).efforts.efforts,
-            reviews: state => (state as State).reviews.reviews,
-            session: state => (state as State).session.session,
-            tasks: state => (state as State).tasks.tasks
-        }),
-        ...mapGetters(["plannedTasks", "effortsPerTask", "tasksAndEffortsForInterval"]),
+        ...mapState(useEffortsStore, ["efforts", "effortsPerTask"]),
+        ...mapState(useReviewsStore, ["reviews"]),
+        ...mapState(useSessionStore, ["session"]),
+        ...mapState(useTasksStore, ["tasks", "plannedTasks", "tasksAndEffortsForInterval"]),
         reviewsByIndex(): Map<number, Review> {
             let reviewsByIndex = new Map<number, Review>()
             for (const review of this.reviews.values()) {
@@ -130,9 +133,6 @@ export default defineComponent({
         changeSelectedReviewIndexBy(step: number) {
             this.selectedReviewIndex = this.selectedReviewIndex + step
         }
-    },
-    components: {
-        TaskPill,
     },
 })
 </script>

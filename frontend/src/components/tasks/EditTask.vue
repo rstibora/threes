@@ -15,7 +15,7 @@ import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
 
 import { NewTask, Task } from "src/network/models/task"
 import { RouteNames } from "src/routing/routeNames"
-import { Actions } from "src/state/storeAccess"
+import { useTasksStore } from "src/state/tasksStore"
 
 
 export default defineComponent({
@@ -23,6 +23,11 @@ export default defineComponent({
         taskId: {
             type: Number,
         }
+    },
+    setup(props) {
+        const tasksStore = useTasksStore()
+        return { tasksStore }
+
     },
     data: function() {
         return {
@@ -39,8 +44,7 @@ export default defineComponent({
     },
     methods: {
         async confirmButtonAction(): Promise<void> {
-            const action = this.editedTask instanceof Task ? Actions.UPDATE_TASKS : Actions.CREATE_TASK
-            const task = await this.$store.dispatch(action, { task: this.editedTask })
+            const task = await this.tasksStore.createTask(this.editedTask as NewTask)
             this.$router.replace({ name: RouteNames.TASK, params: { taskId: task.id }})
         }
     },
@@ -49,7 +53,7 @@ export default defineComponent({
     },
     created(): void {
         if (this.taskId !== undefined) {
-            this.editedTask = this.$store.state.tasks.tasks.get(this.taskId) as Task
+            this.editedTask = this.tasksStore.getExistingTask(this.taskId)
         }
     }
 })

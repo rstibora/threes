@@ -1,24 +1,26 @@
 import { RouteLocationNormalized, RouteLocationRaw } from "vue-router"
 
-import store from "src/state/store"
-import { Actions } from "src/state/storeAccess"
+import { useEffortsStore } from "src/state/effortsStore"
+import { useReviewConfigurationsStore } from "src/state/reviewConfigurationsStore"
+import { useReviewsStore } from "src/state/reviewsStore"
+import { useTasksStore } from "src/state/tasksStore"
 import { RouteNames } from "src/routing/routeNames"
 
 
 export async function fetchAllData(to: RouteLocationNormalized, from: RouteLocationNormalized): Promise<boolean> {
-    const fetchResults = await Promise.all([
-        store.dispatch(Actions.FETCH_TASKS),
-        store.dispatch(Actions.FETCH_REVIEW_CONFIGURATIONS),
-        store.dispatch(Actions.FETCH_USER_REVIEW_CONFIGURATIONS),
-        store.dispatch(Actions.FETCH_REVIEWS),
-        store.dispatch(Actions.FETCH_EFFORTS),
+    await Promise.all([
+        useTasksStore().fetchTasks(),
+        useReviewConfigurationsStore().fetchReviewConfigurations(),
+        useReviewConfigurationsStore().fetchUserReviewConfigurations(),
+        useReviewsStore().fetchReviews(),
+        useEffortsStore().fetchEfforts(),
     ])
     return true
 }
 
 
 export function taskExists(to: RouteLocationNormalized, from: RouteLocationNormalized): boolean | RouteLocationRaw {
-    if (!store.getters.taskExists(parseInt(to.params.taskId as string))) {
+    if (!useTasksStore().taskExists(parseInt(to.params.taskId as string))) {
         if (from.name === RouteNames.TASKS) {
             return { name: RouteNames.TASKS }
         }
@@ -28,7 +30,7 @@ export function taskExists(to: RouteLocationNormalized, from: RouteLocationNorma
 }
 
 export function effortExists(to: RouteLocationNormalized, from: RouteLocationNormalized): boolean | RouteLocationRaw {
-    if (!store.getters.effortExists(parseInt(to.params.effortId as string))) {
+    if (!useEffortsStore().effortExists(parseInt(to.params.effortId as string))) {
         return { name: RouteNames.TASK, params: { taskId: parseInt(to.params.taskId as string)}}
     }
     return true

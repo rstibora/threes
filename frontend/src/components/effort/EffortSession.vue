@@ -38,7 +38,8 @@ import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
 import { NewEffort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
 import { RouteNames } from "src/routing/routeNames"
-import { Actions } from "src/state/storeAccess"
+import { useEffortsStore } from "src/state/effortsStore"
+import { useTasksStore } from "src/state/tasksStore"
 
 
 export default defineComponent({
@@ -50,6 +51,11 @@ export default defineComponent({
             type: Number,
             required: true,
         }
+    },
+    setup(_props) {
+        const effortsStore = useEffortsStore()
+        const tasksStore = useTasksStore()
+        return { effortsStore, tasksStore }
     },
     data: function() {
         return {
@@ -68,7 +74,7 @@ export default defineComponent({
         }
     },
     created(): void {
-        this.task = this.$store.state.tasks.tasks.get(this.taskId) as Task
+        this.task = this.tasksStore.getExistingTask(this.taskId)
     },
     methods: {
         startPauseButtonClicked(): void {
@@ -90,7 +96,7 @@ export default defineComponent({
             const effort = new NewEffort(
                 (this.task as Task).id, this.session.duration, "",
                 DateTime.now().minus(Duration.fromObject({ minutes: this.session.duration})))
-            await this.$store.dispatch(Actions.CREATE_EFFORT, { effort })
+            await this.effortsStore.createEffort(effort)
             this.$router.push({ name: RouteNames.DASHBOARD })
         },
         clearButtonClicked(): void {

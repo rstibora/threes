@@ -31,8 +31,8 @@ import EffortPill from "src/components/effort/EffortPill.vue"
 import { Effort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
 
-import { Actions } from "src/state/storeAccess"
-
+import { useEffortsStore } from "src/state/effortsStore"
+import { useTasksStore } from "src/state/tasksStore"
 
 export default defineComponent({
     components: {
@@ -45,13 +45,18 @@ export default defineComponent({
             required: true
         }
     },
+    setup(props) {
+        const effortsStore = useEffortsStore()
+        const tasksStore = useTasksStore()
+        return { effortsStore, tasksStore }
+    },
     computed: {
         task(): Task {
-            return this.$store.state.tasks.tasks.get(this.taskId) as Task
+            return this.tasksStore.getExistingTask(this.taskId)
         },
         taskEfforts(): Array<Effort> {
             let filteredEfforts = new Array<Effort>()
-            for (const effort of this.$store.state.efforts.efforts.values()) {
+            for (const effort of this.effortsStore.efforts.values()) {
                 if (effort.taskId == this.task.id) {
                     filteredEfforts.push(effort)
                 }
@@ -61,7 +66,7 @@ export default defineComponent({
     },
     methods: {
         async optionDeleteTask(): Promise<void> {
-            await this.$store.dispatch(Actions.DESTROY_TASK, { task: this.task })
+            await this.tasksStore.deleteTask(this.task)
             this.$router.back()
         }
     },

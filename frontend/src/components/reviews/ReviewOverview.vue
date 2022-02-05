@@ -48,7 +48,6 @@
 <script lang="ts">
 import * as d3 from "d3"
 import { defineComponent, PropType } from "vue"
-import { mapGetters } from "vuex"
 
 import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
 import TaskPill from "src/components/tasks/TaskPill.vue"
@@ -59,9 +58,10 @@ import { PieArea, PieChartConfiguration } from "src/components/buildingBlocks/vi
 import { Review, NewReview, ReviewIdentification } from "src/network/models/review"
 import { ReviewConfiguration } from "src/network/models/reviewConfiguration"
 import { Task } from "src/network/models/task"
+import { useReviewConfigurationsStore } from "src/state/reviewConfigurationsStore"
+import { useReviewsStore } from "src/state/reviewsStore"
 import { RouteNames } from "src/routing/routeNames"
-import { TaskAndEfforts } from "src/state/store"
-import { Actions } from "src/state/storeAccess"
+import { useTasksStore } from "src/state/tasksStore"
 import { displayIntervalEnd } from "src/utils/dateTime"
 
 
@@ -77,19 +77,24 @@ export default defineComponent({
       required: true,
     },
   },
+  setup(props) {
+    const reviewsStore = useReviewsStore()
+    const reviewConfigurationsStore = useReviewConfigurationsStore()
+    const tasksStore = useTasksStore()
+    return { reviewsStore, reviewConfigurationsStore, tasksStore }
+  },
   data: function() {
     return {
       reviewId: this.reviewIdentification.id
     }
   },
   computed: {
-    ...mapGetters(["plannedTasks", "effortsPerTask", "tasksAndEffortsForInterval"]),
     configuration(): ReviewConfiguration {
-      return this.$store.state.reviews.configurations.get(this.review.configurationId) as ReviewConfiguration
+      return this.reviewConfigurationsStore.configurations.get(this.review.configurationId) as ReviewConfiguration
     },
     review(): Review | NewReview {
       if (this.reviewId !== undefined) {
-        return this.$store.state.reviews.reviews.get(this.reviewId) as Review
+        return this.reviewsStore.reviews.get(this.reviewId) as Review
       }
       return new NewReview(this.reviewIdentification.configurationId as number, this.reviewIdentification.index as number, [])
     },
@@ -100,7 +105,7 @@ export default defineComponent({
     },
     pieChartConfiguration(): PieChartConfiguration {
       const totalEffortPerTask: Array<[Task, number]> = []
-      for (const [task, efforts] of this.tasksAndEffortsForInterval(this.configuration.getReviewInterval(this.review.index)) as TaskAndEfforts) {
+      for (const [task, efforts] of this.tasksStore.tasksAndEffortsForInterval(this.configuration.getReviewInterval(this.review.index))) {
         let totalEffort = 0
         for (const effort of efforts.values()) {
           totalEffort += effort.duration
@@ -120,7 +125,7 @@ export default defineComponent({
       const perTaskPerReviewEffort = new Map<number, Map<number, number>>()
       for (const reviewIndex of reviewIndices) {
         const reviewInterval = this.configuration.getReviewInterval(reviewIndex)
-        const tasksAndEffortsForInterval: TaskAndEfforts = this.tasksAndEffortsForInterval(reviewInterval)
+        const tasksAndEffortsForInterval = this.tasksStore.tasksAndEffortsForInterval(reviewInterval)
 
         for (const [task, efforts] of tasksAndEffortsForInterval) {
           let taskEffort = 0
@@ -142,7 +147,7 @@ export default defineComponent({
         }
         stacks.push({ data: singleStackData,
                 color: "lightsteelblue",
-                name: (this.$store.state.tasks.tasks.get(taskId) as Task).name })
+                name: (this.tasksStore.getExistingTask(taskId)).name })
       }
       return new StackedAreaChartConfiguration(stacks)
     }
@@ -151,7 +156,7 @@ export default defineComponent({
     async buttonTrackTasksHandler() {
       // Create the review if it doesn't exist.
       if (this.reviewIdentification.id === undefined) {
-        const createdReview: Review = await this.$store.dispatch(Actions.CREATE_REVIEW, { review: this.review as NewReview })
+        const createdReview = await this.reviewsStore.createReview(this.review)
         this.reviewId = createdReview.id
         this.$router.replace({ name: RouteNames.REVIEW, params: { reviewId: createdReview.id }})
       }

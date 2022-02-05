@@ -3,5 +3,5 @@
     "service": "threes-frontend-service",
     "workspaceFolder": "/code/frontend",
     "shutdownAction": "stopCompose",
-    "extensions": ["dbaeumer.vscode-eslint", "octref.vetur"]
+    "extensions": ["dbaeumer.vscode-eslint", "octref.vetur", "syler.sass-indented"]
 }
