@@ -66,7 +66,7 @@ export default defineComponent({
         }
     },
     computed: {
-        // Shifted back by the duration, so that it really is the time when the effort started.
+        // Shifted back by the duration, so that it really is the time when the effort RUNNING.
         effortStartsShifted(): DateTime {
             if (this.effortId !== undefined) {
                 return this.effortData.starts

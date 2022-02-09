@@ -70,6 +70,17 @@ export async function getItems<ItemSerialized,  ExistingItem extends Existing<It
   }
 }
 
+export async function getItem<ItemSerialized, ExistingItem extends Existing<ItemSerialized>
+  >(stateMap: MapById<ExistingItem>, itemDeserializer: (_: ItemSerialized) => Readonly<ExistingItem>,
+    apiPath: string): Promise<Readonly<ExistingItem>>
+{
+  const sessionStore = useSessionStore()
+  const response = await sessionStore.fetchResource<undefined, ItemSerialized>("GET", apiPath)
+  const deserializedItem = itemDeserializer(response)
+  updateOrDeleteInMap(stateMap, new Map([[deserializedItem.id, deserializedItem]]))
+  return deserializedItem
+}
+
 export function getExistingItem<Item>(stateMap: MapById<Item>, itemId: number): Readonly<Item> {
   if (!stateMap.has(itemId)) {
     throw Error(`State map does not contain item with id ${itemId}.`)

@@ -37,6 +37,10 @@
         </router-view>
     </div>
 </div>
+<div
+    v-if="effortSessionStore.session"
+    class="information-strip"
+/>
 <nav class="bottom-navbar">
     <router-link
         :to="{ name: RouteNames.DASHBOARD }"
@@ -45,7 +49,9 @@
         <i data-feather="home" />
     </router-link>
     <router-link
-        :to="{ name: RouteNames.TASKS, query: { action: 'selectForEffortSession' }}"
+        :to="effortSessionStore.session
+            ? { name: RouteNames.EFFORT_SESSION, params: { taskId: effortSessionStore.session.taskId }}
+            : { name: RouteNames.TASKS, query: { action: 'selectForEffortSession' }}"
         class="button"
     >
         <i data-feather="disc" />
@@ -66,6 +72,7 @@ import { defineComponent } from 'vue'
 
 import { fetchResource } from "src/network/fetchResource"
 
+import { useEffortSessionStore } from "src/state/effortSessionStore"
 import { useSessionStore } from "src/state/sessionStore"
 
 import Dashboard from "./Dashboard.vue"
@@ -76,7 +83,8 @@ export default defineComponent({
     },
     setup(props) {
         const sessionStore = useSessionStore()
-        return { sessionStore }
+        const effortSessionStore = useEffortSessionStore()
+        return { effortSessionStore, sessionStore }
     },
     mounted() {
         // Bring in the feather-icons.
@@ -151,6 +159,13 @@ export default defineComponent({
     height: 100%
     position: sticky
     top: 0
+
+.information-strip
+    height: 5px
+    width: 100%
+    position: fixed
+    bottom: constants.$bottom-navbar-height
+    background-color: red
 
 .bottom-navbar
     display: none

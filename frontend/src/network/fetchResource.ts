@@ -1,4 +1,14 @@
 
+export class HttpError extends Error {
+    code: number
+
+    constructor(message: string, code: number) {
+        super(message)
+        this.code = code
+    }
+}
+
+
 export async function fetchResource(method: string, resource: string, data?: any, access_token?: string): Promise<Response> {
     const csrf_token = document.querySelector('[name=csrfmiddlewaretoken]')?.getAttribute("value")
     if (csrf_token == null) {

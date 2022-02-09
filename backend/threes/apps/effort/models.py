@@ -1,6 +1,5 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.fields import related
 
 from apps.core.models import EmailUser
 from apps.tasks.models import Task
@@ -31,30 +30,16 @@ class Effort(models.Model):
 
 
 class EffortSession(models.Model):
+    class StateChoices(models.TextChoices):
+        RUNNING = "R"
+        PAUSED = "P"
+
     owner = models.OneToOneField(EmailUser, on_delete=models.CASCADE)
-    task = models.OneToOneField(Task, primary_key=True, on_delete=models.CASCADE)
-
-    description = models.CharField(blank=True, default="", max_length=512)
+    task = models.OneToOneField(Task, on_delete=models.CASCADE)
+    state = models.CharField(max_length=1, choices=StateChoices.choices)
     last_active = models.DateTimeField()
-
-    class Meta:
-        unique_together = ["owner", "task"]
-
-    def __repr__(self) -> str:
-        return (f"{self.__class__.__name__}({self.owner},{self.task},{self.description},"
-                f"{self.last_active})")
-
-
-class EffortSessionEvent(models.Model):
-    class EventChoices(models.TextChoices):
-        START = "S"
-        PAUSE = "P"
-
-    owner = models.ForeignKey(EmailUser, on_delete=models.CASCADE)
-    session = models.ForeignKey(EffortSession, on_delete=models.CASCADE,
-                                related_name="events_set")
-
-    event = models.CharField(max_length=1, choices=EventChoices.choices)
+    duration = models.IntegerField()  # [seconds]
+    created = models.DateTimeField(auto_now_add=True)
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.owner},{self.event},{self.session})"
+        return (f"{self.__class__.__name__}({self.task},{self.last_active})")

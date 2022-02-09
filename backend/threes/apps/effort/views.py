@@ -1,7 +1,7 @@
-from rest_framework import permissions, viewsets
+from rest_framework import mixins, permissions, viewsets
 
-from .models import Effort, EffortSession, EffortSessionEvent
-from .serializers import EffortSerializer, EffortSessionSerializer, EffortSessionEventSerializer
+from .models import Effort, EffortSession
+from .serializers import EffortSerializer, EffortSessionSerializer
 
 
 class EffortViewSet(viewsets.ModelViewSet):
@@ -15,21 +15,16 @@ class EffortViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
 
-class EffortSessionViewSet(viewsets.ModelViewSet):
+class EffortSessionViewSet(mixins.CreateModelMixin,
+                           mixins.RetrieveModelMixin,
+                           mixins.UpdateModelMixin,
+                           mixins.DestroyModelMixin,
+                           viewsets.GenericViewSet):
     serializer_class = EffortSessionSerializer
+    lookup_field = "owner"
 
     def get_queryset(self):
         return EffortSession.objects.filter(owner=self.request.user.pk)
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
-
-class EffortSessionEventViewSet(viewsets.ModelViewSet):
-    serializer_class = EffortSessionEventSerializer
-
-    def get_queryset(self):
-        return EffortSessionEvent.objects.filter(owner=self.request.user.pk)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)

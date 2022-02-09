@@ -14,10 +14,10 @@
 
     <div class="chart" />
 
-    <div v-if="plannedTasks(review).size > 0">
+    <div v-if="tasksStore.plannedTasks(review).size > 0">
       <p>Tracked</p>
       <task-pill
-        v-for="task of plannedTasks(review).values()"
+        v-for="task of tasksStore.plannedTasks(review).values()"
         :key="task.id"
         :task="task"
         :efforts="effortsPerTask(task, configuration.getReviewInterval(review.index))"
@@ -33,10 +33,10 @@
     >
       Select tasks to track
     </button>
-    <div v-if="tasksAndEffortsForInterval(configuration.getReviewInterval(review.index), plannedTasks(review)).length > 0">
+    <div v-if="tasksStore.tasksAndEffortsForInterval(configuration.getReviewInterval(review.index), tasksStore.plannedTasks(review)).length > 0">
       <p>Untracked</p>
       <task-pill
-        v-for="[task, efforts] of tasksAndEffortsForInterval(configuration.getReviewInterval(review.index), plannedTasks(review))"
+        v-for="[task, efforts] of tasksStore.tasksAndEffortsForInterval(configuration.getReviewInterval(review.index), tasksStore.plannedTasks(review))"
         :key="task.id"
         :task="task" 
         :efforts="efforts"

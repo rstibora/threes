@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 
-import { fetchResource } from "src/network/fetchResource"
+import { fetchResource, HttpError } from "src/network/fetchResource"
 import { Session } from "src/state/session"
 
 
@@ -27,7 +27,11 @@ export const useSessionStore = defineStore("session", {
       }
       const firstTryResponse = await fetchResource(method, apiPath, data, (this.session?.accessJwt as string))
       if (firstTryResponse.ok) {
-        return await firstTryResponse.json() as OutputData
+        // Either none or application/json is expected.
+        if (firstTryResponse.headers.get("Content-Type")) {
+          return await firstTryResponse.json() as OutputData
+        }
+        return undefined as unknown as OutputData
       }
 
       // TODO: verify that it is correct.
@@ -35,10 +39,15 @@ export const useSessionStore = defineStore("session", {
         this.refreshToken()
         const secondTryResponse = await fetchResource(method, apiPath, data, (this.session?.accessJwt as string))
         if (secondTryResponse.ok) {
-          return await secondTryResponse.json() as OutputData
+          if (secondTryResponse.headers.get("Content-Type")) {
+            return await secondTryResponse.json() as OutputData
+          }
+          return undefined as unknown as OutputData
         }
       }
-      throw Error(`Could not fetch resource: ${firstTryResponse.statusText}: ${await firstTryResponse.text()}`)
+      throw new HttpError(
+        `Could not fetch resource: ${firstTryResponse.statusText}: ${await firstTryResponse.text()}`,
+        firstTryResponse.status)
     }
   }
 })

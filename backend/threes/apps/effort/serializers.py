@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Effort, EffortSession, EffortSessionEvent
+from .models import Effort, EffortSession
 
 
 class EffortSerializer(serializers.ModelSerializer):
@@ -12,8 +12,4 @@ class EffortSerializer(serializers.ModelSerializer):
 class EffortSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = EffortSession
-
-
-class EffortSessionEventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EffortSessionEvent
+        fields = ["id", "task", "state", "last_active", "duration", "created"]
