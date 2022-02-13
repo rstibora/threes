@@ -12,51 +12,37 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue"
+<script setup lang="ts">
+import { computed } from "vue"
+import router from "src/routing/router"
 
 import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
-
-import { Effort } from "src/network/models/effort"
-import { Task } from "src/network/models/task"
 import { useEffortsStore } from "src/state/effortsStore"
 import { useTasksStore } from "src/state/tasksStore"
 
 
-export default defineComponent({
-    components: {
-        CompactHeader,
+const props = defineProps({
+    taskId: {
+        type: Number,
+        required: true
     },
-    props: {
-        taskId: {
-            type: Number,
-            required: true,
-        },
-        effortId: {
-            type: Number,
-            required: true
-        },
-    },
-    setup(props) {
-        const effortsStore = useEffortsStore()
-        const tasksStore = useTasksStore()
-        return { effortsStore, tasksStore }
-    },
-    computed: {
-        effort(): Effort {
-            return this.effortsStore.efforts.get(this.effortId) as Effort
-        },
-        task(): Task {
-            return this.tasksStore.getExistingTask(this.taskId)
-        },
-    },
-    methods: {
-        async optionDeleteEffort(): Promise<void> {
-            await this.effortsStore.deleteEffort(this.effort)
-            this.$router.back()
-        },
+    effortId: {
+        type: Number,
+        required: true
     },
 })
+
+const effortsStore = useEffortsStore()
+const tasksStore = useTasksStore()
+
+const task = computed(() => tasksStore.getExistingTask(props.taskId))
+const effort = computed(() => effortsStore.getExistingEffort(props.effortId))
+
+async function optionDeleteEffort(): Promise<void> {
+    effort.effect.stop()
+    router.back()
+    await effortsStore.deleteEffort(effort.value)
+}
 </script>
 
 <style lang="sass" scoped>

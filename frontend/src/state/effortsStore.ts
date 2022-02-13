@@ -3,7 +3,7 @@ import { defineStore } from "pinia"
 
 import { deserializeEffort, NewEffort, Effort } from "src/network/models/effort"
 import { Task } from "src/network/models/task"
-import { createItem, deleteItem, getItems, updateItem } from "src/state/common"
+import { createItem, deleteItem, getExistingItem, getItems, updateItem } from "src/state/common"
 import { MapById } from "src/utils/types"
 
 
@@ -14,6 +14,7 @@ export const useEffortsStore = defineStore("efforts", {
     }
   },
   getters: {
+    getExistingEffort: (state) => (effortId: number) => getExistingItem(state.efforts, effortId),
     effortExists: (state) => (effortId: number) => state.efforts.has(effortId),
     effortsPerTask: (state) => (task: Task, interval?: Interval): MapById<Effort> => {
       /**

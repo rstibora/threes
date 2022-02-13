@@ -28,12 +28,10 @@
 <div class="content-wrapper">
     <div class="content">
         <router-view v-slot="{ Component, route }">
-            <keep-alive>
-                <component
-                    :is="Component"
-                    :key="route.fullPath"
-                />
-            </keep-alive>
+            <component
+                :is="Component"
+                :key="route.fullPath"
+            />
         </router-view>
     </div>
 </div>
