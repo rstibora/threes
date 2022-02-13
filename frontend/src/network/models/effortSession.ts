@@ -38,7 +38,7 @@ export class NewEffortSession implements Serializable<EffortSesssionSerialized> 
       task: this.taskId,
       state: this.state,
       last_active: this.lastActive.toISO(),
-      duration: this.duration,
+      duration: Math.round(this.duration),
       created: this.created.toISO(),
     }
   }

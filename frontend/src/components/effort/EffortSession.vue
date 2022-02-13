@@ -76,8 +76,9 @@ export default defineComponent({
   created(): void {
     this.task = this.tasksStore.getExistingTask(this.taskId)
     if (this.effortSessionStore.session !== undefined) {
-      this.duration = this.effortSessionStore.session.duration - this.effortSessionStore.session.created.diffNow("seconds").seconds
+      this.duration = this.effortSessionStore.session.duration
       if (this.effortSessionStore.session.state === EffortSessionState.RUNNING) {
+        this.duration -= this.effortSessionStore.session.lastActive.diffNow("seconds").seconds
         this.stopwatchIntervalHandle = setInterval(() => this.duration += 1, 1000)
       }
     }
@@ -100,6 +101,7 @@ export default defineComponent({
         clearInterval(this.stopwatchIntervalHandle)
         this.stopwatchIntervalHandle = undefined
       }
+      effortSession.lastActive = DateTime.now()
       await this.effortSessionStore.updateEffortSession(effortSession)
     },
     async saveButtonClicked(): Promise<void> {
