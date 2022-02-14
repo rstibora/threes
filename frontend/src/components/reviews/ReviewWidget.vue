@@ -40,6 +40,7 @@
             v-for="[task, efforts] of tasksAndEffortsForInterval(selectedReviewBundle.interval, plannedTasks(selectedReviewBundle.review))"
             :key="task.id" 
             :task="task"
+            :configuration="{ showTotalEffortTime: true }"
             :efforts="efforts"
         />
     </div>
