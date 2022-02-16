@@ -12,4 +12,4 @@ class EffortSerializer(serializers.ModelSerializer):
 class EffortSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = EffortSession
-        fields = ["id", "task", "state", "last_active", "duration", "created"]
+        fields = ["id", "task", "state", "last_active", "duration", "created", "description"]

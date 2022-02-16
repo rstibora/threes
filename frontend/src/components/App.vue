@@ -22,7 +22,7 @@
         class="button"
         @click="logout()"
     >
-        {{ sessionStore.session !== undefined ? sessionStore.session.userEmail.substr(0, 1) : "X" }}
+        {{ sessionStore.session?.userEmail.substr(0, 1) ?? "X" }}
     </a>
 </aside>
 <div class="content-wrapper">

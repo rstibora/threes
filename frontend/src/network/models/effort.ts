@@ -20,7 +20,7 @@ export class NewEffort implements Serializable<EffortSerialized> {
 
     constructor(taskId: number, duration: number, description: string, starts?: DateTime) {
         this.taskId = taskId
-        this.starts = starts !== undefined ? starts : DateTime.now().minus(Duration.fromObject({ seconds: duration }))
+        this.starts = starts ?? DateTime.now().minus(Duration.fromObject({ seconds: duration }))
         this.duration = duration
         this.description = description
         this.interval = Interval.fromDateTimes(

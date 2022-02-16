@@ -8,6 +8,12 @@
     {{ task.name }}: {{ durationInminutesAndSeconds[0] }}:{{ durationInminutesAndSeconds[1] }}
   </button>
   <br>
+  <input
+    v-model="description"
+    v-debounce:500ms="updateEffortSessionDescription"
+    class="full-width block-display"
+  >
+  <br>
   <button
     class="full-width"
     @click="startPauseButtonClicked"
@@ -32,6 +38,7 @@
 <script lang="ts">
 import { DateTime, Duration } from "luxon"
 import { defineComponent } from "vue"
+import { getDirective } from "vue-debounce"
 
 import CompactHeader from "src/components/buildingBlocks/CompactHeader.vue"
 
@@ -47,6 +54,9 @@ import { useTasksStore } from "src/state/tasksStore"
 export default defineComponent({
   components: {
     CompactHeader
+  },
+  directives: {
+    debounce: getDirective("3")
   },
   props: {
     taskId: {
@@ -65,6 +75,7 @@ export default defineComponent({
       task: undefined as Task | undefined,
       duration: 0,
       stopwatchIntervalHandle: undefined as ReturnType<typeof setInterval> | undefined,
+      description: "",
     }
   },
   computed: {
@@ -77,6 +88,7 @@ export default defineComponent({
     this.task = this.tasksStore.getExistingTask(this.taskId)
     if (this.effortSessionStore.session !== undefined) {
       this.duration = this.effortSessionStore.session.duration
+      this.description = this.effortSessionStore.session.description
       if (this.effortSessionStore.session.state === EffortSessionState.RUNNING) {
         this.duration -= this.effortSessionStore.session.lastActive.diffNow("seconds").seconds
         this.stopwatchIntervalHandle = setInterval(() => this.duration += 1, 1000)
@@ -92,6 +104,7 @@ export default defineComponent({
 
       const effortSession = this.effortSessionStore.session as EffortSession
       effortSession.duration = this.duration
+      effortSession.description = this.description
       if (effortSession.state === EffortSessionState.PAUSED) {
         effortSession.state = EffortSessionState.RUNNING
         this.stopwatchIntervalHandle = setInterval(() => this.duration += 1, 1000)
@@ -110,7 +123,8 @@ export default defineComponent({
         this.startPauseButtonClicked()
       }
       const effort = new NewEffort(
-        (this.task as Task).id, this.duration, "", this.effortSessionStore.session?.created)
+        (this.task as Task).id, this.duration, this.description,
+         this.effortSessionStore.session?.created)
       await this.effortsStore.createEffort(effort)
       this.duration = 0
       await this.effortSessionStore.deleteEffortSession()
@@ -122,8 +136,14 @@ export default defineComponent({
           this.startPauseButtonClicked()
         }
         this.duration = 0
+        this.description = ""
         await this.effortSessionStore.deleteEffortSession()
       }
+    },
+    updateEffortSessionDescription(): void {
+      const effortSession = this.effortSessionStore.session as EffortSession
+      effortSession.description = this.description
+      this.effortSessionStore.updateEffortSession(effortSession)
     }
   },
 })
@@ -132,4 +152,6 @@ export default defineComponent({
 <style lang="sass" scoped>
 .full-width
   width: 100%
+.block-display
+  display: block
 </style>

@@ -1,7 +1,6 @@
 import { Existing, Serializable } from "src/network/models/basic"
 import { useSessionStore } from "src/state/sessionStore"
-import { MapById } from "src/utils/types";
-
+import { MapById } from "src/utils/types"
 
 
 export function updateOrDeleteInMap<T>(stateItems: MapById<T>, items: MapById<T | undefined>) {

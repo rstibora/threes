@@ -16,7 +16,6 @@ export function displayIntervalEnd(datetime: DateTime): DateTime {
 }
 
 export function displaySeconds(seconds: number): string {
-  console.debug(seconds)
   /** Converts seconds to a more user-facing string (e.g. 32.5 m, 1.3 h). */
   if (seconds < 60) {
     return `${seconds.toFixed(0)} s`

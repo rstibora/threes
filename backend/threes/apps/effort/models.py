@@ -36,10 +36,13 @@ class EffortSession(models.Model):
 
     owner = models.OneToOneField(EmailUser, on_delete=models.CASCADE)
     task = models.OneToOneField(Task, on_delete=models.CASCADE)
+
     state = models.CharField(max_length=1, choices=StateChoices.choices)
     last_active = models.DateTimeField()
     duration = models.IntegerField()  # [seconds]
     created = models.DateTimeField(auto_now_add=True)
+
+    description = models.CharField(blank=True, default="", max_length=512)
 
     def __repr__(self) -> str:
         return (f"{self.__class__.__name__}({self.task},{self.last_active})")
