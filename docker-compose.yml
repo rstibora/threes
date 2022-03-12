@@ -12,6 +12,32 @@ services:
       - POSTGRES_PASSWORD=postgres
       - THREES_DB_PASSWORD=threes
 
+  threes-keycloak-service:
+    image: quay.io/keycloak/keycloak:17.0.0
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8081:8080"
+    command: start-dev
+
+  threes-hasura-service:
+    image: hasura/graphql-engine
+    environment:
+      - HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgres@threes-db-service:5432/threes_two
+      - HASURA_GRAPHQL_ENABLE_CONSOLE=false
+    ports:
+      - "8080:8080"
+    depends_on:
+      - threes-db-service
+
+  threes-hasura-cli-service:
+    build: ./hasura-cli
+    depends_on:
+      - threes-hasura-service
+    volumes:
+      - ./threes:/hasuracli/threes
+
   threes-backend-service:
     build:
       context: ./backend
