@@ -1,35 +1,30 @@
 <template>
-    <component
-        :is="'App'"
-        v-if="sessionStore.session !== undefined"
-    />
-    <!-- else spinner and stuff -->
+  <!-- keycloak.authenticated can be only checked after keycloak has been initialized, because
+  .authenticaed is initially not defined on the object at all and there are some reactivity issues.
+  (.authenticated being created with value 'true' does not trigger update). -->
+  <component
+    :is="'App'"
+    v-if="keycloakStore.initialized && (keycloakStore.keycloak.authenticated ?? false)"
+  />
+  <!-- else spinner and stuff -->
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue"
 
-import { useSessionStore } from "src/state/sessionStore"
-import { Session } from "src/state/session"
-
-import { fetchResource } from "src/network/fetchResource"
+import { useKeycloakStore } from "src/state/keycloakStore"
 
 import App from "src/components/App.vue"
 
+
 export default defineComponent({
-    components: { App },
-    setup(_props) {
-        const sessionStore = useSessionStore()
-        return { sessionStore }
-    },
-    async created() {
-        const response = await fetchResource("POST", "/api/token/refresh/")
-        if (response.ok) {
-            const responseJson = await response.json()
-            this.sessionStore.session = new Session(responseJson["access"])
-        } else {
-            window.location.replace("/signin/")
-        }
-    },
+  components: { App },
+  setup() {
+    const keycloakStore = useKeycloakStore()
+    return { keycloakStore }
+  },
+  async created() {
+    await this.keycloakStore.checkLogin()
+  }
 })
 </script>

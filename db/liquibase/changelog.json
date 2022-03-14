@@ -1,7 +1,0 @@
-{
-    "databaseChangeLog": [
-        { "include":
-            { "file": "./changelog/changelog-0.0.2.sql" }
-        }
-    ]
-}

@@ -22,7 +22,7 @@
         class="button"
         @click="logout()"
     >
-        {{ sessionStore.session?.userEmail.substr(0, 1) ?? "X" }}
+        {{ keycloakStore.keycloak.userInfo }}
     </a>
 </aside>
 <div class="content-wrapper">
@@ -71,7 +71,7 @@ import { defineComponent } from 'vue'
 import { fetchResource } from "src/network/fetchResource"
 
 import { useEffortSessionStore } from "src/state/effortSessionStore"
-import { useSessionStore } from "src/state/sessionStore"
+import { useKeycloakStore } from "src/state/keycloakStore"
 
 import Dashboard from "./Dashboard.vue"
 
@@ -80,9 +80,9 @@ export default defineComponent({
         Dashboard,
     },
     setup(props) {
-        const sessionStore = useSessionStore()
+        const keycloakStore = useKeycloakStore()
         const effortSessionStore = useEffortSessionStore()
-        return { effortSessionStore, sessionStore }
+        return { effortSessionStore, keycloakStore }
     },
     mounted() {
         // Bring in the feather-icons.
@@ -113,16 +113,7 @@ export default defineComponent({
     },
     methods: {
         async logout() {
-            if (this.sessionStore.session === undefined) {
-                return
-            }
-
-            const response = await fetchResource("POST", "/logout/", undefined, this.sessionStore.session?.accessJwt)
-            if (response.ok) {
-                this.sessionStore.session = undefined
-                // TODO: fix.
-                window.location.replace("/signin/")
-            }
+            await this.keycloakStore.keycloak.logout()
         }
     },
 })

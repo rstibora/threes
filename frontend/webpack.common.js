@@ -15,9 +15,9 @@ export default {
         main: "./src/index.ts"
     },
     output: {
-        filename: "[name].[contenthash].js",
+        filename: "main.js",
         path: path.resolve("/output"),
-        publicPath: "",
+        publicPath: "/app",
         clean: true,
     },
     resolve: {
@@ -88,5 +88,9 @@ export default {
 
     watchOptions: {
         aggregateTimeout: 5000,
+    },
+
+    experiments: {
+        topLevelAwait: true,
     }
 };

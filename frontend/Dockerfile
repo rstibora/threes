@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:17.3
+FROM node:17.8
 
 ARG git_hash=undefined
 ARG git_tag=undefined

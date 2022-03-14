@@ -5,27 +5,38 @@ services:
     build: ./db
     volumes:
       - ./.data:/var/lib/postgresql/data
+    networks:
+      - threes-network
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - THREES_DB_PASSWORD=threes
+      - KEYCLOAK_DB_PASSWORD=keycloak
 
   threes-keycloak-service:
-    image: quay.io/keycloak/keycloak:17.0.0
+    build: ./keycloak
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB_URL=jdbc:postgresql://threes-db-service:5432/threes_two?currentSchema=keycloak
+      - KC_DB_USERNAME=keycloak
+      - KC_DB_PASSWORD=keycloak
+    networks:
+      - threes-network
     ports:
-      - "8081:8080"
-    command: start-dev
+      - "8443:8080"
+    depends_on:
+    - threes-db-service
 
   threes-hasura-service:
     image: hasura/graphql-engine
     environment:
       - HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgres@threes-db-service:5432/threes_two
-      - HASURA_GRAPHQL_ENABLE_CONSOLE=false
+      - HASURA_GRAPHQL_ENABLE_CONSOLE=true
+    networks:
+      - threes-network
     ports:
       - "8080:8080"
     depends_on:
@@ -33,16 +44,20 @@ services:
 
   threes-hasura-cli-service:
     build: ./hasura-cli
+    networks:
+      - threes-network
     depends_on:
       - threes-hasura-service
-    volumes:
-      - ./threes:/hasuracli/threes
+    # volumes:
+      # - ./threes:/hasuracli/threes
 
   threes-backend-service:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
     command: python ./threes/manage.py runserver 0.0.0.0:8000
+    networks:
+      - threes-network
     ports:
       - "8000:8000"
     volumes:
@@ -62,7 +77,11 @@ services:
       - threes-db-service
 
   threes-frontend-service:
-    command: bash -c "npm install --also=dev && npm run build"
+    command: bash -c "npm install --also=dev && npm run serve-dev"
+    networks:
+      - threes-network
+    ports:
+    - "8082:8082"
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
@@ -71,3 +90,6 @@ services:
       - /mnt/ramdisk:/output/
     depends_on:
       - threes-backend-service
+
+networks:
+  threes-network:

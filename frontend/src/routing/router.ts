@@ -27,7 +27,7 @@ function parseTaskListConfiguration(route: RouteLocationNormalized): TaskListCon
     return { action: new SelectForEffortSessionAction(
       route.query.taskId ? parseInt(route.query.taskId as string) : undefined) }
   }
-  return undefined  
+  return undefined
 }
 
 const routes: Array<RouteRecordRaw> = [
@@ -72,6 +72,6 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach(fetchAllData)
+// router.beforeEach(fetchAllData)
 
 export default router

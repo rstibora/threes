@@ -1,9 +1,7 @@
 # syntax=docker/dockerfile:1
-FROM node:17.3
+FROM node:17.8
 
 RUN apt update
 RUN apt install git
 
 WORKDIR /code/frontend/
-COPY package.json /code/frontend/
-COPY package-lock.json /code/frontend/

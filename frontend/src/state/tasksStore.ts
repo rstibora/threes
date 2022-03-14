@@ -10,6 +10,27 @@ import { MapById } from "src/utils/types"
 import { useEffortsStore } from "src/state/effortsStore"
 
 
+export const schema =  {
+  "title": "tasks schmea",
+  "version": 0,
+  "primaryKey": "id",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "number"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "created": {
+      "type": "string"
+    }
+  }
+}
+
 export const useTasksStore = defineStore("tasks", {
   state: () => {
     return {
@@ -68,5 +89,6 @@ export const useTasksStore = defineStore("tasks", {
     async fetchTasks(): Promise<void> {
       getItems(this.tasks, deserializeTask, "/api/tasks/")
     },
-  }
+  },
+  schemaName: "tasks"
 })

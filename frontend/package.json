@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node --experimental-vm-modules --unhandled-rejections=strict ./node_modules/.bin/jest",
     "build": "webpack --watch --config ./webpack.development.js",
-    "productionBuild": "webpack --config ./webpack.production.js"
+    "productionBuild": "webpack --config ./webpack.production.js",
+    "serve-dev": "webpack serve --config ./webpack.development.js --port 8082"
   },
   "type": "module",
   "author": "Radek Stibora",
@@ -15,8 +16,11 @@
     "d3": "^7.1.1",
     "feather-icons": "^4.28.0",
     "jwt-decode": "^3.1.2",
+    "keycloak-js": "^17.0.0",
     "luxon": "^2.0.2",
-    "pinia": "^2.0.11",
+    "pinia": "^2.0.12",
+    "rxdb": "^11.6.0",
+    "rxjs": "^7.5.4",
     "tslib": "^2.3.1",
     "typescript": "^4.4.4",
     "vue": "^3.2.20",
@@ -50,6 +54,7 @@
     "vue-style-loader": "^4.1.3",
     "webpack": "^5.61.0",
     "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.4",
     "webpack-manifest-plugin": "^4.0.2",
     "webpack-merge": "^5.8.0"
   }
