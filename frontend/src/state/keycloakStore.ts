@@ -7,8 +7,8 @@ export const useKeycloakStore = defineStore("keycloak", {
     return {
       keycloak: Keycloak({
         url: "http://localhost:8443",
-        realm: "threes",
-        clientId: "hasura",
+        realm: "Threes",
+        clientId: "threes",
       }),
       initialized: false
     }
